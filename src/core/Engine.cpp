@@ -18,6 +18,12 @@ namespace DEngine{
         }
     }
     void Engine::input(Event &e) {
-        std::cout<<e.getName()<<'\n';
+        EventDispatcher dispatcher(e);
+        dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(Engine::windowClose));
+    }
+
+    bool Engine::windowClose(WindowCloseEvent &e) {
+        isRunning = false;
+        return true;
     }
 }

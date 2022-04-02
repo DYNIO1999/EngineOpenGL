@@ -46,7 +46,7 @@ namespace  DEngine {
         {
             if (event.getEventType() == T::getStaticType())
             {
-                event.handled |= func(static_cast<T&>(event));
+                event.handled |= function(static_cast<T&>(event));
                 return true;
             }
             return false;

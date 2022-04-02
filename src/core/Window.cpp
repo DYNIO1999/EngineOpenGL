@@ -39,7 +39,7 @@ namespace  DEngine {
             WindowCloseEvent event;
             data.eventCallback(event);
         });
-        glfwSetKeyCallback(window,[](GLFWwindow* window, int key,int scancode, int action, int mode){
+        glfwSetKeyCallback(window,[](GLFWwindow* window, int key,int scancode, int action, int modes){
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
             switch (action) {
                 case GLFW_PRESS:{
@@ -58,6 +58,31 @@ namespace  DEngine {
                     break;
                 }
             }
+        });
+        glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int modes){
+            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+            switch (action) {
+                case GLFW_PRESS:{
+                    MouseButtonPressed event(button);
+                    data.eventCallback(event);
+                    break;
+                }
+                case GLFW_RELEASE:{
+                    MouseButtonReleased event(button);
+                    data.eventCallback(event);
+                    break;
+                }
+            }
+        });
+        glfwSetScrollCallback(window, [](GLFWwindow* window, double x, double y ){
+            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+            MouseScrolledEvent event(x,y);
+            data.eventCallback(event);
+        });
+        glfwSetCursorPosCallback(window, [](GLFWwindow* window, double x, double y){
+            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+            MouseMovedEvent event(x,y);
+            data.eventCallback(event);
         });
     }
 

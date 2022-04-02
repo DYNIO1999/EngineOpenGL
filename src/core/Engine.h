@@ -9,6 +9,7 @@ namespace  DEngine {
 #define BIND_EVENT_FUNCTION(x) std::bind(&x, this, std::placeholders::_1)
     class Engine {
     public:
+        bool windowClose(WindowCloseEvent& e);
         void input(Event& e);
         bool isRunning = true;
         void run();

@@ -5,18 +5,14 @@
 
 namespace  DEngine {
 
-    //MouseButtonPressed,
-    //MouseButtonReleased,
-    //MouseMoved,
-    //MouseScrolled
     class MouseMovedEvent : public Event{
     public:
-        MouseMovedEvent(float _x, float _y):
+        MouseMovedEvent(double _x, double _y):
         x(_x), y(_y){
 
         }
-        float getX() const { return x; }
-        float getY() const { return y; }
+        double getX() const { return x; }
+        double getY() const { return y; }
         std::string getName() const override
         {
             std::string temp ="MouseMoved: " + std::to_string(x)+" "+std::to_string(y);
@@ -28,17 +24,17 @@ namespace  DEngine {
         }
         static EventType getStaticType() { return EventType::MouseMoved;};
     private:
-        float x,y;
+        double x,y;
     };
 
     class MouseScrolledEvent : public Event{
     public:
-        MouseScrolledEvent(float _x, float _y):
+        MouseScrolledEvent(double _x, double _y):
                 x(_x), y(_y){
 
         }
-        float getX() const { return x; }
-        float getY() const { return y; }
+        double getX() const { return x; }
+        double getY() const { return y; }
         std::string getName() const override
         {
             std::string temp ="MouseScrolled: " + std::to_string(x)+" "+std::to_string(y);
