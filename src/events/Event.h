@@ -26,10 +26,32 @@ namespace  DEngine {
     virtual ~Event() = default;
     bool handled = false;
     virtual EventType getEventType() const = 0;
-    virtual const char* getName() const = 0; ///?
-    virtual std::string toString() const { return getName(); }
+    virtual std::string getName() const = 0; ///?
 
     private:
+    };
+
+
+
+    class EventDispatcher
+    {
+    public:
+        EventDispatcher(Event& event)
+                : event(event)
+        {
+        }
+        template<typename T, typename F>
+        bool dispatch(const F& function)
+        {
+            if (event.getEventType() == T::getStaticType())
+            {
+                event.handled |= func(static_cast<T&>(event));
+                return true;
+            }
+            return false;
+        }
+    private:
+        Event& event;
     };
 };
 #endif
