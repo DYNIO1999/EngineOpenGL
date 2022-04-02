@@ -35,7 +35,8 @@ build/
 cmake-build-release/
 cmake-build-debug/
 .vscode/
-
+.idea
+.idea/
 
 *.cmake
 CMakeLists.txt.user
