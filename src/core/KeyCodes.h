@@ -7,6 +7,7 @@ namespace DEngine{
     using KeyCode =  uint16_t;
 
     enum DEngineKeyCodes:KeyCode{
+        //GLFW KEY CODES
         Space               = 32,
         Apostrophe          = 39, /* ' */
         Comma               = 44, /* , */
