@@ -1,6 +1,5 @@
 #include "Engine.h"
 
-
 namespace DEngine{
 
     Engine::Engine() {
@@ -8,6 +7,8 @@ namespace DEngine{
         window  = std::make_unique<Window>(testData);
         isRunning = true;
         window->setEventCallback(BIND_EVENT_FUNCTION(Engine::input));
+        LogManager::init();
+
     }
     Engine::~Engine() {
 
