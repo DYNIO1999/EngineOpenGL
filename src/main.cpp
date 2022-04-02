@@ -1,8 +1,8 @@
 #include <iostream>
-
-
-int main(int argc, char const *argv[])
+#include "events/Event.h"
+int main()
 {
-    std::cout<<"Hello World!"<<'\n';
+    Event test;
+    test.print();
     return 0;
 }
