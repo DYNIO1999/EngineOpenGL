@@ -2,7 +2,11 @@
 #define DENGINE_WINDOW_H
 #include <cassert>
 #include "GLFW/glfw3.h"
-#include "events/Event.h"
+
+#include "events/KeyEvents.h"
+#include "events/EngineEvents.h"
+#include "events/MouseEvents.h"
+
 namespace DEngine {
 
     using EventCallbackFunction = std::function<void(Event&)>;
