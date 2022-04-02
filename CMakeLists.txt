@@ -22,6 +22,7 @@ include_directories (src/
                      vendor/stb/
                      vendor/imgui/
                      vendor/imgui/backends
+                     vendor/spdlog/include
                      )
 set(IMGUI_DIR ${PROJECT_SOURCE_DIR}/vendor/imgui)
 

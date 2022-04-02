@@ -13,6 +13,7 @@ namespace DEngine{
 
     }
     void Engine::run() {
+
         while(isRunning){
             window->Update();
         }
