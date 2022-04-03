@@ -8,6 +8,8 @@
 
 namespace  DEngine {
 #define BIND_EVENT_FUNCTION(x) std::bind(&x, this, std::placeholders::_1)
+    class EditorScene;
+
     class Engine {
     public:
         bool windowClose(WindowCloseEvent& e);
@@ -16,9 +18,11 @@ namespace  DEngine {
         void run();
         Engine();
         ~Engine();
-        std::unique_ptr<Window> window;
+        std::shared_ptr<Window> window;
+
         static SceneManager sceneManager;
     private:
+        EditorScene* editorScenePtr;
     };
 
 }

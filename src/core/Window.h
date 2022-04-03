@@ -36,6 +36,7 @@ namespace DEngine {
         int getHeight() const;
         void setVSync(bool _on);
         void Update();
+        GLFWwindow* getGLFWWindow(){return  (window!= nullptr) ? window : nullptr;}
     private:
         void initGLAD();
         void init();

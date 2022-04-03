@@ -27,7 +27,7 @@ namespace DEngine{
         }
     }
     void SceneManager::popScene() {
-        auto toDeleteLast = scenesStack.begin()+ sceneIndex;
+        auto toDeleteLast = scenesStack.begin()+ (sceneIndex-1);
         (*toDeleteLast)->detach();
         delete (*toDeleteLast);
         scenesStack.erase(toDeleteLast);
@@ -35,12 +35,15 @@ namespace DEngine{
     }
 
     void SceneManager::pushScene(Scene *_scene) {
+        _scene->attach();
         scenesStack.emplace(scenesStack.begin()+sceneIndex, _scene);
         sceneIndex++;
     }
 
     void SceneManager::pushSceneOverlay(Scene *_overlay) {
+        _overlay->attach();
         scenesStack.emplace_back(_overlay);
+
     }
 
     void SceneManager::popSceneOverlay(Scene *_overlay) {
