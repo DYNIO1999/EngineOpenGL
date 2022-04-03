@@ -17,6 +17,8 @@ namespace DEngine {
         void input(Event& e) override;
         void update() override;
         int counter = 0;
+        int item_current_idx = 0;
+        bool is_selected = false;
     };
 }
 #endif
