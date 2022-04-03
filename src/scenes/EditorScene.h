@@ -21,6 +21,7 @@ namespace DEngine {
         void update()override;
     private:
         std::shared_ptr<Window> windowPtr;
+        bool istrue = false;
     };
 }
 #endif

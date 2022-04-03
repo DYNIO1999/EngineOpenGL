@@ -9,9 +9,7 @@ namespace DEngine{
     }
     void TestScene::update() {
         DENGINE_TRACE("SCENE IS UPDATING: {} ", getSceneName());
-        if(counter==0){
-            Engine::sceneManager.changeScene(new TestScene("Second"));
-            counter++;
-        }
+        ImGui::Begin("Hey");
+
     }
 }
