@@ -4,6 +4,23 @@
 
 namespace DEngine{
 
+    static void transformEditorDraw(){
+        float col[3]{0,0,0};
+        ImGui::Begin("Editor");
+        if (ImGui::CollapsingHeader("Position"))
+        {
+            ImGui::InputFloat3("Position", col);
+        }
+        if (ImGui::CollapsingHeader("Rotation"))
+        {
+            ImGui::InputFloat3("Rotation", col);
+        }
+        if (ImGui::CollapsingHeader("Color"))
+        {
+            ImGui::ColorPicker3("Color",col, ImGuiColorEditFlags_PickerHueWheel | ImGuiColorEditFlags_DisplayRGB);
+        }
+        ImGui::End();
+    }
     void TestScene::input(Event &e) {
         //std::cout<<e.getName()<<'\n';
     }
@@ -11,6 +28,8 @@ namespace DEngine{
         static bool testBool = true;
         //DENGINE_TRACE("SCENE IS UPDATING: {} ", getSceneName());
         float col[3]{0,0,0};
+
+
         ImGui::Begin("Properties");
         if (ImGui::CollapsingHeader("Scene")){
             ImGui::ShowDemoWindow(&testBool);
@@ -29,20 +48,15 @@ namespace DEngine{
                     // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
                     if (is_selected){
                         DENGINE_TRACE("SELECTED {}",item_current_idx);
-                        is_selected = false;
                     }
 
                         //ImGui::SetItemDefaultFocus();
                 }
                 ImGui::EndListBox();
             }
-        }
-        if (ImGui::CollapsingHeader("Color"))
-
-        {
-            ImGui::ColorPicker3("Color",col, ImGuiColorEditFlags_PickerHueWheel | ImGuiColorEditFlags_DisplayRGB);
-            //ImGui::SliderFloat("Roughness", NULL, 0.0f, 1.0f);
-            //ImGui::SliderFloat("Metallic", NULL, 0.0f, 1.0f);
+            if(is_selected ){
+                transformEditorDraw();
+            }
         }
         ImGui::End();
 

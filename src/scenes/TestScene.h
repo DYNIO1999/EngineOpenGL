@@ -8,6 +8,18 @@
 #include "imgui_impl_opengl3.h"
 
 namespace DEngine {
+    struct Position {
+        float x;
+        float y;
+        float w;
+        float h;
+    };
+    struct Color {
+        float r;
+        float g;
+        float b;
+    };
+
     class TestScene : public Scene {
     public:
         TestScene(std::string name): Scene(name){
