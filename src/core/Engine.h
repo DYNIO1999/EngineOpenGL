@@ -4,6 +4,7 @@
 
 #include <memory>
 #include "Window.h"
+#include "SceneManager.h"
 
 namespace  DEngine {
 #define BIND_EVENT_FUNCTION(x) std::bind(&x, this, std::placeholders::_1)
@@ -11,13 +12,14 @@ namespace  DEngine {
     public:
         bool windowClose(WindowCloseEvent& e);
         void input(Event& e);
-        void update();
         bool isRunning = true;
         void run();
         Engine();
         ~Engine();
         std::unique_ptr<Window> window;
+        static SceneManager sceneManager;
     private:
     };
+
 }
 #endif

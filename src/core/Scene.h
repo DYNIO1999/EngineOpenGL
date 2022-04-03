@@ -1,14 +1,16 @@
 #ifndef DENGINE_SCENE_H
 #define DENGINE_SCENE_H
-
 #include <vector>
+#include <string>
+
 #include "events/Event.h"
 
 namespace DEngine {
 
     class Scene {
         public:
-        Scene(){
+        bool isDisabled;
+        Scene(const std::string& _sceneName):isDisabled(false), sceneName(_sceneName){
 
         }
         virtual ~Scene(){
@@ -28,7 +30,9 @@ namespace DEngine {
             //rysowanie
 
         }
-        private:
+        const std::string& getSceneName(){return sceneName;}
+        protected:
+        std::string sceneName;
     };
 };
 #endif
