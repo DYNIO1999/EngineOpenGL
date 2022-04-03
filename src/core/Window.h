@@ -2,6 +2,8 @@
 #define DENGINE_WINDOW_H
 #include <cassert>
 #include "GLFW/glfw3.h"
+#include "glad/glad.h"
+#include "LogManager.h"
 
 #include "events/KeyEvents.h"
 #include "events/EngineEvents.h"
@@ -35,6 +37,7 @@ namespace DEngine {
         void setVSync(bool _on);
         void Update();
     private:
+        void initGLAD();
         void init();
         void cleanUp();
         WindowData windowData;

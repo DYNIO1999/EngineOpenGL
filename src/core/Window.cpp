@@ -8,8 +8,8 @@ namespace  DEngine {
     }
 
     Window::Window(const WindowData &_data): windowData(_data) {
-
         init();
+        initGLAD();
     }
     Window::~Window() {
         cleanUp();
@@ -105,5 +105,12 @@ namespace  DEngine {
     }
     void Window::setEventCallback(const EventCallbackFunction &_callback) {
         windowData.eventCallback = _callback;
+    }
+
+    void Window::initGLAD() {
+
+        if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
+            DENGINE_ERROR("Error while initializing GLAD");
+        }
     }
 }

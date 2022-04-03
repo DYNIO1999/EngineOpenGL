@@ -4,7 +4,6 @@
 
 #include <memory>
 #include "Window.h"
-#include "LogManager.h"
 
 namespace  DEngine {
 #define BIND_EVENT_FUNCTION(x) std::bind(&x, this, std::placeholders::_1)
