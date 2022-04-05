@@ -1,5 +1,5 @@
 #include "VertexBuffer.h"
-#include "glad/glad.h"
+#include "Renderer.h"
 
 namespace DEngine{
     template <typename T>
@@ -7,6 +7,7 @@ namespace DEngine{
         glGenBuffers(1, &vertexBufferID);
         glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
         glBufferData(GL_ARRAY_BUFFER, (size*sizeof(T)), data,GL_STATIC_DRAW);
+        vertexCount = size;
     }
     template <typename T>
     VertexBuffer::VertexBuffer(const void *data, unsigned int size, VertexUsageTypes type) {
@@ -23,6 +24,7 @@ namespace DEngine{
                 glBufferData(GL_ARRAY_BUFFER, (size*sizeof(T)), data,GL_STREAM_DRAW);
                 break;
         }
+        vertexCount = size;
     }
     VertexBuffer::~VertexBuffer() {
         glBindBuffer(GL_ARRAY_BUFFER,0);

@@ -15,12 +15,13 @@ namespace DEngine {
         template <typename T>
         VertexBuffer(const void* data, unsigned int size);
         ~VertexBuffer();
-
+        unsigned int getVertexCount()const {return vertexCount;}
         void bind();
         void unbind();
 
         private:
         unsigned int vertexBufferID;
+        unsigned int vertexCount;
     };
 }
 #endif

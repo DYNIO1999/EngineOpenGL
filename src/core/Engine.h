@@ -12,6 +12,9 @@ namespace  DEngine {
 
     class Engine {
     public:
+        Engine(const Engine &) = delete;
+        Engine &operator=(const Engine &) = delete;
+
         bool windowClose(WindowCloseEvent& e);
         void input(Event& e);
         bool isRunning = true;

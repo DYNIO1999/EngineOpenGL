@@ -13,11 +13,14 @@ namespace DEngine {
         Scene(const std::string& _sceneName):isDisabled(false), sceneName(_sceneName){
 
         }
-        virtual ~Scene(){
-
-        }
         virtual void attach(){
             //Scena konstrulowana
+        }
+        virtual  void initScene(){
+
+        }
+        virtual ~Scene(){
+
         }
         virtual void detach(){
             //Scena usuwana

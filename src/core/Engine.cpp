@@ -1,7 +1,7 @@
 #include "Engine.h"
 #include "scenes/TestScene.h"
 #include "scenes/EditorScene.h"
-
+#include "renderer/Renderer.h"
 namespace DEngine{
     SceneManager Engine::sceneManager;
     Engine::Engine() {
@@ -13,9 +13,10 @@ namespace DEngine{
         sceneManager.pushScene(new TestScene("HELLOOO"));
         editorScenePtr =  new EditorScene(window);
         sceneManager.pushSceneOverlay(editorScenePtr);
+        Renderer::getInstance()->init();
     }
     Engine::~Engine() {
-
+        Renderer::getInstance()->shutdown();
     }
     void Engine::run() {
 

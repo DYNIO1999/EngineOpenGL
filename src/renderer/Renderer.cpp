@@ -35,25 +35,44 @@ namespace DEngine{
         glDebugMessageCallback(OpenGLMessageCallback, nullptr);
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
     }
-    void Renderer::begineDraw(glm::mat4 projection) {
-        //start initializing OpenGL to render
+    void Renderer::beginDraw(glm::mat4 _projection) {
+        currentProjection = _projection;
+        glEnable(GL_BLEND);
+        glEnable(GL_DEPTH);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
-
-    void Renderer::endDraw() {
-        //clear Draw Data
-
+    void Renderer::draw(VertexArray &va, Shader &shader, unsigned int type) {
+        shader.bind();
+        va.bind();
+        if (type == GL_POINTS){
+            glDrawArrays(GL_POINTS, 0, va.getVertexCount());
+        }
+        else if (type == GL_LINES)
+        {
+            glDrawArrays(GL_LINES, 0, va.getVertexCount());
+        }else{
+            glDrawArrays(GL_TRIANGLES,0 ,va.getVertexCount());
+        }
     }
-
-    void Renderer::submit() {
-
+    void Renderer::draw(VertexArray &va, IndexBuffer &ib, Shader &shader, unsigned int type) {
+        shader.bind();
+        va.bind();
+        ib.bind();
+        if (type == GL_POINTS){
+            glDrawElements(GL_POINTS, ib.getCount(), GL_UNSIGNED_INT, nullptr);
+        }
+        else if (type == GL_LINES)
+        {
+            glDrawElements(GL_LINES, ib.getCount(), GL_UNSIGNED_INT, nullptr);
+        }else{
+            glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr);
+        }
     }
-
-
-
+    void Renderer::endDraw(){
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
     void Renderer::shutdown() {
 
     }
-
-
-
 }

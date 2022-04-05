@@ -26,7 +26,9 @@ namespace DEngine {
         TestScene(std::string name): Scene(name){
 
         };
+        void initScene() override{
 
+        }
         void input(Event& e) override;
         void update() override;
         int counter = 0;

@@ -1,6 +1,8 @@
 #ifndef DENGINE_INDEXBUFFER_H
 #define DENGINE_INDEXBUFFER_H
 
+#include <glad/glad.h>
+
 namespace DEngine {
     class IndexBuffer {
     public:
