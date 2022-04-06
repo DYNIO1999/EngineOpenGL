@@ -2,6 +2,7 @@
 #include "scenes/TestScene.h"
 #include "scenes/EditorScene.h"
 #include "renderer/Renderer.h"
+
 namespace DEngine{
     SceneManager Engine::sceneManager;
     Engine::Engine() {
@@ -21,11 +22,8 @@ namespace DEngine{
     void Engine::run() {
 
         while(isRunning){
-
             editorScenePtr->beginGUI();
             for (Scene* it: sceneManager) {
-                glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-                glClear(GL_COLOR_BUFFER_BIT);
                 it->update();
             }
             editorScenePtr->endGUI();

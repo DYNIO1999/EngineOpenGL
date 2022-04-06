@@ -10,9 +10,9 @@ namespace DEngine {
     class VertexBuffer {
 
         public:
-        template <typename T>
-        VertexBuffer(const void* data, unsigned int size,VertexUsageTypes type);
-        template <typename T>
+        VertexBuffer(const void* data, unsigned int size, VertexUsageTypes type,unsigned  int _vertexCount);
+        VertexBuffer(const void* data, unsigned int size, unsigned  int _vertexCount);
+        VertexBuffer(const void *data, unsigned int size, VertexUsageTypes type);
         VertexBuffer(const void* data, unsigned int size);
         ~VertexBuffer();
         unsigned int getVertexCount()const {return vertexCount;}

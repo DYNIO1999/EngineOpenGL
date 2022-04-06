@@ -67,16 +67,20 @@ namespace DEngine{
                 0.0f,  0.5f, 0.0f
         };
         unsigned int indices[] ={
-                0, 1, 3,   // first triangle
-                1, 2, 3
+                0, 1, 2,   // first triangle
+                1, 2, 0
         };
 
-        Shader testShader(PATH_SHADERS+ "TestVertexShader.glsl",PATH_SHADERS+ "TestFragmentShader.glsl" );
-        testShader.bind();
-        testShader.unbind();
-
-        //Renderer::getInstance()->beginDraw(glm::mat4(1));
-        //Renderer::getInstance()->draw();
-       // Renderer::getInstance()->endDraw();
+        VertexBuffer testVertexData(vertices, sizeof(vertices), sizeof(vertices)/sizeof(float));
+        //IndexBuffer testIndexBuffer(indices, sizeof(indices));
+        VertexBufferLayout testLayout;
+        testLayout.push<float>(3);
+        VertexArray testVertexArray;
+        testVertexArray.addBuffer(testVertexData, testLayout);
+        DrawCallSettings  testSettings;
+        Renderer::getInstance()->clear(glm::vec4(0.5, 0.5, 0.5 , 1.0));
+        Renderer::getInstance()->beginDraw(glm::mat4(1), testSettings);
+        Renderer::getInstance()->draw(testVertexArray, testShader);
+        Renderer::getInstance()->endDraw();
     }
 }

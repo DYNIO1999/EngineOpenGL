@@ -23,6 +23,30 @@ namespace  DEngine {
     static const std::string PATH_TEXTURES = "../../resources/textures/";
     static const std::string PATH_SHADERS = "../../resources/shaders/";
 
+    typedef enum {
+        CHAR,
+        INT,
+        FLOAT,
+        DOUBLE
+    } TYPES;
+
+    struct DrawCallSettings{
+        DrawCallSettings():
+        enableBlendingFlag(false),
+        enableDepthFlag(false),
+        enableStencilFlag(false),
+        clearColorBufferFlag(true){
+        }
+        
+        bool enableBlendingFlag;
+        bool enableDepthFlag;
+        bool enableStencilFlag;
+        bool clearColorBufferFlag;
+    };
+
+    struct DrawCallData{
+
+    };
     class Renderer {
     public:
         Renderer(Renderer &other) = delete;
@@ -30,10 +54,13 @@ namespace  DEngine {
 
         void init();
         void beginDraw(glm::mat4 _projection);
+        void beginDraw(glm::mat4 _projection, const DrawCallSettings& settings);
         void draw(VertexArray &va, IndexBuffer &ib, Shader &shader, unsigned int type = GL_TRIANGLES);
         void draw(VertexArray &va, Shader &shader, unsigned int type=  GL_TRIANGLES);
         void endDraw();
         void shutdown();
+        void clear() const;
+        void clear(glm::vec4 _givenColor) const;
         static Renderer* getInstance();
 
     private:
@@ -41,6 +68,9 @@ namespace  DEngine {
         Renderer(){
         }
         static Renderer* renderer;
+        DrawCallSettings currentDrawCallSettings;
+
+
     };
 }
 #endif

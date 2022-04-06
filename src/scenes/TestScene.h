@@ -23,7 +23,9 @@ namespace DEngine {
 
     class TestScene : public Scene {
     public:
-        TestScene(std::string name): Scene(name){
+        TestScene(std::string name): Scene(name),
+                                     testShader(PATH_SHADERS+ "TestVertexShader.glsl",PATH_SHADERS+ "TestFragmentShader.glsl" )
+        {
 
         };
         void initScene() override{
@@ -34,6 +36,8 @@ namespace DEngine {
         int counter = 0;
         int item_current_idx = 0;
         bool is_selected = false;
+
+        Shader testShader;
     };
 }
 #endif
