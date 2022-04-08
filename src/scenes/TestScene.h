@@ -7,7 +7,6 @@
 #include <imgui_impl_glfw.h>
 #include "imgui_impl_opengl3.h"
 #include "renderer/Renderer.h"
-
 namespace DEngine {
     struct Position {
         float x;
@@ -38,6 +37,8 @@ namespace DEngine {
         bool is_selected = false;
 
         Shader testShader;
+
     };
 }
 #endif
+#include "renderer/Texture.h"

@@ -49,7 +49,7 @@ add_definitions (-DGLFW_INCLUDE_NONE
                  -DPROJECT_SOURCE_DIR=\"${PROJECT_SOURCE_DIR}\")
 add_executable (${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_HEADERS}
                                  ${PROJECT_CONFIGS}
-                                ${GLAD_SOURCES} ${IMGUI_SOURCES})
+                                ${GLAD_SOURCES} ${IMGUI_SOURCES} ${STB_SOURCES})
 target_link_libraries (${PROJECT_NAME}
                        glfw
                        ${GLFW_LIBRARIES}
