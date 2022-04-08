@@ -17,11 +17,14 @@
 #include "VertexArray.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
-
+#include "Texture.h"
 namespace  DEngine {
 
     static const std::string PATH_TEXTURES = "../../resources/textures/";
     static const std::string PATH_SHADERS = "../../resources/shaders/";
+
+
+
 
     typedef enum {
         CHAR,
@@ -29,6 +32,12 @@ namespace  DEngine {
         FLOAT,
         DOUBLE
     } TYPES;
+
+
+    struct VertexData{
+        glm::vec3 position;
+        glm::vec2 texturePosition;
+    };
 
     struct DrawCallSettings{
         DrawCallSettings():

@@ -3,7 +3,7 @@
 #include "core/LogManager.h"
 #include "Renderer.h"
 namespace DEngine{
-    Texture::Texture(std::string &path):
+    Texture::Texture(const std::string &path):
     textureID(0),
     localTextureBuffer(nullptr),
     width(0),
@@ -12,8 +12,10 @@ namespace DEngine{
     {
         stbi_set_flip_vertically_on_load(1);
         localTextureBuffer = stbi_load(path.c_str(),&width, &height, &bitPerPixel,4);
-        DENGINE_ERROR("Cant read data from given texture!\n");
-        assert(localTextureBuffer != nullptr);
+        if(!localTextureBuffer) {
+            DENGINE_ERROR("Cant read data from given texture!\n");
+            assert(localTextureBuffer != nullptr);
+        }
         glGenTextures(1, &textureID);
         glBindTexture(GL_TEXTURE_2D,textureID);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);

@@ -6,7 +6,7 @@
 namespace DEngine {
     class Texture {
     public:
-        Texture(std::string& path);
+        Texture(const std::string& path);
         ~Texture();
 
         void bind(unsigned int slot =0);
