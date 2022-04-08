@@ -35,7 +35,7 @@ file (GLOB          IMGUI_SOURCES
                     ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
                     ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp)
 
-file (GLOB         STB_SOURCES vendor/stb/stb_image.cpp)
+file (GLOB         STB_SOURCES src/stb_image.cpp)
 file (GLOB         GLAD_SOURCES vendor/glad/src/glad.c)
 file (GLOB_RECURSE PROJECT_HEADERS src/*.hpp
                                    src/*.h)
