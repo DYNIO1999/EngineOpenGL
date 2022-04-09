@@ -4,15 +4,22 @@
 #include <glm/glm.hpp>
 #include <unordered_map>
 namespace  DEngine {
-    struct ShaderProgramSource
-    {
+    struct ShaderProgramSource {
         std::string VertexSource;
         std::string FragmentSource;
+        std::string TessellationControlShaderSource;
+        std::string TessellationEvaluationShaderSource;
     };
 
     class Shader {
     public:
         Shader(const std::string &vertexFilePath, const std::string &fragmentFilePath);
+
+        Shader(const std::string &vertexFilePath,
+               const std::string &fragmentFilePath,
+               const std::string &tessellationControlFilePath,
+               const std::string &tessellationEvaluationFilePath
+        );
 
         ~Shader();
 
@@ -32,13 +39,24 @@ namespace  DEngine {
     private:
         std::string vertexShaderFilePath;
         std::string fragmentShaderFilePath;
+        std::string tessellationControlShaderFilePath;
+        std::string tessellationEvaluationShaderFilePath;
         unsigned int shaderID;
 
         int getUniformLocation(const std::string &name);
+
         std::unordered_map<std::string, int> UniformLocationCache;
+
         std::string parseShader(const std::string &filepath);
+
         unsigned int compileShader(unsigned int type, const std::string &source);
+
         unsigned int createShader(const std::string &vertexShader, const std::string &fragmentShader);
+
+        unsigned int createShader(const std::string &vertexShader,
+                                  const std::string &fragmentShader,
+                                  const std::string &tessellationControlShader,
+                                  const std::string &tessellationEvaluationShader);
     };
 }
 #endif

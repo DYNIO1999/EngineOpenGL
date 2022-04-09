@@ -1,6 +1,7 @@
 #include "Engine.h"
 #include "scenes/TestScene.h"
 #include "scenes/EditorScene.h"
+#include "scenes/WaveSurfaceScene.h"
 #include "renderer/Renderer.h"
 
 namespace DEngine{
@@ -11,7 +12,9 @@ namespace DEngine{
         isRunning = true;
         window->setEventCallback(BIND_EVENT_FUNCTION(Engine::input));
         LogManager::init();
-        sceneManager.pushScene(new TestScene("HELLOOO"));
+        //sceneManager.pushScene(new TestScene("HELLOOO"));
+
+        sceneManager.pushScene(new WaveSurfaceScene("Waves", window));
         editorScenePtr =  new EditorScene(window);
         sceneManager.pushSceneOverlay(editorScenePtr);
         Renderer::getInstance()->init();

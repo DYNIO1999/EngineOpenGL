@@ -17,7 +17,27 @@ namespace DEngine{
         source.FragmentSource= parseShader(fragmentShaderFilePath);
         shaderID = createShader(source.VertexSource, source.FragmentSource);
     }
-
+    Shader::Shader(const std::string &vertexFilePath,
+           const std::string &fragmentFilePath,
+           const std::string &tessellationControlFilePath,
+           const std::string &tessellationEvaluationFilePath
+    ):
+            vertexShaderFilePath(vertexFilePath),
+            fragmentShaderFilePath(fragmentFilePath),
+            tessellationControlShaderFilePath(tessellationControlFilePath),
+            tessellationEvaluationShaderFilePath(tessellationEvaluationFilePath),
+            shaderID(0)
+    {
+        ShaderProgramSource source{};
+        source.VertexSource= parseShader(vertexShaderFilePath);
+        source.FragmentSource= parseShader(fragmentShaderFilePath);
+        source.TessellationControlShaderSource = parseShader(tessellationControlShaderFilePath);
+        source.TessellationEvaluationShaderSource = parseShader(tessellationEvaluationShaderFilePath);
+        shaderID = createShader(source.VertexSource,
+                                source.FragmentSource,
+                                source.TessellationControlShaderSource,
+                                source.TessellationEvaluationShaderSource);
+    }
     Shader::~Shader()
     {
         glDeleteProgram(shaderID);
@@ -77,6 +97,31 @@ namespace DEngine{
         glLinkProgram(program);
         glValidateProgram(program);
         glDeleteShader(vs);
+        glDeleteShader(fs);
+
+        return program;
+    }
+    unsigned int Shader::createShader(const std::string &vertexShader,
+                                      const std::string &fragmentShader,
+                                      const std::string &tessellationControlShader,
+                                      const std::string &tessellationEvaluationShader)
+    {
+
+        unsigned int program = glCreateProgram();
+        unsigned int vs = compileShader(GL_VERTEX_SHADER, vertexShader);
+        unsigned int tcs = compileShader(GL_TESS_CONTROL_SHADER, tessellationControlShader);
+        unsigned int tes =  compileShader(GL_TESS_EVALUATION_SHADER, tessellationEvaluationShader);
+        unsigned int fs = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
+
+        glAttachShader(program, vs);
+        glAttachShader(program, tcs);
+        glAttachShader(program, tes);
+        glAttachShader(program, fs);
+        glLinkProgram(program);
+        glValidateProgram(program);
+        glDeleteShader(vs);
+        glDeleteShader(tcs);
+        glDeleteShader(tes);
         glDeleteShader(fs);
 
         return program;
