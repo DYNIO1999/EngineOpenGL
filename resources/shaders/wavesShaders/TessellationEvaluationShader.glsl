@@ -6,7 +6,7 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 uniform float sin;
-
+out vec2 texTestCord;
 
 void basisFunctions( out float[4] b, float t )
 {
@@ -23,7 +23,7 @@ void main()
 {
     float u = gl_TessCoord.x;
     float v = gl_TessCoord.y;
-
+    texTestCord  = vec2(v,u);
     vec4 p00 = gl_in[0].gl_Position;
     vec4 p01 = gl_in[1].gl_Position;
     vec4 p02 = gl_in[2].gl_Position;
@@ -46,7 +46,7 @@ void main()
     basisFunctions(bu,u);
     basisFunctions(bv,v);
 
-    vec4 pos  =   p00*bu[0]*bv[0] + p01*bu[0]*bv[1] + p02*bu[0]*bv[2] + p03*bu[0]*bv[3] +
+    vec4 pos  =  vec4(p00.x, p00.y*sin, p00.z, p00.w)*bu[0]*bv[0] + vec4(p01.x,p01.y*sin,p01.z,p01.w)*bu[0]*bv[1] + p02*bu[0]*bv[2] + p03*bu[0]*bv[3] +
     p10*bu[1]*bv[0] + p11*bu[1]*bv[1] + p12*bu[1]*bv[2] + p13*bu[1]*bv[3] +
     p20*bu[2]*bv[0] + p21*bu[2]*bv[1] + p22*bu[2]*bv[2] + p23*bu[2]*bv[3] +
     p30*bu[3]*bv[0] + p31*bu[3]*bv[1] + p32*bu[3]*bv[2] + p33*bu[3]*bv[3];

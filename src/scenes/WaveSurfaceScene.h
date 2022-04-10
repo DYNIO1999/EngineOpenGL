@@ -17,7 +17,8 @@ namespace  DEngine {
                    PATH_SHADERS+ "wavesShaders/TessellationControlShader.glsl",
                    PATH_SHADERS+ "wavesShaders/TessellationEvaluationShader.glsl"
                    ),
-            windowPtr(_windowPtr)
+            windowPtr(_windowPtr),
+            waterTexture(PATH_TEXTURES+"water.png")
         {
             initScene();
         };
@@ -28,13 +29,16 @@ namespace  DEngine {
         bool onKeyPressedInput(KeyPressedEvent& e);
         bool windowClose(WindowCloseEvent& e);
     private:
-
+        bool isButtonPressed;
+        bool onMousePressed(MouseButtonPressed& e);
+        bool onMouseReleased(MouseButtonReleased& e);
         bool onMouseMovedEvent(MouseMovedEvent& e);
         Shader testShader;
         Camera camera{glm::vec3(0.0f, 0.0f, 0.3f)};
-        std::vector<glm::mat4> hair;
+        std::vector<glm::mat4> patch;
         glm::mat4 model, view, projection;
         std::shared_ptr<Window> windowPtr;
+        Texture waterTexture;
     };
 }
 #endif
