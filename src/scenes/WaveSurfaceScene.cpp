@@ -84,11 +84,11 @@ namespace DEngine{
         view = camera.GetViewMatrix();
         glClearColor(0.6, 0.839, 1,1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        float timeValueX = glfwGetTime();
+        float timeValueY = glfwGetTime();
 
         for(size_t i = 0; i<patch.size();i++){
-            float timeValueX = glfwGetTime();
-            float timeValueY = glfwGetTime()/2;
-            float yValue = sin(timeValueX) + cos(timeValueY);
+            float yValue = sin(timeValueX)   + cos(timeValueY) ;
             testShader.setUniform1i("TessLevel", 16);
             testShader.setUniform1f("sin", yValue);
             testShader.setUniformMat4f("model", patch[i]);

@@ -8,7 +8,7 @@ uniform mat4 projection;
 uniform float sin;
 out vec2 texTestCord;
 
-void basisFunctions( out float[4] b, float t )
+void BernsteinPolynomial( out float[4] b, float t )
 {
     float t1 = (1.0 - t);
     float t12 = t1 * t1;
@@ -43,13 +43,25 @@ void main()
 
     float bu[4], bv[4];
 
-    basisFunctions(bu,u);
-    basisFunctions(bv,v);
+    BernsteinPolynomial(bu,u);
+    BernsteinPolynomial(bv,v);
 
-    vec4 pos  =  vec4(p00.x, p00.y*sin, p00.z, p00.w)*bu[0]*bv[0] + vec4(p01.x,p01.y*sin,p01.z,p01.w)*bu[0]*bv[1] + p02*bu[0]*bv[2] + p03*bu[0]*bv[3] +
-    p10*bu[1]*bv[0] + p11*bu[1]*bv[1] + p12*bu[1]*bv[2] + p13*bu[1]*bv[3] +
-    p20*bu[2]*bv[0] + p21*bu[2]*bv[1] + p22*bu[2]*bv[2] + p23*bu[2]*bv[3] +
-    p30*bu[3]*bv[0] + p31*bu[3]*bv[1] + p32*bu[3]*bv[2] + p33*bu[3]*bv[3];
+    vec4 pos  =  vec4(p00)*bu[0]*bv[0] +
+    vec4(p01.x,p01.y*sin,p01.z,p01.w)*bu[0]*bv[1] +
+    vec4(p02.x,p02.y*sin,p02.z,p02.w)*bu[0]*bv[2] +
+    vec4(p03)*bu[0]*bv[3] +
+    vec4(p10)*bu[1]*bv[0] +
+    vec4(p11.x,p11.y*sin,p11.z,p11.w)*bu[1]*bv[1] +
+    vec4(p12.x,p12.y*sin,p12.z,p12.w)*bu[1]*bv[2] +
+    vec4(p13)*bu[1]*bv[3] +
+    vec4(p20)*bu[2]*bv[0] +
+    vec4(p21.x,p21.y*sin,p21.z,p21.w)*bu[2]*bv[1] +
+    vec4(p22.x,p22.y*sin,p22.z,p22.w)*bu[2]*bv[2] +
+    vec4(p23)*bu[2]*bv[3] +
+    vec4(p30)*bu[3]*bv[0] +
+    vec4(p31.x,p31.y*sin,p31.z,p31.w)*bu[3]*bv[1] +
+    vec4(p32.x,p32.y*sin,p32.z,p32.w)*bu[3]*bv[2] +
+    vec4(p33)*bu[3]*bv[3];
 
     gl_Position =  projection* view* model * pos;
 }
