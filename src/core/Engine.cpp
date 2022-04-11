@@ -12,9 +12,9 @@ namespace DEngine{
         isRunning = true;
         window->setEventCallback(BIND_EVENT_FUNCTION(Engine::input));
         LogManager::init();
-        //sceneManager.pushScene(new TestScene("HELLOOO"));
+        sceneManager.pushScene(new TestScene("HELLOOO"));
 
-        sceneManager.pushScene(new WaveSurfaceScene("Waves", window));
+        //sceneManager.pushScene(new WaveSurfaceScene("Waves", window));
         editorScenePtr =  new EditorScene(window);
         sceneManager.pushSceneOverlay(editorScenePtr);
         Renderer::getInstance()->init();
