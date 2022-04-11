@@ -8,6 +8,11 @@
 #include "imgui_impl_opengl3.h"
 #include "renderer/Renderer.h"
 
+
+#include "ecs/EntitySystemManager.h"
+
+#include "systems/PhysicsSystem.h"
+
 namespace DEngine {
     struct Position {
         float x;
@@ -42,6 +47,12 @@ namespace DEngine {
 
         Shader testShader;
         Texture textureTest;
+
+    private:
+        glm::mat4 model, view, projection;
+        std::vector<Entity> entities;
+        EntitySystemManager entitySystemManager;
+        std::shared_ptr<PhysicsSystem> physicsSystem
 
     };
 }

@@ -2,6 +2,12 @@
 #include "core/LogManager.h"
 #include "core/Engine.h"
 
+#include "core/Random.h"
+#include "components/Components.h"
+#include "glm/ext.hpp"
+#include "glm/gtx/string_cast.hpp"
+
+
 namespace DEngine{
 
     static void transformEditorDraw(){
@@ -21,11 +27,62 @@ namespace DEngine{
         }
         ImGui::End();
     }
+
+    void TestScene::initData() {
+        projection  = glm::perspective(glm::radians(45.0f), (float)1600/900, 0.1f, 100.0f);
+
+
+        glm::vec3 cameraPos(0.0f,0.0f,20.0f);
+        view = glm::lookAt(cameraPos,
+                           cameraPos+glm::vec3(0.0f, 0.0f, -1.0f),
+                           glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::mat4(1.0f);
+
+
+
+        entitySystemManager.registerComponent<TransformComponent>();
+        entitySystemManager.registerComponent<GravityComponent>();
+
+        physicsSystem= entitySystemManager.registerSystem<PhysicsSystem>();
+        ComponentsSignature signature;
+        signature.set(entitySystemManager.getComponentType<TransformComponent>());
+        signature.set(entitySystemManager.getComponentType<GravityComponent>());
+        signature.set()
+
+
+
+
+        entities.emplace_back(entitySystemManager.createEntity());
+        entities.emplace_back(entitySystemManager.createEntity());
+        entities.emplace_back(entitySystemManager.createEntity());
+        entities.emplace_back(entitySystemManager.createEntity());
+
+        TransformComponent testComp;
+        testComp.transform = glm::mat4(1.0f);
+        testComp.transform = glm::translate(testComp.transform, glm::vec3(1,2,0));
+        entitySystemManager.addComponent(entities[0],testComp);
+        testComp.transform = glm::mat4(1.0f);
+        testComp.transform = glm::translate(testComp.transform, glm::vec3(-1,-2,0));
+        entitySystemManager.addComponent(entities[1],testComp);
+        testComp.transform = glm::mat4(1.0f);
+        testComp.transform = glm::translate(testComp.transform, glm::vec3(0,-2,0));
+        entitySystemManager.addComponent(entities[2],testComp);
+        testComp.transform = glm::mat4(1.0f);
+        testComp.transform = glm::translate(testComp.transform, glm::vec3(0,0,-2));
+        entitySystemManager.addComponent(entities[3],testComp);
+
+
+    }
     void TestScene::input(Event &e) {
-        //std::cout<<e.getName()<<'\n';
+
     }
     void TestScene::update(float dt) {
         ImGUITest();
+
+
+        std::cout<<glm::to_string(entitySystemManager.getComponent<TransformComponent>(entities.back()).transform)<<'\n';
+
+        //MESH
         float vertices[] = {
                 -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
                 0.5f, -0.5f, 0.0f,  1.0f, 0.0f,
@@ -35,6 +92,7 @@ namespace DEngine{
                 0, 1, 2,   // first triangle
                 1, 2, 0
         };
+        //MESH
 
         VertexBuffer testVertexData(vertices, sizeof(vertices), sizeof(vertices)/sizeof(float));
         //IndexBuffer testIndexBuffer(indices, sizeof(indices));
@@ -44,14 +102,18 @@ namespace DEngine{
         VertexArray testVertexArray;
         testVertexArray.addBuffer(testVertexData, testLayout);
 
-        textureTest.bind();
-        testShader.bind();
-        testShader.setUniform1i("u_Texture",0);
-
         DrawCallSettings  testSettings;
         Renderer::getInstance()->clear(glm::vec4(0.5, 0.5, 0.5 , 1.0));
         Renderer::getInstance()->beginDraw(glm::mat4(1), testSettings);
-        Renderer::getInstance()->draw(testVertexArray, testShader);
+        textureTest.bind();
+        testShader.bind();
+        testShader.setUniform1i("u_Texture",0);
+        testShader.setUniformMat4f("projection",projection);
+        testShader.setUniformMat4f("view",view);
+        for (const auto& ent: entities) {
+            testShader.setUniformMat4f("model",entitySystemManager.getComponent<TransformComponent>(ent).transform);
+            Renderer::getInstance()->draw(testVertexArray, testShader);
+        }
         Renderer::getInstance()->endDraw();
         textureTest.unbind();
         testShader.unbind();
@@ -92,8 +154,5 @@ namespace DEngine{
             }
         }
         ImGui::End();
-    }
-
-    void TestScene::initData() {
     }
 }

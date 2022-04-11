@@ -11,19 +11,36 @@
 
 namespace  DEngine {
     struct TransformComponent {
-        TransformComponent()=default;
-        ~TransformComponent()=default;
         glm::mat4 transform;
+        TransformComponent()=default;
+        TransformComponent(const TransformComponent&) =default;
+        TransformComponent(const glm::mat4& _transform):transform(_transform){
+        }
+        ~TransformComponent()=default;
+    };
+
+    struct GravityComponent{
+        glm::vec3 gravityForce;
+        GravityComponent()=default;
+        GravityComponent(const GravityComponent&) =default;
+        GravityComponent(const glm::vec3& _gravityForce):gravityForce(_gravityForce){
+        }
+        ~GravityComponent()=default;
+    };
+
+    struct RigidBodyComponent{
+        glm::vec3 velocity;
+        glm::vec3 acceleration;
     };
 
     struct MeshComponent {
         float x, y;
     };
 
-    struct ParticleEmitterComponent {
-        ParticleEmitterComponent():numberOfParticles(0){
+    struct ParticleCPUEmitterComponent {
+        ParticleCPUEmitterComponent():numberOfParticles(0){
         };
-        explicit ParticleEmitterComponent(unsigned int _numberOfParticles)
+        explicit ParticleCPUEmitterComponent(unsigned int _numberOfParticles)
         :numberOfParticles(_numberOfParticles)
         {
             particles.resize(_numberOfParticles);
@@ -52,6 +69,9 @@ namespace  DEngine {
         std::unique_ptr<VertexBuffer> vbObj;
         std::unique_ptr<VertexBufferLayout> vlayObj;
         std::unique_ptr<VertexArray> vaObj;
+    };
+    struct ParticleGPUEmitterComponent{
+
     };
 }
 #endif

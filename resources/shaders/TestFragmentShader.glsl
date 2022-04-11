@@ -1,4 +1,4 @@
-#version 330 core
+#version 400
 out vec4 FragColor;
 in vec2 v_TextCoord;
 uniform sampler2D u_Texture;

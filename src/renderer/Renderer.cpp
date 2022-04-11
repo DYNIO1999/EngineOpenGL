@@ -36,21 +36,17 @@ namespace DEngine{
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
     }
     void Renderer::beginDraw(glm::mat4 _projection) {
-        //draw call settig setup
         currentProjection = _projection;
         glEnable(GL_BLEND);
         glEnable(GL_DEPTH);
 
     }
     void Renderer::beginDraw(glm::mat4 _projection, const DrawCallSettings& settings){
-
+        currentProjection = _projection;
         currentDrawCallSettings = settings;
-        //currentDrawCallSettings.enableBlendingFlag ? glEnable(GL_BLEND) : (void)0;
-        //currentDrawCallSettings.enableDepthFlag ?  glEnable(GL_DEPTH): (void)0;
-        //currentDrawCallSettings.enableStencilFlag ? glEnable(GL_STENCIL) : (void)0;
-
-
-        //clear();
+        currentDrawCallSettings.enableBlendingFlag ? glEnable(GL_BLEND) : (void)0;
+        currentDrawCallSettings.enableDepthFlag ?  glEnable(GL_DEPTH): (void)0;
+        currentDrawCallSettings.enableStencilFlag ? glEnable(GL_STENCIL) : (void)0;
     }
     void Renderer::draw(VertexArray &va, Shader &shader, unsigned int type) {
         shader.bind();
