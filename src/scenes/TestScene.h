@@ -34,7 +34,7 @@ namespace DEngine {
         }
         void initData();
         void input(Event& e) override;
-        void update() override;
+        void update(float dt) override;
         void ImGUITest();
         int counter = 0;
         int item_current_idx = 0;

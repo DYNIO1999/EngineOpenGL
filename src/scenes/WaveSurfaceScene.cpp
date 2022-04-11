@@ -31,7 +31,7 @@ namespace DEngine{
         dispatcher.dispatch<MouseButtonReleased>(BIND_EVENT_FUNCTION(WaveSurfaceScene::onMouseReleased));
         dispatcher.dispatch<MouseMovedEvent>(BIND_EVENT_FUNCTION(WaveSurfaceScene::onMouseMovedEvent));
     }
-    void WaveSurfaceScene::update() {
+    void WaveSurfaceScene::update(float dt) {
         int test;
 
         DrawCallSettings  testSettings;

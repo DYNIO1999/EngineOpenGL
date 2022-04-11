@@ -18,7 +18,7 @@ namespace DEngine {
         void attach() override;
         void detach()override;
         void input(Event& e)override;
-        void update()override;
+        void update(float dt)override;
     private:
         std::shared_ptr<Window> windowPtr;
         bool istrue = false;

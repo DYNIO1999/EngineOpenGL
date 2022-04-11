@@ -67,7 +67,7 @@ namespace  DEngine{
     void EditorScene::input(Event &e) {
 
     }
-    void EditorScene::update() {
+    void EditorScene::update(float dt) {
 
         //if (ImGui::BeginMenuBar())
         //{

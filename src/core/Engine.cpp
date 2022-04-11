@@ -25,9 +25,12 @@ namespace DEngine{
     void Engine::run() {
 
         while(isRunning){
+            auto currentFrameTime = static_cast<float>(glfwGetTime());
+            deltaTime = currentFrameTime - lastFrameTime;
+            lastFrameTime = currentFrameTime;
             editorScenePtr->beginGUI();
             for (Scene* it: sceneManager) {
-                it->update();
+                it->update(deltaTime);
             }
             editorScenePtr->endGUI();
             window->Update();

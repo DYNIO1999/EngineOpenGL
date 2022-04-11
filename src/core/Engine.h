@@ -25,6 +25,8 @@ namespace  DEngine {
 
         static SceneManager sceneManager;
     private:
+        float deltaTime;
+        float lastFrameTime;
         EditorScene* editorScenePtr;
     };
 

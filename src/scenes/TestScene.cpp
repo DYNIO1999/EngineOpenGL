@@ -24,7 +24,7 @@ namespace DEngine{
     void TestScene::input(Event &e) {
         //std::cout<<e.getName()<<'\n';
     }
-    void TestScene::update() {
+    void TestScene::update(float dt) {
         ImGUITest();
         float vertices[] = {
                 -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
