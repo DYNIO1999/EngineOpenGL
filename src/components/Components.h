@@ -4,7 +4,6 @@
 #include <vector>
 #include <memory>
 
-#include "particles/Particle.h"
 #include "renderer/VertexBuffer.h"
 #include "renderer/VertexBufferLayout.h"
 #include "renderer/VertexArray.h"
@@ -38,37 +37,15 @@ namespace  DEngine {
     };
 
     struct ParticleCPUEmitterComponent {
-        ParticleCPUEmitterComponent():numberOfParticles(0){
-        };
-        explicit ParticleCPUEmitterComponent(unsigned int _numberOfParticles)
-        :numberOfParticles(_numberOfParticles)
-        {
-            particles.resize(_numberOfParticles);
+        ParticleCPUEmitterComponent()=default;
+        ParticleCPUEmitterComponent(const ParticleCPUEmitterComponent&) =default;
 
-            std::vector< float > vertices;
-            vertices.push_back( 0.0f );
-            vertices.push_back( 0.0f );
-            vertices.push_back( 0.0f );
+        glm::vec3 velocity;
+        glm::vec4 colorBegin;
+        glm::vec4 colorEnd;
 
-            vertices.push_back( 1.0f );
-            vertices.push_back( 0.0f );
-            vertices.push_back( 0.0f );
-
-            vertices.push_back( 0.0f );
-            vertices.push_back( 1.0f );
-            vertices.push_back( 0.0f );
-
-            vertices.push_back( 1.0f );
-            vertices.push_back( 1.0f );
-            vertices.push_back( 0.0f );
-            vbObj = std::make_unique<VertexBuffer>(vertices.data(),  (vertices.size()-1)*sizeof(float));
-        }
-        unsigned int numberOfParticles;
-        std::vector<Particle> particles;
-
-        std::unique_ptr<VertexBuffer> vbObj;
-        std::unique_ptr<VertexBufferLayout> vlayObj;
-        std::unique_ptr<VertexArray> vaObj;
+        float size;
+        float lifeTime;
     };
     struct ParticleGPUEmitterComponent{
 

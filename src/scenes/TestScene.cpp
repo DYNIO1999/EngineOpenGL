@@ -7,9 +7,7 @@
 #include "glm/ext.hpp"
 #include "glm/gtx/string_cast.hpp"
 
-
 namespace DEngine{
-
 
     static void transformEditorDraw(){
         float col[3]{0,0,0};
@@ -29,15 +27,18 @@ namespace DEngine{
         ImGui::End();
     }
     TestScene::~TestScene(){
-        if(!closed){
+    }
+    void TestScene::detach() {
             for(auto it = entities.begin();it<entities.end();it++){
+
                 std::cout<<*it<<' ';
+
                 Engine::entitySystemManager.destroyEntity(*it);
+
             }
             std::cout<<'\n';
-        }
-
     }
+
     void TestScene::initData() {
         projection  = glm::perspective(glm::radians(45.0f), (float)1600/900, 0.1f, 100.0f);
 
@@ -48,6 +49,7 @@ namespace DEngine{
                            glm::vec3(0.0f, 1.0f, 0.0f));
         model = glm::mat4(1.0f);
 
+        entities.emplace_back(Engine::entitySystemManager.createEntity());
         entities.emplace_back(Engine::entitySystemManager.createEntity());
         entities.emplace_back(Engine::entitySystemManager.createEntity());
         entities.emplace_back(Engine::entitySystemManager.createEntity());
@@ -66,7 +68,11 @@ namespace DEngine{
         testComp.transform = glm::mat4(1.0f);
         testComp.transform = glm::translate(testComp.transform, glm::vec3(0,0,-2));
         Engine::entitySystemManager.addComponent(entities[3],testComp);
-
+        ParticleCPUEmitterComponent testEmitter;
+        testComp.transform = glm::mat4(1.0f);
+        testComp.transform = glm::translate(testComp.transform, glm::vec3(0,0,-2));
+        Engine::entitySystemManager.addComponent(entities[4],testComp);
+        Engine::entitySystemManager.addComponent(entities[4],testEmitter);
     }
     void TestScene::input(Event &e) {
         EventDispatcher dispatcher(e);
@@ -101,6 +107,9 @@ namespace DEngine{
         DrawCallSettings  testSettings;
         Renderer::getInstance()->clear(glm::vec4(0.5, 0.5, 0.5 , 1.0));
         Renderer::getInstance()->beginDraw(glm::mat4(1), testSettings);
+        auto particleSystem = Engine::entitySystemManager.getSystem<ParticleSystem>();
+        //std::cout<< typeid(particleSystem).name()<<'\n';
+        particleSystem->init(3);
         textureTest.bind();
         testShader.bind();
         testShader.setUniform1i("u_Texture",0);
@@ -117,13 +126,14 @@ namespace DEngine{
 
         if(timeCounter>5){
             Renderer::getInstance()->clear();
+
             Engine::sceneManager.popScene();
             return;
         }
     }
     bool TestScene::windowClose(WindowCloseEvent& e){
         DENGINE_ERROR("IAM HEREEEE");
-        closed = true;
+        Engine::isRunning = false;
         return true;
     }
 

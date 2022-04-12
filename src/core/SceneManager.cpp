@@ -9,7 +9,6 @@ namespace DEngine{
     }
     SceneManager::~SceneManager() {
         for (auto it = scenesStack.begin(); it <scenesStack.end() ; it++) {
-            (*it)->detach();
             delete(*it);
         }
     }

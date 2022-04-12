@@ -36,22 +36,30 @@ namespace DEngine {
         void initScene() override{
 
         }
-        void initData();
         void input(Event& e) override;
+
         void update(float dt) override;
-        void ImGUITest();
+        void detach() override;
+
         int counter = 0;
+
+
+
         int item_current_idx = 0;
         bool is_selected = false;
-
         float timeCounter;
         Shader testShader;
+
         Texture textureTest;
         bool windowClose(WindowCloseEvent& e);
-        bool closed = false;
+
     private:
-        glm::mat4 model, view, projection;
+        void ImGUITest();
+        void initData();
+
+
         std::vector<Entity> entities;
+        glm::mat4 model, view, projection;
         //std::shared_ptr<PhysicsSystem> physicsSystem
         std::shared_ptr<Window> windowPtr;
 

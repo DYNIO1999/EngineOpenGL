@@ -9,7 +9,7 @@
 
 #include "ecs/EntitySystemManager.h"
 #include "systems/PhysicsSystem.h"
-
+#include "systems/ParticleSystem.h"
 
 namespace  DEngine {
 #define BIND_EVENT_FUNCTION(x) std::bind(&x, this, std::placeholders::_1)

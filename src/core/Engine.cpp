@@ -21,14 +21,23 @@ namespace DEngine{
         entitySystemManager.registerComponent<TransformComponent>();
         entitySystemManager.registerComponent<GravityComponent>();
         entitySystemManager.registerComponent<RigidBodyComponent>();
+        entitySystemManager.registerComponent<ParticleCPUEmitterComponent>();
 
         auto physicsSystem= entitySystemManager.registerSystem<PhysicsSystem>();
-        ComponentsSignature signature;
-        signature.set(entitySystemManager.getComponentType<TransformComponent>());
-        signature.set(entitySystemManager.getComponentType<GravityComponent>());
-        signature.set(entitySystemManager.getComponentType<RigidBodyComponent>());
-        entitySystemManager.setSystemSignature<PhysicsSystem>(signature);
-
+        {
+            ComponentsSignature signature;
+            signature.set(entitySystemManager.getComponentType<TransformComponent>());
+            signature.set(entitySystemManager.getComponentType<GravityComponent>());
+            signature.set(entitySystemManager.getComponentType<RigidBodyComponent>());
+            entitySystemManager.setSystemSignature<PhysicsSystem>(signature);
+        }
+        auto particleSystem = entitySystemManager.registerSystem<ParticleSystem>();
+        {
+            ComponentsSignature signature;
+            signature.set(entitySystemManager.getComponentType<TransformComponent>());
+            signature.set(entitySystemManager.getComponentType<ParticleCPUEmitterComponent>());
+            entitySystemManager.setSystemSignature<ParticleSystem>(signature);
+        }
         //ECS
         //SCENE PUSHING
         //sceneManager.pushScene(new WaveSurfaceScene("Waves", window));
@@ -75,7 +84,7 @@ namespace DEngine{
     }
 
     bool Engine::windowClose(WindowCloseEvent &e) {
-        isRunning = false;
+        Engine::isRunning = false;
         return true;
     }
 }

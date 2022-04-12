@@ -10,7 +10,7 @@ namespace DEngine {
         std::unique_ptr<ComponentContainer> componentContainer;
         std::unique_ptr<EntityContainer> entityContainer;
         std::unique_ptr<SystemManager> systemManager;
-        
+
 
     public:
         EntitySystemManager() :
@@ -83,7 +83,7 @@ namespace DEngine {
 
         template<typename T>
         std::shared_ptr<T> getSystem(){
-            return systemManager->template getSystem<T>();
+            return systemManager->getSystem<T>();
         }
     };
 }

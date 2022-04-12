@@ -22,7 +22,7 @@ namespace DEngine{
         std::shared_ptr<T> getSystem(){
             const char* typeName = typeid(T).name();
             assert(systems.find(typeName) != systems.end() && "System not found!");
-            auto system = systems.find(typeName)->second;
+            std::shared_ptr<T> system = std::dynamic_pointer_cast<T> (systems.find(typeName)->second);
             return system;
         }
 

@@ -5,6 +5,9 @@
 namespace  DEngine {
     class System {
     public:
+        virtual ~System(){
+
+        }
         std::set<Entity> entities;
     };
 }
