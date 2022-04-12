@@ -5,14 +5,11 @@
 namespace DEngine {
     class PhysicsSystem : public System {
     public:
-        PhysicsSystem(EntitySystemManager& _entitySystemManager)
-        :entitySystemManager(_entitySystemManager){
-
-        }
+        PhysicsSystem() =default;
         void init();
         void update(float dt);
     private:
-        EntitySystemManager& entitySystemManager;
+
     };
 }
 #endif

@@ -6,6 +6,7 @@ namespace  DEngine {
 
     public:
         ParticleSystem(){
+
         }
         void init();
         void update(float dt);

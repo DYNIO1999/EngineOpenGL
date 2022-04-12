@@ -19,6 +19,14 @@ namespace DEngine{
             return system;
         }
         template<typename T>
+        std::shared_ptr<T> getSystem(){
+            const char* typeName = typeid(T).name();
+            assert(systems.find(typeName) != systems.end() && "System not found!");
+            auto system = systems.find(typeName)->second;
+            return system;
+        }
+
+        template<typename T>
         void setSignature(ComponentsSignature _signature){
             const char* typeName = typeid(T).name();
 

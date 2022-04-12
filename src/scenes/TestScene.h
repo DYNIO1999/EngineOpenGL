@@ -7,11 +7,8 @@
 #include <imgui_impl_glfw.h>
 #include "imgui_impl_opengl3.h"
 #include "renderer/Renderer.h"
-
-
 #include "ecs/EntitySystemManager.h"
-
-#include "systems/PhysicsSystem.h"
+#include "core/Window.h"
 
 namespace DEngine {
     struct Position {
@@ -28,12 +25,14 @@ namespace DEngine {
 
     class TestScene : public Scene {
     public:
-        TestScene(std::string name): Scene(name),
+        TestScene(std::string name, std::shared_ptr<Window> _windowPtr): Scene(name),
                                      testShader(PATH_SHADERS+ "TestVertexShader.glsl",PATH_SHADERS+ "TestFragmentShader.glsl" )
                                      ,textureTest(PATH_TEXTURES + "test.png")
+                                     ,windowPtr(_windowPtr)
         {
             initData();
         };
+        ~TestScene();
         void initScene() override{
 
         }
@@ -45,14 +44,16 @@ namespace DEngine {
         int item_current_idx = 0;
         bool is_selected = false;
 
+        float timeCounter;
         Shader testShader;
         Texture textureTest;
-
+        bool windowClose(WindowCloseEvent& e);
+        bool closed = false;
     private:
         glm::mat4 model, view, projection;
         std::vector<Entity> entities;
-        EntitySystemManager entitySystemManager;
-        std::shared_ptr<PhysicsSystem> physicsSystem
+        //std::shared_ptr<PhysicsSystem> physicsSystem
+        std::shared_ptr<Window> windowPtr;
 
     };
 }

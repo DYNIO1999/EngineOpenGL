@@ -10,6 +10,7 @@
 
 namespace DEngine{
 
+
     static void transformEditorDraw(){
         float col[3]{0,0,0};
         ImGui::Begin("Editor");
@@ -27,7 +28,16 @@ namespace DEngine{
         }
         ImGui::End();
     }
+    TestScene::~TestScene(){
+        if(!closed){
+            for(auto it = entities.begin();it<entities.end();it++){
+                std::cout<<*it<<' ';
+                Engine::entitySystemManager.destroyEntity(*it);
+            }
+            std::cout<<'\n';
+        }
 
+    }
     void TestScene::initData() {
         projection  = glm::perspective(glm::radians(45.0f), (float)1600/900, 0.1f, 100.0f);
 
@@ -38,49 +48,35 @@ namespace DEngine{
                            glm::vec3(0.0f, 1.0f, 0.0f));
         model = glm::mat4(1.0f);
 
-
-
-        entitySystemManager.registerComponent<TransformComponent>();
-        entitySystemManager.registerComponent<GravityComponent>();
-
-        physicsSystem= entitySystemManager.registerSystem<PhysicsSystem>();
-        ComponentsSignature signature;
-        signature.set(entitySystemManager.getComponentType<TransformComponent>());
-        signature.set(entitySystemManager.getComponentType<GravityComponent>());
-        signature.set()
-
-
-
-
-        entities.emplace_back(entitySystemManager.createEntity());
-        entities.emplace_back(entitySystemManager.createEntity());
-        entities.emplace_back(entitySystemManager.createEntity());
-        entities.emplace_back(entitySystemManager.createEntity());
+        entities.emplace_back(Engine::entitySystemManager.createEntity());
+        entities.emplace_back(Engine::entitySystemManager.createEntity());
+        entities.emplace_back(Engine::entitySystemManager.createEntity());
+        entities.emplace_back(Engine::entitySystemManager.createEntity());
 
         TransformComponent testComp;
         testComp.transform = glm::mat4(1.0f);
         testComp.transform = glm::translate(testComp.transform, glm::vec3(1,2,0));
-        entitySystemManager.addComponent(entities[0],testComp);
+        Engine::entitySystemManager.addComponent(entities[0],testComp);
         testComp.transform = glm::mat4(1.0f);
         testComp.transform = glm::translate(testComp.transform, glm::vec3(-1,-2,0));
-        entitySystemManager.addComponent(entities[1],testComp);
+        Engine::entitySystemManager.addComponent(entities[1],testComp);
         testComp.transform = glm::mat4(1.0f);
         testComp.transform = glm::translate(testComp.transform, glm::vec3(0,-2,0));
-        entitySystemManager.addComponent(entities[2],testComp);
+        Engine::entitySystemManager.addComponent(entities[2],testComp);
         testComp.transform = glm::mat4(1.0f);
         testComp.transform = glm::translate(testComp.transform, glm::vec3(0,0,-2));
-        entitySystemManager.addComponent(entities[3],testComp);
-
+        Engine::entitySystemManager.addComponent(entities[3],testComp);
 
     }
     void TestScene::input(Event &e) {
-
+        EventDispatcher dispatcher(e);
+        dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(TestScene::windowClose));
     }
     void TestScene::update(float dt) {
         ImGUITest();
+        timeCounter = glfwGetTime();
+        DENGINE_TRACE("TIME:{}",timeCounter);
 
-
-        std::cout<<glm::to_string(entitySystemManager.getComponent<TransformComponent>(entities.back()).transform)<<'\n';
 
         //MESH
         float vertices[] = {
@@ -111,13 +107,27 @@ namespace DEngine{
         testShader.setUniformMat4f("projection",projection);
         testShader.setUniformMat4f("view",view);
         for (const auto& ent: entities) {
-            testShader.setUniformMat4f("model",entitySystemManager.getComponent<TransformComponent>(ent).transform);
+            testShader.setUniformMat4f("model",Engine::entitySystemManager.getComponent<TransformComponent>(ent).transform);
             Renderer::getInstance()->draw(testVertexArray, testShader);
         }
         Renderer::getInstance()->endDraw();
+
         textureTest.unbind();
         testShader.unbind();
+
+        if(timeCounter>5){
+            Renderer::getInstance()->clear();
+            Engine::sceneManager.popScene();
+            return;
+        }
     }
+    bool TestScene::windowClose(WindowCloseEvent& e){
+        DENGINE_ERROR("IAM HEREEEE");
+        closed = true;
+        return true;
+    }
+
+
 
     void TestScene::ImGUITest() {
         static bool testBool = true;

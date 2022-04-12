@@ -10,12 +10,11 @@ namespace DEngine{
     }
     void PhysicsSystem::update(float dt) {
         for (auto const& entity: entities) {
-            auto& rigidBodyComp = entitySystemManager.getComponent<RigidBodyComponent>(entity);
-            auto& transformComp =entitySystemManager.getComponent<TransformComponent>(entity);
-            auto& gravityComp = entitySystemManager.getComponent<GravityComponent>(entity);
-
-            transformComp.transform =glm::translate(transformComp.transform, rigidBodyComp.velocity * dt);
-            rigidBodyComp.velocity += gravityComp.gravityForce*dt;
+            //auto& rigidBodyComp = entitySystemManager.getComponent<RigidBodyComponent>(entity);
+            //auto& transformComp =entitySystemManager.getComponent<TransformComponent>(entity);
+            //auto& gravityComp = entitySystemManager.getComponent<GravityComponent>(entity);
+            //transformComp.transform =glm::translate(transformComp.transform, rigidBodyComp.velocity * dt);
+            //rigidBodyComp.velocity += gravityComp.gravityForce*dt;
         }
     }
 }

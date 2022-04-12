@@ -1,4 +1,5 @@
 #include "SceneManager.h"
+#include "LogManager.h"
 
 
 namespace DEngine{
@@ -32,6 +33,12 @@ namespace DEngine{
         delete (*toDeleteLast);
         scenesStack.erase(toDeleteLast);
         sceneIndex--;
+    }
+    void SceneManager::popOverlay() {
+        auto toDeleteOverlay = scenesStack.begin() +sceneIndex;
+        (*toDeleteOverlay)->detach();
+        delete (*toDeleteOverlay);
+        scenesStack.erase(toDeleteOverlay);
     }
 
     void SceneManager::pushScene(Scene *_scene) {
