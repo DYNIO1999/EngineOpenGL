@@ -88,7 +88,7 @@ namespace DEngine{
         float timeValueY = glfwGetTime();
 
         for(size_t i = 0; i<patch.size();i++){
-            float yValue = sin(timeValueX)   + cos(timeValueY) ;
+            float yValue = sin(timeValueX)/2.0f   + cos(timeValueY)/4.0f;
             testShader.setUniform1i("TessLevel", 16);
             testShader.setUniform1f("sin", yValue);
             testShader.setUniformMat4f("model", patch[i]);
@@ -96,9 +96,6 @@ namespace DEngine{
             testShader.setUniformMat4f("projection",projection);
             glDrawArrays(GL_PATCHES, 0, 16);
         }
-
-
-
         waterTexture.unbind();
         testShader.unbind();
     }
