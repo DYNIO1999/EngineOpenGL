@@ -34,7 +34,7 @@ namespace  DEngine {
         bool onMouseReleased(MouseButtonReleased& e);
         bool onMouseMovedEvent(MouseMovedEvent& e);
         Shader testShader;
-        Camera camera{glm::vec3(0.0f, 0.0f, 0.3f)};
+        Camera camera{glm::vec3(0.0f, 2.0f, 0.3f)};
         std::vector<glm::mat4> patch;
         glm::mat4 model, view, projection;
         std::shared_ptr<Window> windowPtr;
