@@ -67,8 +67,8 @@ namespace DEngine {
         bool onMouseReleased(MouseButtonReleased& e);
         bool onMouseMovedEvent(MouseMovedEvent& e);
 
+        Model testModel{PATH_MODELS+"hey/hey.gltf"};
         float currentDeltaTime;
-        Model testModel{PATH_MODELS+"sword/scene.gltf"};
         Camera camera{glm::vec3(0.0f, 0.0f, 0.3f)};
 
         std::shared_ptr<Mesh> testMesh;

@@ -43,12 +43,13 @@ namespace DEngine{
         projection  = glm::perspective(glm::radians(camera.zoom), (float)1600/900, 0.1f, 100.0f);
 
 
-        glm::vec3 cameraPos(0.0f,20.0f,10.0f);
+        glm::vec3 cameraPos(0.0f,0.0f,1.0f);
         view = glm::lookAt(cameraPos,
                            cameraPos+glm::vec3(0.0f, 0.0f, -1.0f),
                            glm::vec3(0.0f, 1.0f, 0.0f));
 
         model = glm::mat4(1.0f);
+
 
 
         //0.0f, 0.0f,
@@ -88,7 +89,8 @@ namespace DEngine{
         TransformComponent testComp;
         MeshComponent testMeshComp{std::make_shared<std::vector<Mesh>>(testModel.meshes)};
         testComp.transform = glm::mat4(1.0f);
-        testComp.transform = glm::translate(testComp.transform, glm::vec3(1,2,0));
+        testComp.transform = glm::translate(testComp.transform, glm::vec3(0,1,-10));
+        testComp.transform  = glm::rotate(testComp.transform, glm::radians(-10.0f), glm::vec3(1.0f, 0.0f,0.0f));
         Engine::entitySystemManager.addComponent(entities[0],testComp);
         Engine::entitySystemManager.addComponent(entities[0],testMeshComp);
 
@@ -168,7 +170,7 @@ namespace DEngine{
 
             for(size_t it =0 ; it<Engine::entitySystemManager.getComponent<MeshComponent>(ent).meshes->size();it++){
                 DENGINE_ERROR("------->");
-                testShader.setUniformMat4f("model",testModel.matricesMeshes[it]);
+                testShader.setUniformMat4f("model",Engine::entitySystemManager.getComponent<TransformComponent>(ent).transform * testModel.matricesMeshes[it]);
                 Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(ent).meshes->at(it), testShader);
             }
         }

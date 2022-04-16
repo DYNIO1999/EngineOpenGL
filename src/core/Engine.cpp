@@ -58,6 +58,9 @@ namespace DEngine{
             auto currentFrameTime = static_cast<float>(glfwGetTime());
             deltaTime = currentFrameTime - lastFrameTime;
             lastFrameTime = currentFrameTime;
+
+
+
             editorScenePtr->beginGUI();
             DENGINE_ERROR("_______________________");
             for (Scene* it: sceneManager) {
