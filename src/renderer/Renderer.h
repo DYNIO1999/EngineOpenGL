@@ -18,26 +18,13 @@
 #include "IndexBuffer.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Mesh.h"
+
 namespace  DEngine {
 
     static const std::string PATH_TEXTURES = "../../resources/textures/";
     static const std::string PATH_SHADERS = "../../resources/shaders/";
-
-
-
-
-    typedef enum {
-        CHAR,
-        INT,
-        FLOAT,
-        DOUBLE
-    } TYPES;
-
-
-    struct VertexData{
-        glm::vec3 position;
-        glm::vec2 texturePosition;
-    };
+    static const std::string PATH_MODELS = "../../resources/models/";
 
     struct DrawCallSettings{
         DrawCallSettings():
@@ -66,6 +53,8 @@ namespace  DEngine {
         void beginDraw(glm::mat4 _projection, const DrawCallSettings& settings);
         void draw(VertexArray &va, IndexBuffer &ib, Shader &shader, unsigned int type = GL_TRIANGLES);
         void draw(VertexArray &va, Shader &shader, unsigned int type=  GL_TRIANGLES);
+
+        void draw(Mesh &mesh, Shader &shader);
         void endDraw();
         void shutdown();
         void clear() const;

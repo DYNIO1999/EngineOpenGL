@@ -30,6 +30,7 @@ namespace  DEngine {
 
         static SceneManager sceneManager;
         static EntitySystemManager entitySystemManager;
+
     private:
         float deltaTime;
         float lastFrameTime;

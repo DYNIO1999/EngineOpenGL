@@ -76,6 +76,16 @@ namespace DEngine{
         }
     }
 
+    void Renderer::draw(Mesh &mesh, Shader &shader){
+        shader.bind();
+        mesh.getVertexArrayObj()->bind();
+        if(mesh.getIndexBufferObj()!= nullptr) {
+            mesh.getIndexBufferObj()->bind();
+            glDrawElements(GL_TRIANGLES,  mesh.getIndexBufferObj()->getCount(), GL_UNSIGNED_INT, nullptr);
+        }else{
+            glDrawArrays(GL_TRIANGLES,0,mesh.getVertexArrayObj()->getVertexCount());
+        }
+    }
 
     void Renderer::clear() const {
         glClear

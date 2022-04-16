@@ -22,6 +22,7 @@ namespace DEngine{
         entitySystemManager.registerComponent<GravityComponent>();
         entitySystemManager.registerComponent<RigidBodyComponent>();
         entitySystemManager.registerComponent<ParticleCPUEmitterComponent>();
+        entitySystemManager.registerComponent<MeshComponent>();
 
         auto physicsSystem= entitySystemManager.registerSystem<PhysicsSystem>();
         {

@@ -8,6 +8,9 @@
 #include "renderer/VertexBufferLayout.h"
 #include "renderer/VertexArray.h"
 
+#include "renderer/Mesh.h"
+#include "renderer/Texture.h"
+
 namespace  DEngine {
     struct TransformComponent {
         glm::mat4 transform;
@@ -33,7 +36,8 @@ namespace  DEngine {
     };
 
     struct MeshComponent {
-        float x, y;
+        std::shared_ptr<std::vector<Mesh>> meshes;
+        std::vector<std::shared_ptr<Texture>> textures;
     };
 
     struct ParticleCPUEmitterComponent {

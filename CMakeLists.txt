@@ -8,6 +8,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set (CMAKE_VERBOSE_MAKEFILE 0) # 1 should be used for debugging
 set (CMAKE_SUPPRESS_REGENERATION TRUE) # Suppresses ZERO_CHECK
 
+add_compile_options(-fdiagnostics-color=always)
 
 option (GLFW_INSTALL OFF)
 option (GLFW_BUILD_DOCS OFF)
@@ -23,6 +24,7 @@ include_directories (src/
                      vendor/imgui/
                      vendor/imgui/backends
                      vendor/spdlog/include
+                     vendor/nlohmann/single_include
                      )
 set(IMGUI_DIR ${PROJECT_SOURCE_DIR}/vendor/imgui)
 

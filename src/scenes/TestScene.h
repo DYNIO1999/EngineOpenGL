@@ -1,14 +1,19 @@
 #ifndef DENGINE_TESTSCENE_H
 #define DENGINE_TESTSCENE_H
 
-#include "core/Scene.h"
-
+#include <unordered_set>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include "imgui_impl_opengl3.h"
+
+
+#include "core/Scene.h"
 #include "renderer/Renderer.h"
 #include "ecs/EntitySystemManager.h"
+
 #include "core/Window.h"
+#include "renderer/Model.h"
+#include "core/Camera.h"
 
 namespace DEngine {
     struct Position {
@@ -51,13 +56,22 @@ namespace DEngine {
         Shader testShader;
 
         Texture textureTest;
-        bool windowClose(WindowCloseEvent& e);
-
     private:
         void ImGUITest();
         void initData();
 
+        bool onKeyPressedInput(KeyPressedEvent& e);
+        bool windowClose(WindowCloseEvent& e);
+        bool isButtonPressed;
+        bool onMousePressed(MouseButtonPressed& e);
+        bool onMouseReleased(MouseButtonReleased& e);
+        bool onMouseMovedEvent(MouseMovedEvent& e);
 
+        float currentDeltaTime;
+        Model testModel{PATH_MODELS+"sword/scene.gltf"};
+        Camera camera{glm::vec3(0.0f, 0.0f, 0.3f)};
+
+        std::shared_ptr<Mesh> testMesh;
         std::vector<Entity> entities;
         glm::mat4 model, view, projection;
         //std::shared_ptr<PhysicsSystem> physicsSystem
