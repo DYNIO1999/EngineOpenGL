@@ -19,7 +19,6 @@ namespace  DEngine {
         auto check  = glfwInit();
         assert(check==GLFW_TRUE && "Couldn't initialize GLFW!\n");
         glfwSetErrorCallback(glfwErrorCallback);
-
         window = glfwCreateWindow(windowData.width, windowData.height, windowData.windowTitle.c_str(), nullptr, nullptr);
         assert(window!= nullptr && "Couldn't createWindow GLFW!\n");
         glfwMakeContextCurrent(window);

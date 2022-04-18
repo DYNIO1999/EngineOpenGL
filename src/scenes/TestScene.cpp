@@ -113,6 +113,84 @@ namespace DEngine{
         //testComp.transform = glm::translate(testComp.transform, glm::vec3(0,0,-2));
         //Engine::entitySystemManager.addComponent(entities[4],testComp);
         //Engine::entitySystemManager.addComponent(entities[4],testEmitter);
+
+        nParticles  = glm::ivec3(100,100,100);
+        time = 0.0f;
+        deltaT=0.0f;
+        speed = 35.0f;
+        angle =0.0f;
+        bh1 =glm::vec4(5,0,0,1);
+        bh2 =glm::vec4(-5,0,0,1);
+        totalParticles = nParticles.x * nParticles.y * nParticles.z;
+
+        // Initial positions of the particles
+        std::vector<GLfloat> initPos;
+
+        std::vector<GLfloat> initVel(totalParticles * 4, 0.0f);
+        glm::vec4 p(0.0f, 0.0f, 0.0f, 1.0f);
+        GLfloat dx = 2.0f / (nParticles.x - 1),
+                dy = 2.0f / (nParticles.y - 1),
+                dz = 2.0f / (nParticles.z - 1);
+        // We want to center the particles at (0,0,0)
+        glm::mat4 transf = glm::translate(glm::mat4(1.0f), glm::vec3(-1,-1,-1));
+        for( int i = 0; i < nParticles.x; i++ ) {
+            for( int j = 0; j < nParticles.y; j++ ) {
+                for( int k = 0; k < nParticles.z; k++ ) {
+                    p.x = dx * i;
+                    p.y = dy * j;
+                    p.z = dz * k;
+                    p.w = 1.0f;
+                    p = transf * p;
+                    initPos.push_back(p.x);
+                    initPos.push_back(p.y);
+                    initPos.push_back(p.z);
+                    initPos.push_back(p.w);
+                }
+            }
+        }
+
+        // We need buffers for position , and velocity.
+        GLuint bufs[2];
+        glGenBuffers(2, bufs);
+        GLuint posBuf = bufs[0];
+        GLuint velBuf = bufs[1];
+
+        GLuint bufSize = totalParticles * 4 * sizeof(GLfloat);
+
+        // The buffers for positions
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, posBuf);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initPos[0], GL_DYNAMIC_DRAW);
+
+        // Velocities
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, velBuf);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initVel[0], GL_DYNAMIC_COPY);
+
+        // Set up the VAO
+        glGenVertexArrays(1, &particlesVao);
+        glBindVertexArray(particlesVao);
+
+        glBindBuffer(GL_ARRAY_BUFFER, posBuf);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(0);
+
+        glBindVertexArray(0);
+
+        // Set up a buffer and a VAO for drawing the attractors (the "black holes")
+        glGenBuffers(1, &bhBuf);
+        glBindBuffer(GL_ARRAY_BUFFER, bhBuf);
+        GLfloat data[] = { bh1.x, bh1.y, bh1.z, bh1.w, bh2.x, bh2.y, bh2.z, bh2.w };
+        glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(GLfloat), data, GL_DYNAMIC_DRAW);
+
+        glGenVertexArrays(1, &bhVao);
+        glBindVertexArray(bhVao);
+
+        glBindBuffer(GL_ARRAY_BUFFER, bhBuf);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(0);
+
+        glBindVertexArray(0);
+
+
     }
     void TestScene::input(Event &e) {
         EventDispatcher dispatcher(e);
@@ -127,7 +205,16 @@ namespace DEngine{
         ImGUITest();
         timeCounter = glfwGetTime();
         DENGINE_TRACE("TIME:{}",timeCounter);
-
+        if( time == 0.0f ) {
+            deltaT = 0.0f;
+        } else {
+            deltaT = dt - time;
+        }
+        time = dt;
+        if( true ) {
+            angle += speed * deltaT;
+            if( angle > 360.0f ) angle -= 360.0f;
+        }
 
         ////MESH
         //float vertices[] = {
@@ -149,6 +236,7 @@ namespace DEngine{
         //testVertexArray.addBuffer(testVertexData, testLayout);
 
         DrawCallSettings  testSettings;
+        testSettings.enableBlendingFlag=true;
         Renderer::getInstance()->clear(glm::vec4(0.5, 0.5, 0.5 , 1.0));
         Renderer::getInstance()->beginDraw(glm::mat4(1), testSettings);
         view = camera.GetViewMatrix();
@@ -162,9 +250,48 @@ namespace DEngine{
             testShader.setUniformMat4f("model", model);
             Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(ent), testShader);
         }
-        Renderer::getInstance()->endDraw();
         textureTest.unbind();
         testShader.unbind();
+
+
+
+        //Particles Compute Shader...
+        glm::mat4 rot = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0,0,1));
+        glm::vec3 att1 = glm::vec3(rot*bh1);
+        glm::vec3 att2 = glm::vec3(rot*bh2);
+
+        // Execute the compute shader
+        particleComputeShader.bind();
+        particleComputeShader.setUniformVec3f("BlackHolePos1", att1);
+        particleComputeShader.setUniformVec3f("BlackHolePos2", att2);
+        glDispatchCompute(totalParticles / 1000, 1, 1);
+        glMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT );
+
+
+        particleShader.bind();
+        particleShader.setUniformMat4f("model",model);
+        particleShader.setUniformMat4f("view", view);
+        particleShader.setUniformMat4f("projection", projection);
+
+
+        glPointSize(1.0f);
+        particleShader.setUniformVec4f("u_Color", glm::vec4(1,0.5,0,0.2f));
+        glBindVertexArray(particlesVao);
+        glDrawArrays(GL_POINTS,0, totalParticles);
+        glBindVertexArray(0);
+
+        // Draw the attractors
+        glPointSize(5.0f);
+        GLfloat data[] = { att1.x, att1.y, att1.z, 1.0f, att2.x, att2.y, att2.z, 1.0f };
+        glBindBuffer(GL_ARRAY_BUFFER, bhBuf);
+        glBufferSubData( GL_ARRAY_BUFFER, 0, 8 * sizeof(GLfloat), data );
+        particleShader.setUniformVec4f("u_Color", glm::vec4(1,1,0,1.0f));
+        glBindVertexArray(bhVao);
+        glDrawArrays(GL_POINTS, 0, 2);
+        glBindVertexArray(0);
+
+        Renderer::getInstance()->endDraw();
+
 
         //POP SCENE IN PROPER WAY DONT REMOVE!
         //if(timeCounter>5){

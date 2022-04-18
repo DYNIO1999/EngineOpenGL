@@ -19,7 +19,9 @@ namespace DEngine {
     class TestScene : public Scene {
     public:
         TestScene(std::string name, std::shared_ptr<Window> _windowPtr): Scene(name),
-                                     testShader(PATH_SHADERS+ "TestVertexShader.glsl",PATH_SHADERS+ "TestFragmentShader.glsl" )
+                                     testShader(PATH_SHADERS+ "TestVertexShader.glsl",PATH_SHADERS+ "TestFragmentShader.glsl")
+                                     ,particleShader(PATH_SHADERS+ "particles/ParticleVertexShader.glsl",PATH_SHADERS+ "particles/ParticleFragmentShader.glsl")
+                                     ,particleComputeShader(PATH_SHADERS +"particles/ParticleComputeShader.glsl")
                                      ,textureTest(PATH_TEXTURES + "test.png")
                                      ,windowPtr(_windowPtr)
         {
@@ -42,7 +44,8 @@ namespace DEngine {
         bool is_selected = false;
         float timeCounter;
         Shader testShader;
-
+        Shader particleComputeShader;
+        Shader particleShader;
         Texture textureTest;
     private:
         void ImGUITest();
@@ -62,6 +65,14 @@ namespace DEngine {
         std::vector<Entity> entities;
         glm::mat4 model, view, projection;
         std::shared_ptr<Window> windowPtr;
+
+
+        glm::ivec3 nParticles;
+        uint totalParticles;
+        float time, deltaT, speed, angle;
+        uint particlesVao;
+        uint bhVao, bhBuf;  // black hole VAO and buffer
+        glm::vec4 bh1, bh2;
     };
 }
 #endif
