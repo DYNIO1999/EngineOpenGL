@@ -6,22 +6,21 @@ namespace DEngine{
     class Random{
     public:
         static void init(){
-            random.seed(std::random_device()());
+            generator.seed(std::random_device()());
         }
         template<typename T>
         static T generateRandom();
         template <>
         static float generateRandom<float>(){
-            return  ((float)distribution(random))/ ((float)std::numeric_limits<int>::max());
+            return  distribution(generator);
         }
         template <>
         static int generateRandom<int>(){
-            return  ((int)distribution(random));
+            return  static_cast<int>(distribution(generator));
         }
-
     private:
-        static std::mt19937 random;
-        static std::uniform_int_distribution<std::mt19937::result_type> distribution;
+        static std::mt19937 generator;
+        static std::uniform_real_distribution<float> distribution;
     };
 }
 #endif

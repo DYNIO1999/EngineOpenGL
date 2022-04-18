@@ -45,8 +45,13 @@ namespace DEngine{
         currentProjection = _projection;
         currentDrawCallSettings = settings;
         currentDrawCallSettings.enableBlendingFlag ? glEnable(GL_BLEND) : (void)0;
-        currentDrawCallSettings.enableDepthFlag ?  glEnable(GL_DEPTH): (void)0;
-        currentDrawCallSettings.enableStencilFlag ? glEnable(GL_STENCIL) : (void)0;
+        currentDrawCallSettings.enableDepthTestFlag ?  glEnable(GL_DEPTH_TEST): (void)0;
+        currentDrawCallSettings.enableStencilBufferFlag ? glEnable(GL_STENCIL) : (void)0;
+
+        if(currentDrawCallSettings.enableBlendingFlag){
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        }
+
     }
     void Renderer::draw(VertexArray &va, Shader &shader, unsigned int type) {
         shader.bind();
@@ -102,8 +107,8 @@ namespace DEngine{
         glClear
                 (
                         (currentDrawCallSettings.clearColorBufferFlag ? GL_COLOR_BUFFER_BIT : 0) |
-                        (currentDrawCallSettings.enableDepthFlag ? GL_DEPTH_BUFFER_BIT : 0) |
-                        (currentDrawCallSettings.enableStencilFlag ? GL_STENCIL_BUFFER_BIT : 0)
+                        (currentDrawCallSettings.enableDepthTestFlag ? GL_DEPTH_BUFFER_BIT : 0) |
+                        (currentDrawCallSettings.enableStencilBufferFlag ? GL_STENCIL_BUFFER_BIT : 0)
                 );
     }
 
@@ -115,16 +120,16 @@ namespace DEngine{
 
                         (currentDrawCallSettings.clearColorBufferFlag ? GL_COLOR_BUFFER_BIT : 0) |
 
-                        (currentDrawCallSettings.enableDepthFlag ? GL_DEPTH_BUFFER_BIT : 0) |
+                        (currentDrawCallSettings.enableDepthTestFlag ? GL_DEPTH_BUFFER_BIT : 0) |
 
-                        (currentDrawCallSettings.enableStencilFlag ? GL_STENCIL_BUFFER_BIT : 0)
+                        (currentDrawCallSettings.enableStencilBufferFlag ? GL_STENCIL_BUFFER_BIT : 0)
 
                 );
     }
     void Renderer::endDraw(){
         currentDrawCallSettings.enableBlendingFlag ? glDisable(GL_BLEND) : (void)0;
-        currentDrawCallSettings.enableDepthFlag ? glDisable(GL_DEPTH) : (void)0;
-        currentDrawCallSettings.enableStencilFlag ? glDisable(GL_STENCIL) : (void)0;
+        currentDrawCallSettings.enableDepthTestFlag ? glDisable(GL_DEPTH_TEST) : (void)0;
+        currentDrawCallSettings.enableStencilBufferFlag ? glDisable(GL_STENCIL) : (void)0;
     }
     void Renderer::shutdown() {
 

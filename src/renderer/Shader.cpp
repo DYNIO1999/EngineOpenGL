@@ -17,8 +17,10 @@ namespace DEngine{
             isTransformFeedbackOn(true),
             shaderID(0)
     {
-
-
+        ShaderProgramSource source{};
+        source.VertexSource= parseShader(vertexShaderFilePath);
+        source.FragmentSource= parseShader(fragmentShaderFilePath);
+        shaderID = createShader(source.VertexSource, source.FragmentSource);
     }
     Shader::Shader(const std::string &vertexFilePath, const std::string &fragmentFilePath):
             vertexShaderFilePath(vertexFilePath),
@@ -107,14 +109,14 @@ namespace DEngine{
         unsigned int vs = compileShader(GL_VERTEX_SHADER, vertexShader);
         unsigned int fs = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
-        if(isTransformFeedbackOn) {
-            DENGINE_INFO("TRANSFORM FEEDBACK IS ON!");
-            uint progHandle = program;
-            glTransformFeedbackVaryings(progHandle, static_cast<int>(outputNames.size()), outputNames.data(),
-                                        GL_SEPARATE_ATTRIBS);
-        }
         glAttachShader(program, vs);
         glAttachShader(program, fs);
+        if(isTransformFeedbackOn) {
+            DENGINE_ERROR("TRANSFORM FEEDBACK IS ON!");
+
+            glTransformFeedbackVaryings(program, static_cast<int>(outputNames.size()), outputNames.data(),
+                                        GL_SEPARATE_ATTRIBS);
+        }
         glLinkProgram(program);
         glValidateProgram(program);
         glDeleteShader(vs);
@@ -178,6 +180,12 @@ namespace DEngine{
         glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix));
     }
 
+    void Shader::setUniformMat3f(const std::string &name, glm::mat3 matrix){
+        glUniformMatrix3fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix));
+    }
+    void Shader::setUniformVec3f(const std::string &_name, glm::vec3 _vector) {
+        glUniform3f(getUniformLocation(_name), _vector.x, _vector.y, _vector.z);
+    }
     int Shader::getUniformLocation(const std::string &name)
     {
         if (UniformLocationCache.find(name) != UniformLocationCache.end())

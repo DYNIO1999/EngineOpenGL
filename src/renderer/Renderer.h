@@ -32,14 +32,14 @@ namespace  DEngine {
     struct DrawCallSettings{
         DrawCallSettings():
         enableBlendingFlag(false),
-        enableDepthFlag(false),
-        enableStencilFlag(false),
+        enableDepthTestFlag(false),
+        enableStencilBufferFlag(false),
         clearColorBufferFlag(true){
         }
         
         bool enableBlendingFlag;
-        bool enableDepthFlag;
-        bool enableStencilFlag;
+        bool enableDepthTestFlag;
+        bool enableStencilBufferFlag;
         bool clearColorBufferFlag;
     };
 
