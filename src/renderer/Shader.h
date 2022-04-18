@@ -3,6 +3,10 @@
 #include <string>
 #include <glm/glm.hpp>
 #include <unordered_map>
+#include <vector>
+#include <string>
+
+
 namespace  DEngine {
     struct ShaderProgramSource {
         std::string VertexSource;
@@ -14,7 +18,7 @@ namespace  DEngine {
     class Shader {
     public:
         Shader(const std::string &vertexFilePath, const std::string &fragmentFilePath);
-
+        Shader(const std::string &vertexFilePath, const std::string &fragmentFilePath, const std::vector<const char*>& _outputNames);
         Shader(const std::string &vertexFilePath,
                const std::string &fragmentFilePath,
                const std::string &tessellationControlFilePath,
@@ -37,6 +41,8 @@ namespace  DEngine {
         void setUniformMat4f(const std::string &name, glm::mat4 matrix);
 
     private:
+        std::vector<const char*> outputNames;
+        bool isTransformFeedbackOn;
         std::string vertexShaderFilePath;
         std::string fragmentShaderFilePath;
         std::string tessellationControlShaderFilePath;

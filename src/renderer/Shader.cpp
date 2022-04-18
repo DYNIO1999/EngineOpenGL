@@ -7,9 +7,23 @@
 #include "Renderer.h"
 
 namespace DEngine{
+
+    Shader::Shader(const std::string &vertexFilePath,
+                   const std::string &fragmentFilePath,
+                   const std::vector<const char*>& _outputNames):
+            vertexShaderFilePath(vertexFilePath),
+            fragmentShaderFilePath(fragmentFilePath),
+            outputNames(_outputNames),
+            isTransformFeedbackOn(true),
+            shaderID(0)
+    {
+
+
+    }
     Shader::Shader(const std::string &vertexFilePath, const std::string &fragmentFilePath):
             vertexShaderFilePath(vertexFilePath),
-            fragmentShaderFilePath(fragmentFilePath)
+            fragmentShaderFilePath(fragmentFilePath),
+            isTransformFeedbackOn(false)
             ,shaderID(0)
     {
         ShaderProgramSource source{};
@@ -26,6 +40,7 @@ namespace DEngine{
             fragmentShaderFilePath(fragmentFilePath),
             tessellationControlShaderFilePath(tessellationControlFilePath),
             tessellationEvaluationShaderFilePath(tessellationEvaluationFilePath),
+            isTransformFeedbackOn(false),
             shaderID(0)
     {
         ShaderProgramSource source{};
@@ -92,6 +107,12 @@ namespace DEngine{
         unsigned int vs = compileShader(GL_VERTEX_SHADER, vertexShader);
         unsigned int fs = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
+        if(isTransformFeedbackOn) {
+            DENGINE_INFO("TRANSFORM FEEDBACK IS ON!");
+            uint progHandle = program;
+            glTransformFeedbackVaryings(progHandle, static_cast<int>(outputNames.size()), outputNames.data(),
+                                        GL_SEPARATE_ATTRIBS);
+        }
         glAttachShader(program, vs);
         glAttachShader(program, fs);
         glLinkProgram(program);

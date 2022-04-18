@@ -15,6 +15,7 @@ namespace DEngine {
         VertexBuffer(const void *data, unsigned int size, VertexUsageTypes type);
         VertexBuffer(const void* data, unsigned int size);
         ~VertexBuffer();
+
         unsigned int getVertexCount()const {return vertexCount;}
         void bind();
         void unbind();
