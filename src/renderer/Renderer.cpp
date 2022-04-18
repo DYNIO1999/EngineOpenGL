@@ -86,7 +86,7 @@ namespace DEngine{
             glDrawArrays(GL_TRIANGLES,0,mesh.getVertexArrayObj()->getVertexCount());
         }
     }
-    void draw(MeshComponent& _meshComponent, Shader& _shader){
+    void Renderer::draw(MeshComponent& _meshComponent, Shader& _shader){
         _shader.bind();
         for(auto it = _meshComponent.meshes.begin(); it<_meshComponent.meshes.end();it++){
             (*it)->getVertexArrayObj()->bind();

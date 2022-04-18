@@ -159,7 +159,8 @@ namespace DEngine{
         testShader.setUniformMat4f("projection",projection);
         testShader.setUniformMat4f("view",view);
         for (const auto& ent: entities) {
-            Renderer::getInstance()->draw();
+            testShader.setUniformMat4f("model", model);
+            Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(ent), testShader);
         }
         Renderer::getInstance()->endDraw();
         textureTest.unbind();
