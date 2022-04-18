@@ -77,8 +77,8 @@ namespace DEngine{
         std::vector<Index> myIndexData{0, 1, 2,
                                        1, 2, 0};
 
-        //testMesh = std::make_shared<Mesh>(myData, myIndexData);
-        //testMesh = std::make_shared<Mesh>(myData);
+        testMesh = std::make_shared<Mesh>(myData, myIndexData);
+        testMesh = std::make_shared<Mesh>(myData);
 
         entities.emplace_back(Engine::entitySystemManager.createEntity());
         //entities.emplace_back(Engine::entitySystemManager.createEntity());
@@ -87,7 +87,10 @@ namespace DEngine{
         //entities.emplace_back(Engine::entitySystemManager.createEntity());
 
         TransformComponent testComp;
-        MeshComponent testMeshComp{std::make_shared<std::vector<Mesh>>(testModel.meshes)};
+        MeshComponent testMeshComp{};
+
+        testMeshComp.meshes.emplace_back(testMesh);
+
         testComp.transform = glm::mat4(1.0f);
         testComp.transform = glm::translate(testComp.transform, glm::vec3(0,1,-10));
         testComp.transform  = glm::rotate(testComp.transform, glm::radians(-10.0f), glm::vec3(1.0f, 0.0f,0.0f));
@@ -148,37 +151,19 @@ namespace DEngine{
         DrawCallSettings  testSettings;
         Renderer::getInstance()->clear(glm::vec4(0.5, 0.5, 0.5 , 1.0));
         Renderer::getInstance()->beginDraw(glm::mat4(1), testSettings);
-
-
-        //auto particleSystem = Engine::entitySystemManager.getSystem<ParticleSystem>();
-        //std::cout<< typeid(particleSystem).name()<<'\n';
-        //particleSystem->init(3);
-        //struct VertexData{
-        //    glm::vec3 position;
-        //    glm::vec3 normals;
-        //    glm::vec3 color;
-        //    glm::vec2 textureCords;
-        //};
-
         view = camera.GetViewMatrix();
-        //textureTest.bind();
+
+        textureTest.bind();
         testShader.bind();
-        //testShader.setUniform1i("u_Texture",0);
+        testShader.setUniform1i("u_Texture",0);
         testShader.setUniformMat4f("projection",projection);
         testShader.setUniformMat4f("view",view);
         for (const auto& ent: entities) {
-
-            for(size_t it =0 ; it<Engine::entitySystemManager.getComponent<MeshComponent>(ent).meshes->size();it++){
-                DENGINE_ERROR("------->");
-                testShader.setUniformMat4f("model",Engine::entitySystemManager.getComponent<TransformComponent>(ent).transform * testModel.matricesMeshes[it]);
-                Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(ent).meshes->at(it), testShader);
-            }
+            Renderer::getInstance()->draw();
         }
         Renderer::getInstance()->endDraw();
-
         textureTest.unbind();
         testShader.unbind();
-
 
         //POP SCENE IN PROPER WAY DONT REMOVE!
         //if(timeCounter>5){

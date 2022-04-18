@@ -21,7 +21,7 @@ namespace DEngine{
         entitySystemManager.registerComponent<TransformComponent>();
         entitySystemManager.registerComponent<GravityComponent>();
         entitySystemManager.registerComponent<RigidBodyComponent>();
-        entitySystemManager.registerComponent<ParticleCPUEmitterComponent>();
+        entitySystemManager.registerComponent<EmitterComponent>();
         entitySystemManager.registerComponent<MeshComponent>();
 
         auto physicsSystem= entitySystemManager.registerSystem<PhysicsSystem>();
@@ -36,7 +36,7 @@ namespace DEngine{
         {
             ComponentsSignature signature;
             signature.set(entitySystemManager.getComponentType<TransformComponent>());
-            signature.set(entitySystemManager.getComponentType<ParticleCPUEmitterComponent>());
+            signature.set(entitySystemManager.getComponentType<EmitterComponent>());
             entitySystemManager.setSystemSignature<ParticleSystem>(signature);
         }
         //ECS

@@ -16,18 +16,6 @@
 #include "core/Camera.h"
 
 namespace DEngine {
-    struct Position {
-        float x;
-        float y;
-        float w;
-        float h;
-    };
-    struct Color {
-        float r;
-        float g;
-        float b;
-    };
-
     class TestScene : public Scene {
     public:
         TestScene(std::string name, std::shared_ptr<Window> _windowPtr): Scene(name),
@@ -67,16 +55,13 @@ namespace DEngine {
         bool onMouseReleased(MouseButtonReleased& e);
         bool onMouseMovedEvent(MouseMovedEvent& e);
 
-        Model testModel{PATH_MODELS+"hey/hey.gltf"};
         float currentDeltaTime;
         Camera camera{glm::vec3(0.0f, 0.0f, 0.3f)};
 
         std::shared_ptr<Mesh> testMesh;
         std::vector<Entity> entities;
         glm::mat4 model, view, projection;
-        //std::shared_ptr<PhysicsSystem> physicsSystem
         std::shared_ptr<Window> windowPtr;
-
     };
 }
 #endif

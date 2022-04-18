@@ -36,7 +36,7 @@ namespace  DEngine {
     };
 
     struct MeshComponent {
-        std::shared_ptr<std::vector<Mesh>> meshes;
+        std::vector<std::shared_ptr<Mesh>> meshes;
         std::vector<std::shared_ptr<Texture>> textures;
     };
 

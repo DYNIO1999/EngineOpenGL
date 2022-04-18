@@ -20,6 +20,9 @@
 #include "Texture.h"
 #include "Mesh.h"
 
+#include "components/Components.h"
+
+
 namespace  DEngine {
 
     static const std::string PATH_TEXTURES = "../../resources/textures/";
@@ -55,6 +58,7 @@ namespace  DEngine {
         void draw(VertexArray &va, Shader &shader, unsigned int type=  GL_TRIANGLES);
 
         void draw(Mesh &mesh, Shader &shader);
+        void draw(MeshComponent& _meshComponent, Shader& _shader);
         void endDraw();
         void shutdown();
         void clear() const;
