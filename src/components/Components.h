@@ -40,19 +40,9 @@ namespace  DEngine {
         std::vector<std::shared_ptr<Texture>> textures;
     };
 
-    struct ParticleCPUEmitterComponent {
-        ParticleCPUEmitterComponent()=default;
-        ParticleCPUEmitterComponent(const ParticleCPUEmitterComponent&) =default;
-
-        glm::vec3 velocity;
-        glm::vec4 colorBegin;
-        glm::vec4 colorEnd;
-
-        float size;
-        float lifeTime;
-    };
-    struct ParticleGPUEmitterComponent{
-
+    struct EmitterComponent {
+        EmitterComponent()=default;
+        EmitterComponent(const EmitterComponent&) =default;
     };
 }
 #endif
