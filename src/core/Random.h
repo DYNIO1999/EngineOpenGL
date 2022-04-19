@@ -5,6 +5,10 @@
 namespace DEngine{
     class Random{
     public:
+        static float randomFloat(float a_fMin, float a_fMax) {
+            return a_fMin + static_cast<float>(std::rand()) / (static_cast<float>(RAND_MAX / (a_fMax - a_fMin)));
+        }
+
         static void init(){
             generator.seed(std::random_device()());
         }

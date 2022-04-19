@@ -22,7 +22,7 @@ namespace DEngine {
                                      testShader(PATH_SHADERS+ "TestVertexShader.glsl",PATH_SHADERS+ "TestFragmentShader.glsl")
                                      ,particleShader(PATH_SHADERS+ "particles/ParticleVertexShader.glsl",PATH_SHADERS+ "particles/ParticleFragmentShader.glsl")
                                      ,particleComputeShader(PATH_SHADERS +"particles/ParticleComputeShader.glsl")
-                                     ,textureTest(PATH_TEXTURES + "test.png")
+                                     ,textureTest(PATH_TEXTURES + "particles/water.png")
                                      ,windowPtr(_windowPtr)
         {
             initData();

@@ -122,23 +122,20 @@ namespace DEngine{
         bh1 =glm::vec4(5,0,0,1);
         bh2 =glm::vec4(-5,0,0,1);
         totalParticles = nParticles.x * nParticles.y * nParticles.z;
-
+        //1 000 000
         // Initial positions of the particles
         std::vector<GLfloat> initPos;
 
-        std::vector<GLfloat> initVel(totalParticles * 4, 0.0f);
+        std::vector<GLfloat> initVel;
         glm::vec4 p(0.0f, 0.0f, 0.0f, 1.0f);
-        GLfloat dx = 2.0f / (nParticles.x - 1),
-                dy = 2.0f / (nParticles.y - 1),
-                dz = 2.0f / (nParticles.z - 1);
         // We want to center the particles at (0,0,0)
         glm::mat4 transf = glm::translate(glm::mat4(1.0f), glm::vec3(-1,-1,-1));
         for( int i = 0; i < nParticles.x; i++ ) {
             for( int j = 0; j < nParticles.y; j++ ) {
                 for( int k = 0; k < nParticles.z; k++ ) {
-                    p.x = dx * i;
-                    p.y = dy * j;
-                    p.z = dz * k;
+                    p.x = Random::randomFloat(-1000,1000);
+                    p.y = Random::randomFloat(-100,100);
+                    p.z = Random::randomFloat(-1000,1000);
                     p.w = 1.0f;
                     p = transf * p;
                     initPos.push_back(p.x);
@@ -149,11 +146,27 @@ namespace DEngine{
             }
         }
 
+        for( int i = 0; i < nParticles.x; i++ ) {
+            for( int j = 0; j < nParticles.y; j++ ) {
+                for( int k = 0; k < nParticles.z; k++ ) {
+                    p.x = 0;
+                    p.y = -1;
+                    p.z = 0;
+                    p.w = 0;
+                    initVel.push_back(p.x);
+                    initVel.push_back(p.y);
+                    initVel.push_back(p.z);
+                    initVel.push_back(p.w);
+                }
+            }
+        }
+
         // We need buffers for position , and velocity.
-        GLuint bufs[2];
-        glGenBuffers(2, bufs);
+        GLuint bufs[3];
+        glGenBuffers(3, bufs);
         GLuint posBuf = bufs[0];
         GLuint velBuf = bufs[1];
+        GLuint startPosBuf = bufs[2];
 
         GLuint bufSize = totalParticles * 4 * sizeof(GLfloat);
 
@@ -165,14 +178,18 @@ namespace DEngine{
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, velBuf);
         glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initVel[0], GL_DYNAMIC_COPY);
 
+
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, startPosBuf);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initPos[0], GL_DYNAMIC_DRAW);
+
+
         // Set up the VAO
         glGenVertexArrays(1, &particlesVao);
         glBindVertexArray(particlesVao);
 
         glBindBuffer(GL_ARRAY_BUFFER, posBuf);
-        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
         glEnableVertexAttribArray(0);
-
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
         glBindVertexArray(0);
 
         // Set up a buffer and a VAO for drawing the attractors (the "black holes")
@@ -189,6 +206,7 @@ namespace DEngine{
         glEnableVertexAttribArray(0);
 
         glBindVertexArray(0);
+
 
 
     }
@@ -250,7 +268,7 @@ namespace DEngine{
             testShader.setUniformMat4f("model", model);
             Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(ent), testShader);
         }
-        textureTest.unbind();
+        //textureTest.unbind();
         testShader.unbind();
 
 
@@ -262,32 +280,21 @@ namespace DEngine{
 
         // Execute the compute shader
         particleComputeShader.bind();
-        particleComputeShader.setUniformVec3f("BlackHolePos1", att1);
-        particleComputeShader.setUniformVec3f("BlackHolePos2", att2);
         glDispatchCompute(totalParticles / 1000, 1, 1);
         glMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT );
 
-
+        //textureTest.bind();
         particleShader.bind();
         particleShader.setUniformMat4f("model",model);
         particleShader.setUniformMat4f("view", view);
         particleShader.setUniformMat4f("projection", projection);
-
-
-        glPointSize(1.0f);
-        particleShader.setUniformVec4f("u_Color", glm::vec4(1,0.5,0,0.2f));
         glBindVertexArray(particlesVao);
-        glDrawArrays(GL_POINTS,0, totalParticles);
-        glBindVertexArray(0);
+        particleShader.setUniform1i("u_Texture",0);
 
-        // Draw the attractors
         glPointSize(5.0f);
-        GLfloat data[] = { att1.x, att1.y, att1.z, 1.0f, att2.x, att2.y, att2.z, 1.0f };
-        glBindBuffer(GL_ARRAY_BUFFER, bhBuf);
-        glBufferSubData( GL_ARRAY_BUFFER, 0, 8 * sizeof(GLfloat), data );
-        particleShader.setUniformVec4f("u_Color", glm::vec4(1,1,0,1.0f));
-        glBindVertexArray(bhVao);
-        glDrawArrays(GL_POINTS, 0, 2);
+
+        //particleShader.setUniformVec4f("u_Color", glm::vec4(0.011, 0.349, 0.709,1.0f));
+        glDrawArrays(GL_POINTS,0, totalParticles);
         glBindVertexArray(0);
 
         Renderer::getInstance()->endDraw();

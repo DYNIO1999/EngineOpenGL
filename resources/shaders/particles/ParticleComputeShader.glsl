@@ -2,47 +2,40 @@
 
 layout( local_size_x = 1000 ) in;
 
-uniform float Gravity1 = 1000.0;
-uniform vec3 BlackHolePos1 = vec3(5,0,0);
+uniform vec3 u_Gravity = vec3(0.0,-1, 0.0);
+uniform float deltaTime = 1;
+uniform float MaxDist = 20;
+//uniform vec3 startingPosition = Position[gl_GlobalInvocationID.x].xyz;
 
-uniform float Gravity2 = 1000.0;
-uniform vec3 BlackHolePos2 = vec3(-5,0,0);
-
-uniform float ParticleMass = 0.1;
-uniform float ParticleInvMass = 1.0 / 0.1;
-uniform float DeltaT = 0.0005;
-uniform float MaxDist = 45.0;
 
 layout(std430, binding=0) buffer Pos {
-    vec4 Position[];
+vec4 Position[];
 };
 layout(std430, binding=1) buffer Vel {
-    vec4 Velocity[];
+vec4 Velocity[];
 };
+layout(std430, binding=2) buffer StartPos {
+    vec4 StartingPos[];
+};
+
 
 void main() {
     uint idx = gl_GlobalInvocationID.x;
 
-    vec3 p = Position[idx].xyz;
+    vec3 pos = Position[idx].xyz;
+    pos.y=pos.y +u_Gravity.y *deltaTime;
 
-    // Force from black hole #1
-    vec3 d = BlackHolePos1 - p;
-    float dist = length(d);
-    vec3 force = (Gravity1 / dist) * normalize(d);
+    pos.y = mod(pos.y, 100.0f)-50;
+    Position[idx].xyz = pos;
 
-    // Force from black hole #2
-    d = BlackHolePos2 - p;
-    dist = length(d);
-    force += (Gravity2 / dist) * normalize(d);
-
-    // Reset particles that get too far from the attractors
-    if( dist > MaxDist ) {
-        Position[idx] = vec4(0,0,0,1);
-    } else {
-        // Apply simple Euler integrator
-        vec3 a = force * ParticleInvMass;
-        Position[idx] = vec4(
-        p + Velocity[idx].xyz * DeltaT + 0.5 * a * DeltaT * DeltaT, 1.0);
-        Velocity[idx] = vec4( Velocity[idx].xyz + a * DeltaT, 0.0);
-    }
+    //vec3 d = p-vec3(StartingPos[idx].xyz);
+    //float dist = length(d);
+    //if( dist > MaxDist ) {
+    //    Position[idx] = vec4(StartingPos[idx]);
+    //    Velocity[idx] = vec4( 0.0,0.0,0.0, 0.0);
+    //} else {
+    //    Position[idx] = vec4(
+    //    p + Velocity[idx].xyz,0.0);
+    //    Velocity[idx] = vec4( Velocity[idx].xyz + u_Gravity * deltaTime, 0.0);
+    //}
 }
