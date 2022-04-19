@@ -10,6 +10,7 @@
 
 #include "renderer/Mesh.h"
 #include "renderer/Texture.h"
+#include "particles/Emitter.h"
 
 namespace  DEngine {
     struct TransformComponent {
@@ -40,9 +41,12 @@ namespace  DEngine {
         std::vector<std::shared_ptr<Texture>> textures;
     };
 
-    struct EmitterComponent {
-        EmitterComponent()=default;
-        EmitterComponent(const EmitterComponent&) =default;
+    struct ParticleComponent {
+        ParticleComponent()=default;
+        ParticleComponent(const ParticleComponent&) =default;
+        ParticleProps particleProps;
+        std::shared_ptr<Texture> texture;
+        std::shared_ptr<Emitter> emitter;
     };
 }
 #endif
