@@ -7,6 +7,8 @@
 #include "glm/ext.hpp"
 #include "glm/gtx/string_cast.hpp"
 
+#include "particles/PointEmitter.h"
+
 namespace DEngine{
 
     static void transformEditorDraw(){
@@ -78,11 +80,11 @@ namespace DEngine{
                                        1, 2, 0};
 
         testMesh = std::make_shared<Mesh>(myData, myIndexData);
-        testMesh = std::make_shared<Mesh>(myData);
+        //testMesh = std::make_shared<Mesh>(myData);
 
         entities.emplace_back(Engine::entitySystemManager.createEntity());
-        //entities.emplace_back(Engine::entitySystemManager.createEntity());
-        //entities.emplace_back(Engine::entitySystemManager.createEntity());
+        entities.emplace_back(Engine::entitySystemManager.createEntity());
+        entities.emplace_back(Engine::entitySystemManager.createEntity());
         //entities.emplace_back(Engine::entitySystemManager.createEntity());
         //entities.emplace_back(Engine::entitySystemManager.createEntity());
 
@@ -99,9 +101,39 @@ namespace DEngine{
 
 
 
-        //testComp.transform = glm::mat4(1.0f);
-        //testComp.transform = glm::translate(testComp.transform, glm::vec3(-1,-2,0));
-        //Engine::entitySystemManager.addComponent(entities[1],testComp);
+        testComp.transform = glm::mat4(1.0f);
+
+        ParticleProps testProps;
+        testProps.color = glm::vec4(1,1,0.5,1);
+        testProps.size = 5.0f;
+
+        ParticleComponent particleComponent;
+        particleComponent.particleProps = testProps;
+        particleComponent.texture = nullptr;
+        particleComponent.emitter = std::make_shared<PointEmitter>(glm::ivec3(100,100,100));
+        particleComponent.particleShader = std::make_shared<Shader>(PATH_SHADERS+ "particles/ParticleVertexShader.glsl",PATH_SHADERS+ "particles/ParticleFragmentShader.glsl");
+        particleComponent.computeShader = std::make_shared<Shader>(PATH_SHADERS +"particles/ParticleComputeShader.glsl");
+
+
+        Engine::entitySystemManager.addComponent(entities[1],testComp);
+        Engine::entitySystemManager.addComponent(entities[1], particleComponent);
+
+
+
+        testComp.transform = glm::mat4(1.0f);
+        ParticleProps testProps2;
+        testProps2.color = glm::vec4(1,0.3,0.7,1);
+        testProps2.size = 5.0f;
+        testProps2.workGroups =2;
+
+        ParticleComponent particleComponent2;
+        particleComponent2.particleProps = testProps2;
+        particleComponent2.texture = nullptr;
+        particleComponent2.emitter = std::make_shared<PointEmitter>(glm::ivec3(100,100,100));
+        particleComponent2.particleShader = particleComponent.particleShader;
+        particleComponent2.computeShader =  std::make_shared<Shader>(PATH_SHADERS +"particles/ParticleComputeShader2.glsl");
+        Engine::entitySystemManager.addComponent(entities[2],testComp);
+        Engine::entitySystemManager.addComponent(entities[2], particleComponent2);
         //testComp.transform = glm::mat4(1.0f);
         //testComp.transform = glm::translate(testComp.transform, glm::vec3(0,-2,0));
         //Engine::entitySystemManager.addComponent(entities[2],testComp);
@@ -114,100 +146,8 @@ namespace DEngine{
         //Engine::entitySystemManager.addComponent(entities[4],testComp);
         //Engine::entitySystemManager.addComponent(entities[4],testEmitter);
 
-        nParticles  = glm::ivec3(100,100,100);
-        time = 0.0f;
-        deltaT=0.0f;
-        speed = 35.0f;
-        angle =0.0f;
-        bh1 =glm::vec4(5,0,0,1);
-        bh2 =glm::vec4(-5,0,0,1);
-        totalParticles = nParticles.x * nParticles.y * nParticles.z;
-        //1 000 000
-        // Initial positions of the particles
-        std::vector<GLfloat> initPos;
-
-        std::vector<GLfloat> initVel;
-        glm::vec4 p(0.0f, 0.0f, 0.0f, 1.0f);
-        // We want to center the particles at (0,0,0)
-        glm::mat4 transf = glm::translate(glm::mat4(1.0f), glm::vec3(-1,-1,-1));
-        for( int i = 0; i < nParticles.x; i++ ) {
-            for( int j = 0; j < nParticles.y; j++ ) {
-                for( int k = 0; k < nParticles.z; k++ ) {
-                    p.x = Random::randomFloat(-1000,1000);
-                    p.y = Random::randomFloat(-100,100);
-                    p.z = Random::randomFloat(-1000,1000);
-                    p.w = 1.0f;
-                    p = transf * p;
-                    initPos.push_back(p.x);
-                    initPos.push_back(p.y);
-                    initPos.push_back(p.z);
-                    initPos.push_back(p.w);
-                }
-            }
-        }
-
-        for( int i = 0; i < nParticles.x; i++ ) {
-            for( int j = 0; j < nParticles.y; j++ ) {
-                for( int k = 0; k < nParticles.z; k++ ) {
-                    p.x = 0;
-                    p.y = -1;
-                    p.z = 0;
-                    p.w = 0;
-                    initVel.push_back(p.x);
-                    initVel.push_back(p.y);
-                    initVel.push_back(p.z);
-                    initVel.push_back(p.w);
-                }
-            }
-        }
-
-        // We need buffers for position , and velocity.
-        GLuint bufs[3];
-        glGenBuffers(3, bufs);
-        GLuint posBuf = bufs[0];
-        GLuint velBuf = bufs[1];
-        GLuint startPosBuf = bufs[2];
-
-        GLuint bufSize = totalParticles * 4 * sizeof(GLfloat);
-
-        // The buffers for positions
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, posBuf);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initPos[0], GL_DYNAMIC_DRAW);
-
-        // Velocities
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, velBuf);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initVel[0], GL_DYNAMIC_COPY);
-
-
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, startPosBuf);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initPos[0], GL_DYNAMIC_DRAW);
-
-
-        // Set up the VAO
-        glGenVertexArrays(1, &particlesVao);
-        glBindVertexArray(particlesVao);
-
-        glBindBuffer(GL_ARRAY_BUFFER, posBuf);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-        glBindVertexArray(0);
-
-        // Set up a buffer and a VAO for drawing the attractors (the "black holes")
-        glGenBuffers(1, &bhBuf);
-        glBindBuffer(GL_ARRAY_BUFFER, bhBuf);
-        GLfloat data[] = { bh1.x, bh1.y, bh1.z, bh1.w, bh2.x, bh2.y, bh2.z, bh2.w };
-        glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(GLfloat), data, GL_DYNAMIC_DRAW);
-
-        glGenVertexArrays(1, &bhVao);
-        glBindVertexArray(bhVao);
-
-        glBindBuffer(GL_ARRAY_BUFFER, bhBuf);
-        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(0);
-
-        glBindVertexArray(0);
-
-
+        auto particleSystem =Engine::entitySystemManager.getSystem<ParticleSystem>();
+        particleSystem->init();
 
     }
     void TestScene::input(Event &e) {
@@ -223,82 +163,28 @@ namespace DEngine{
         ImGUITest();
         timeCounter = glfwGetTime();
         DENGINE_TRACE("TIME:{}",timeCounter);
-        if( time == 0.0f ) {
-            deltaT = 0.0f;
-        } else {
-            deltaT = dt - time;
-        }
-        time = dt;
-        if( true ) {
-            angle += speed * deltaT;
-            if( angle > 360.0f ) angle -= 360.0f;
-        }
-
-        ////MESH
-        //float vertices[] = {
-        //        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-        //        0.5f, -0.5f, 0.0f,  1.0f, 0.0f,
-        //        0.0f,  0.5f, 0.0f,  0.5f, 1.0f
-        //};
-        //unsigned int indices[] ={
-        //        0, 1, 2,   // first triangle
-        //        1, 2, 0
-        //};
-        ////MESH
-        //VertexBuffer testVertexData(vertices, sizeof(vertices), sizeof(vertices)/sizeof(float));
-        ////IndexBuffer testIndexBuffer(indices, sizeof(indices));
-        //VertexBufferLayout testLayout;
-        //testLayout.push<float>(3);
-        //testLayout.push<float>(2);
-        //VertexArray testVertexArray;
-        //testVertexArray.addBuffer(testVertexData, testLayout);
 
         DrawCallSettings  testSettings;
-        testSettings.enableBlendingFlag=true;
+        testSettings.enableBlendingFlag=false;
         Renderer::getInstance()->clear(glm::vec4(0.5, 0.5, 0.5 , 1.0));
         Renderer::getInstance()->beginDraw(glm::mat4(1), testSettings);
         view = camera.GetViewMatrix();
-
         textureTest.bind();
         testShader.bind();
         testShader.setUniform1i("u_Texture",0);
         testShader.setUniformMat4f("projection",projection);
         testShader.setUniformMat4f("view",view);
         for (const auto& ent: entities) {
-            testShader.setUniformMat4f("model", model);
-            Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(ent), testShader);
+            if(Engine::entitySystemManager.hasComponent<MeshComponent>(ent)) {
+                testShader.setUniformMat4f("model", model);
+                Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(ent), testShader);
+            }
         }
-        //textureTest.unbind();
+        textureTest.unbind();
         testShader.unbind();
-
-
-
-        //Particles Compute Shader...
-        glm::mat4 rot = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0,0,1));
-        glm::vec3 att1 = glm::vec3(rot*bh1);
-        glm::vec3 att2 = glm::vec3(rot*bh2);
-
-        // Execute the compute shader
-        particleComputeShader.bind();
-        glDispatchCompute(totalParticles / 1000, 1, 1);
-        glMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT );
-
-        //textureTest.bind();
-        particleShader.bind();
-        particleShader.setUniformMat4f("model",model);
-        particleShader.setUniformMat4f("view", view);
-        particleShader.setUniformMat4f("projection", projection);
-        glBindVertexArray(particlesVao);
-        particleShader.setUniform1i("u_Texture",0);
-
-        glPointSize(5.0f);
-
-        //particleShader.setUniformVec4f("u_Color", glm::vec4(0.011, 0.349, 0.709,1.0f));
-        glDrawArrays(GL_POINTS,0, totalParticles);
-        glBindVertexArray(0);
-
         Renderer::getInstance()->endDraw();
-
+        auto particleSystem =Engine::entitySystemManager.getSystem<ParticleSystem>();
+        particleSystem->update(dt, projection*view*model);
 
         //POP SCENE IN PROPER WAY DONT REMOVE!
         //if(timeCounter>5){

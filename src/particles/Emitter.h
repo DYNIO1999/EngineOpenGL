@@ -16,6 +16,7 @@ namespace DEngine {
         float size;
         float lifeTime = 1.0f;
         glm::vec3 velocity;
+        uint workGroups;
     };
     enum class EmitterType: uint{
         PointEmitter,

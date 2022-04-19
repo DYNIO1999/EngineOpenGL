@@ -47,6 +47,8 @@ namespace  DEngine {
         ParticleProps particleProps;
         std::shared_ptr<Texture> texture;
         std::shared_ptr<Emitter> emitter;
+        std::shared_ptr<Shader> computeShader;
+        std::shared_ptr<Shader> particleShader;
     };
 }
 #endif

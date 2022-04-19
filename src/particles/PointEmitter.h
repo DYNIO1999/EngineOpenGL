@@ -19,6 +19,7 @@ namespace DEngine {
         void emit(Shader& _particleShader, const glm::mat4& _mvp) override;
     private:
         ParticleProps particleProps;
+
     };
 }
 #endif

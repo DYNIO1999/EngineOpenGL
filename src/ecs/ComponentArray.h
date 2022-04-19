@@ -66,7 +66,6 @@ namespace DEngine {
 
         bool hasData(Entity _entity) {
             if (EntityToIndexMap.find(_entity) == EntityToIndexMap.end()) {
-                std::cout << "ENDNDNDNNDND" << '\n';
                 return false;
             }
             return true;

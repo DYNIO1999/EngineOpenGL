@@ -15,8 +15,10 @@ namespace  DEngine {
             
         }
         void init();
-        void update(float dt);
+        void update(float dt, const glm::mat4 _mvp);
+        static uint ParticleEmittersCounter;
     private:
+        double time;
     };
 }
 #endif

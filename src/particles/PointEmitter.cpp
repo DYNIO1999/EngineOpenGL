@@ -1,5 +1,7 @@
 #include "PointEmitter.h"
 #include "core/Random.h"
+#include "core/LogManager.h"
+
 namespace DEngine{
     void PointEmitter::init(const ParticleProps &_particleProps) {
         particleProps = _particleProps;
@@ -42,43 +44,57 @@ namespace DEngine{
         uint bufs[3];
         glGenBuffers(3, bufs);
         uint posBuf = bufs[0];
+        DENGINE_ERROR("BUFFFFER ->{}",posBuf);
         uint velBuf = bufs[1];
         uint startPosBuf = bufs[2];
 
         uint bufSize = totalParticles * 4 * sizeof(float);
 
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, posBuf);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialPositions[0], GL_DYNAMIC_DRAW);
-
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, velBuf);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialVelocities[0], GL_DYNAMIC_COPY);
 
 
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, startPosBuf);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialPositions[0], GL_DYNAMIC_DRAW);
+
+        if(particleProps.workGroups==2){
+            DENGINE_ERROR("WORKING GROUP2");
+                glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, posBuf);
+                glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialPositions[0], GL_DYNAMIC_DRAW);
+
+                glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, velBuf);
+                glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialVelocities[0], GL_DYNAMIC_COPY);
+
+                glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, startPosBuf);
+                glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialPositions[0], GL_DYNAMIC_DRAW);
+        }else{
+            glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, posBuf);
+            glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialPositions[0], GL_DYNAMIC_DRAW);
+            glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, velBuf);
+            glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialVelocities[0], GL_DYNAMIC_COPY);
+            glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, startPosBuf);
+            glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialPositions[0], GL_DYNAMIC_DRAW);
+        }
+
 
         glGenVertexArrays(1, &particlesVao);
         glBindVertexArray(particlesVao);
-
         glBindBuffer(GL_ARRAY_BUFFER, posBuf);
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
         glBindVertexArray(0);
-
     }
 
     void PointEmitter::update(Shader& _computeShader) {
-        _computeShader.bind();
-        glDispatchCompute(totalParticles / 1000, 1, 1);
-        glMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT );
+            _computeShader.bind();
+            glDispatchCompute(totalParticles / 1000, 1, 1);
+            glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+            _computeShader.unbind();
     }
     void PointEmitter::emit(Shader& _particleShader, const glm::mat4& _mvp) {
         _particleShader.bind();
         _particleShader.setUniformMat4f("u_MVP", _mvp);
         _particleShader.setUniformVec4f("u_Color", particleProps.color);
         glBindVertexArray(particlesVao);
-        glPointSize(particleProps.size);
+        glPointSize(5);
         glDrawArrays(GL_POINTS,0, totalParticles);
+        _particleShader.unbind();
         glBindVertexArray(0);
     }
     void PointEmitter::emit(const ParticleProps &_particleProps) {
