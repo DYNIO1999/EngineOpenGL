@@ -13,6 +13,7 @@ namespace  DEngine {
         std::string FragmentSource;
         std::string TessellationControlShaderSource;
         std::string TessellationEvaluationShaderSource;
+        std::string GeometryShaderSource;
         std::string ComputeShaderSource;
     };
 
@@ -26,6 +27,11 @@ namespace  DEngine {
                const std::string &tessellationControlFilePath,
                const std::string &tessellationEvaluationFilePath
         );
+        Shader(const std::string &vertexFilePath,
+               const std::string &geometryFilePath,
+               const std::string &fragmentFilePath
+        );
+
 
         ~Shader();
 
@@ -49,6 +55,7 @@ namespace  DEngine {
         std::string computeShaderFilePath;
         std::string vertexShaderFilePath;
         std::string fragmentShaderFilePath;
+        std::string geometryShaderFilePath;
         std::string tessellationControlShaderFilePath;
         std::string tessellationEvaluationShaderFilePath;
         unsigned int shaderID;
@@ -68,6 +75,9 @@ namespace  DEngine {
                                   const std::string &fragmentShader,
                                   const std::string &tessellationControlShader,
                                   const std::string &tessellationEvaluationShader);
+
+
+        unsigned int createShader(const std::string &vertexShader,const std::string &geometryShader ,const std::string &fragmentShader);
     };
 }
 #endif

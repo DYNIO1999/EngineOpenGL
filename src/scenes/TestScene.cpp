@@ -53,10 +53,6 @@ namespace DEngine{
         model = glm::mat4(1.0f);
 
 
-
-        //0.0f, 0.0f,
-        //1.0f, 0.0f,
-        //0.5f, 1.0f
         std::vector<VertexData> myData{
                 {glm::vec3(-0.5f, -0.5f, 0.0f),
                  glm::vec3(0.0f, 0.0f, 0.0f),

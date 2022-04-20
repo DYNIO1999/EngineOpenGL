@@ -6,6 +6,3 @@ void main()
 {
     gl_Position =u_MVP* vec4(aPos,1);
 }
-
-
-

@@ -35,7 +35,7 @@ namespace DEngine {
         {
             initMesh();
         }
-        ~Mesh() =default;
+        virtual ~Mesh() =default;
 
         std::shared_ptr<VertexArray> getVertexArrayObj() const
         {
@@ -50,7 +50,7 @@ namespace DEngine {
 
 
         std::vector<Index> indices;
-        private:
+        protected:
 
         void initMesh();
 

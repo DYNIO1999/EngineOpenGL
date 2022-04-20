@@ -41,6 +41,23 @@ namespace DEngine{
         source.FragmentSource= parseShader(fragmentShaderFilePath, GL_FRAGMENT_SHADER);
         shaderID = createShader(source.VertexSource, source.FragmentSource);
     }
+
+    Shader::Shader(const std::string &vertexFilePath,
+           const std::string &geometryFilePath,
+           const std::string &fragmentFilePath
+    ):
+    vertexShaderFilePath(vertexFilePath),
+    geometryShaderFilePath(geometryFilePath),
+    fragmentShaderFilePath(fragmentFilePath),
+    isTransformFeedbackOn(false),
+    shaderID(0)
+    {
+        ShaderProgramSource source{};
+        source.VertexSource = parseShader(vertexShaderFilePath, GL_VERTEX_SHADER);
+        source.GeometryShaderSource = parseShader(geometryShaderFilePath, GL_GEOMETRY_SHADER);
+        source.FragmentSource = parseShader(fragmentShaderFilePath, GL_FRAGMENT_SHADER);
+        shaderID = createShader(source.VertexSource, source.GeometryShaderSource, source.FragmentSource);
+    }
     Shader::Shader(const std::string &vertexFilePath,
            const std::string &fragmentFilePath,
            const std::string &tessellationControlFilePath,
@@ -171,6 +188,27 @@ namespace DEngine{
         glLinkProgram(program);
         glValidateProgram(program);
         glDeleteShader(vs);
+        glDeleteShader(fs);
+
+        return program;
+    }
+
+
+    unsigned int Shader::createShader(const std::string &vertexShader,const std::string &geometryShader ,const std::string &fragmentShader){
+
+        unsigned int program = glCreateProgram();
+        unsigned int vs = compileShader(GL_VERTEX_SHADER, vertexShader);
+        unsigned int gs =  compileShader(GL_GEOMETRY_SHADER, geometryShader);
+        unsigned int fs = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
+
+
+        glAttachShader(program, vs);
+        glAttachShader(program, gs);
+        glAttachShader(program, fs);
+        glLinkProgram(program);
+        glValidateProgram(program);
+        glDeleteShader(vs);
+        glDeleteShader(gs);
         glDeleteShader(fs);
 
         return program;

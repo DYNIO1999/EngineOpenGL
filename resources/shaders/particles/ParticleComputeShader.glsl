@@ -3,7 +3,7 @@
 layout( local_size_x = 1000 ) in;
 
 uniform vec3 u_Gravity = vec3(0.0,-1, 0.0);
-uniform float deltaTime = 1;
+uniform float deltaTime = 0.1;
 uniform float MaxDist = 20;
 //uniform vec3 startingPosition = Position[gl_GlobalInvocationID.x].xyz;
 
@@ -25,7 +25,7 @@ void main() {
     vec3 pos = Position[idx].xyz;
     pos.y=pos.y +u_Gravity.y *deltaTime;
 
-    pos.y = mod(pos.y, 100.0f)-50;
+    pos.y = mod(pos.y, 100.0f);
     Position[idx].xyz = pos;
 
     //vec3 d = p-vec3(StartingPos[idx].xyz);
