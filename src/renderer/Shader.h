@@ -43,6 +43,7 @@ namespace  DEngine {
         void setUniform1i(const std::string &name, int value);
 
         void setUniform1f(const std::string &name, float value);
+        void setUniformVec2f(const std::string& _name, glm::vec2 _vector);
         void setUniformVec3f(const std::string& _name, glm::vec3 _vector);
         void setUniformVec4f(const std::string& _name, glm::vec4 _vector);
         void setUniform4f(const std::string &name, float v0, float v1, float v2, float v3);

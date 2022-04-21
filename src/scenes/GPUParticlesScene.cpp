@@ -6,37 +6,24 @@ namespace DEngine{
         view = glm::mat4(1.0f);
         model = glm::mat4(1.0f);
 
-
-        std::vector<VertexData> myData{
-                {glm::vec3(-0.5f, -0.5f, 0.0f),
-                        glm::vec3(0.0f, 0.0f, 0.0f),
-                        glm::vec3(0.0f, 0.0f, 0.0f),
-                        glm::vec2(0.0f, 0.0f)
-                },
-                {glm::vec3(0.5f, -0.5f, 0.0f),
-                        glm::vec3(0.0f, 0.0f, 0.0f),
-                        glm::vec3(0.0f, 0.0f, 0.0f),
-                        glm::vec2(1.0f, 0.0f)
-                },
-                {glm::vec3(0.0f,  0.5f, 0.0f),
-                        glm::vec3(0.0f, 0.0f, 0.0f),
-                        glm::vec3(0.0f, 0.0f, 0.0f),
-                        glm::vec2(0.5f, 1.0f)
-                }
-        };
-        std::vector<Index> myIndexData{0, 1, 2,
-                                       1, 2, 0};
-
-
-        std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(myData, myIndexData);
-        TransformComponent testTransform;
-        testTransform.transform = glm::mat4(1);
-
-        MeshComponent testMesh;
-        testMesh.meshes.push_back(mesh);
+        //std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(myData, myIndexData);
+        //MeshComponent testMesh;
+        //testMesh.meshes.push_back(mesh);
 
         entities.emplace_back(Engine::entitySystemManager.createEntity());
+        TransformComponent testTransformComponent;
+        testTransformComponent.transform = glm::mat4(1);
+        Engine::entitySystemManager.addComponent(entities[0], testTransformComponent);
 
+        ParticleProps testParticleProperties;
+        testParticleProperties.color= glm::vec4(0.5f,0.5f,0.5f,1.0f);
+        testParticleProperties.size=5.0f;
+        ParticleComponent testParticleComponent;
+
+        initSystems();
+    }
+    void GPUParticlesScene::initSystems() {
+        Engine::entitySystemManager.getSystem<ParticleSystem>()->init();
     }
 
     void GPUParticlesScene::input(Event &e) {
@@ -58,15 +45,21 @@ namespace DEngine{
         Renderer::getInstance()->clear(glm::vec4(250.0f/255.0f, 125.0f/255.0f, 76.0f/255.0f ,1.0));
         Renderer::getInstance()->beginDraw(projection,testSettings);
 
-
-        //for (const auto& ent: entities) {
-        //    if(Engine::entitySystemManager.hasComponent<MeshComponent>(ent)){
-        //        Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(ent), )
-        //    }
-        //}
-
+        for (const auto& ent: entities) {
+            if(Engine::entitySystemManager.hasComponent<MeshComponent>(ent)){
+                //Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(ent), )
+            }
+        }
         //DRAW HERE
         Renderer::getInstance()->endDraw();
+
+
+        testSettings.enableDepthTestFlag=true;
+        testSettings.enableBlendingFlag = true;
+        Renderer::getInstance()->beginDraw(projection,testSettings);
+        Engine::entitySystemManager.getSystem<ParticleSystem>()->update(dt, projection*view*model);
+        Renderer::getInstance()->endDraw();
+
     }
     bool GPUParticlesScene::onKeyPressedInput(KeyPressedEvent& e){
         switch (e.getKeyCode()) {

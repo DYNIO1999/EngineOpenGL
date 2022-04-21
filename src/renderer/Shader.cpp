@@ -283,6 +283,9 @@ namespace DEngine{
     void Shader::setUniformMat3f(const std::string &name, glm::mat3 matrix){
         glUniformMatrix3fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix));
     }
+    void Shader::setUniformVec2f(const std::string& _name, glm::vec2 _vector){
+        glUniform2f(getUniformLocation(_name), _vector.x, _vector.y);
+    }
     void Shader::setUniformVec3f(const std::string &_name, glm::vec3 _vector) {
         glUniform3f(getUniformLocation(_name), _vector.x, _vector.y, _vector.z);
     }

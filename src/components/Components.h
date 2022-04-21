@@ -13,6 +13,7 @@
 #include "particles/Emitter.h"
 
 namespace  DEngine {
+    struct
     struct TransformComponent {
         glm::mat4 transform;
         TransformComponent()=default;

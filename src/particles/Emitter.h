@@ -7,6 +7,8 @@
 
 #include "core/Types.h"
 #include "renderer/Shader.h"
+#include "core/Random.h"
+#include "core/LogManager.h"
 
 namespace DEngine {
 
@@ -41,6 +43,7 @@ namespace DEngine {
         std::vector<float> initialVelocities;
         virtual void init(const ParticleProps& _particleProps) =0;
         virtual void update(Shader& _computeShader) =0;
+        virtual void update(Shader& _computeShader, float dt)=0;
         virtual void emit(const ParticleProps& _particleProps)=0;
         virtual void emit(Shader& _particleShader,const glm::mat4& _mvp) =0;
     protected:

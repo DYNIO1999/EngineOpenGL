@@ -1,6 +1,4 @@
 #include "PointEmitter.h"
-#include "core/Random.h"
-#include "core/LogManager.h"
 
 namespace DEngine{
     void PointEmitter::init(const ParticleProps &_particleProps) {
@@ -86,6 +84,9 @@ namespace DEngine{
             glDispatchCompute(totalParticles / 1000, 1, 1);
             glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
             _computeShader.unbind();
+    }
+    void PointEmitter::update(Shader &_computeShader, float dt){
+
     }
     void PointEmitter::emit(Shader& _particleShader, const glm::mat4& _mvp) {
         _particleShader.bind();
