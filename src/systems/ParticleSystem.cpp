@@ -19,12 +19,11 @@ namespace  DEngine {
             particleComponent.emitter->init(particleComponent.particleProps);
         }
     }
-    void ParticleSystem::update(float dt, const glm::mat4 _mvp) {
-
+    void ParticleSystem::update(float dt, const glm::mat4 &_projection, const glm::mat4 &_view,const glm::mat4 &_model){
         for(auto const& entity:entities){
             auto& particleComponent = Engine::entitySystemManager.getComponent<ParticleComponent>(entity);
-            particleComponent.emitter->update(*particleComponent.computeShader);
-            particleComponent.emitter->emit(*particleComponent.particleShader,_mvp);
+            particleComponent.emitter->update(*particleComponent.computeShader,dt);
+            particleComponent.emitter->emit(*particleComponent.particleShader,_projection, _view, _model);
         }
     }
 }

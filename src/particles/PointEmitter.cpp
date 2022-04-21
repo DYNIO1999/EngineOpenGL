@@ -78,31 +78,21 @@ namespace DEngine{
         glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
         glBindVertexArray(0);
     }
-
-    void PointEmitter::update(Shader& _computeShader) {
-            _computeShader.bind();
-            glDispatchCompute(totalParticles / 1000, 1, 1);
-            glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-            _computeShader.unbind();
-    }
     void PointEmitter::update(Shader &_computeShader, float dt){
-
+        _computeShader.bind();
+        glDispatchCompute(totalParticles / 1000, 1, 1);
+        glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+        _computeShader.unbind();
     }
-    void PointEmitter::emit(Shader& _particleShader, const glm::mat4& _mvp) {
+
+    void PointEmitter::emit(Shader &_particleShader, const glm::mat4 &_projection, const glm::mat4 &_view,const glm::mat4 &_model) {
         _particleShader.bind();
-        _particleShader.setUniformMat4f("u_MVP", _mvp);
+        _particleShader.setUniformMat4f("u_MVP", _projection*_view*_model);
         _particleShader.setUniformVec4f("u_Color", particleProps.color);
         glBindVertexArray(particlesVao);
         glPointSize(5);
         glDrawArrays(GL_POINTS,0, totalParticles);
         _particleShader.unbind();
         glBindVertexArray(0);
-    }
-    void PointEmitter::emit(const ParticleProps &_particleProps) {
-        //particleProps =_particleProps;
-        //glDispatchCompute(totalParticles / 1000, 1, 1);
-        //glMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT );
-        //glBindVertexArray(particlesVao);
-        //NOT FINISHED HERERE DONT USE THAT METHOD
     }
 }

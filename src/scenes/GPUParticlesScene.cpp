@@ -1,4 +1,5 @@
 #include "GPUParticlesScene.h"
+#include "particles/RainEmitter.h"
 
 namespace DEngine{
     void GPUParticlesScene::initScene() {
@@ -6,19 +7,139 @@ namespace DEngine{
         view = glm::mat4(1.0f);
         model = glm::mat4(1.0f);
 
-        //std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(myData, myIndexData);
-        //MeshComponent testMesh;
-        //testMesh.meshes.push_back(mesh);
+
+
 
         entities.emplace_back(Engine::entitySystemManager.createEntity());
         TransformComponent testTransformComponent;
         testTransformComponent.transform = glm::mat4(1);
         Engine::entitySystemManager.addComponent(entities[0], testTransformComponent);
 
+        std::shared_ptr<Shader> computeShader = std::make_shared<Shader>(PATH_SHADERS + "particles/rain/RainComputeShader.glsl");
+        std::shared_ptr<Shader> rainParticleShader = std::make_shared<Shader>(PATH_SHADERS + "particles/rain/RainVertexShader.glsl",
+                                                                              PATH_SHADERS + "particles/rain/RainGeometryShader.glsl",
+                                                                              PATH_SHADERS + "particles/rain/RainFragmentShader.glsl");
+
         ParticleProps testParticleProperties;
-        testParticleProperties.color= glm::vec4(0.5f,0.5f,0.5f,1.0f);
-        testParticleProperties.size=5.0f;
+        testParticleProperties.color= glm::vec4(0.356, 0.737, 0.862, 1.0f);
+        testParticleProperties.size=0.09f;
+
         ParticleComponent testParticleComponent;
+        testParticleComponent.particleProps = testParticleProperties;
+        testParticleComponent.emitter = std::make_shared<RainEmitter>(glm::ivec3(100,100,100));
+        testParticleComponent.computeShader = computeShader;
+        testParticleComponent.particleShader = rainParticleShader;
+
+        Engine::entitySystemManager.addComponent(entities[0], testParticleComponent);
+
+
+
+
+
+
+        float cubeVertices[] = {
+                // positions          // texture Coords
+                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+                0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+                0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+                0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+                0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+                0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+                0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+                -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+                -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+                -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+                -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+                0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+                0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+                0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+                0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+                0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+                0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+                0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+                0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+                0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+                -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+                0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+                0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+                0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+                -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+        };
+        float skyboxVertices[] = {
+                // positions
+                -1.0f,  1.0f, -1.0f,
+                -1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+
+                -1.0f, -1.0f,  1.0f,
+                -1.0f, -1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f,  1.0f,
+                -1.0f, -1.0f,  1.0f,
+
+                1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+
+                -1.0f, -1.0f,  1.0f,
+                -1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f, -1.0f,  1.0f,
+                -1.0f, -1.0f,  1.0f,
+
+                -1.0f,  1.0f, -1.0f,
+                1.0f,  1.0f, -1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                -1.0f,  1.0f,  1.0f,
+                -1.0f,  1.0f, -1.0f,
+
+                -1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f,  1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f,  1.0f,
+                1.0f, -1.0f,  1.0f
+        };
+
+
+
+        vertexBufferCube = std::make_shared<VertexBuffer>(cubeVertices, sizeof(cubeVertices)/sizeof(float));
+        vertexBufferLayoutCube = std::make_shared<VertexBufferLayout>();
+        vertexBufferLayoutCube->push<float>(3);
+        vertexBufferLayoutCube->push<float>(2);
+        vertexArrayCube = std::make_shared<VertexArray>();
+        vertexArrayCube->addBuffer(*vertexBufferCube, *vertexBufferLayoutCube);
+
+        vertexBufferSkybox = std::make_shared<VertexBuffer>(skyboxVertices, sizeof(skyboxVertices)/sizeof(float));
+        vertexBufferLayoutSkybox = std::make_shared<VertexBufferLayout>();
+        vertexBufferLayoutSkybox->push<float>(3);
+        vertexArraySkybox = std::make_shared<VertexArray>();
+        vertexArraySkybox->addBuffer(*vertexBufferSkybox, *vertexBufferLayoutSkybox);
 
         initSystems();
     }
@@ -38,11 +159,11 @@ namespace DEngine{
     void GPUParticlesScene::update(float dt) {
 
         DrawCallSettings testSettings;
-        testSettings.enableBlendingFlag =true;
+        testSettings.enableBlendingFlag =false;
 
         view = camera.GetViewMatrix();
 
-        Renderer::getInstance()->clear(glm::vec4(250.0f/255.0f, 125.0f/255.0f, 76.0f/255.0f ,1.0));
+        Renderer::getInstance()->clear(glm::vec4(0,0,0,1.0));
         Renderer::getInstance()->beginDraw(projection,testSettings);
 
         for (const auto& ent: entities) {
@@ -52,13 +173,10 @@ namespace DEngine{
         }
         //DRAW HERE
         Renderer::getInstance()->endDraw();
+        Engine::entitySystemManager.getSystem<ParticleSystem>()->update(dt, projection, view, model);
 
-
-        testSettings.enableDepthTestFlag=true;
-        testSettings.enableBlendingFlag = true;
-        Renderer::getInstance()->beginDraw(projection,testSettings);
-        Engine::entitySystemManager.getSystem<ParticleSystem>()->update(dt, projection*view*model);
-        Renderer::getInstance()->endDraw();
+        //Renderer::getInstance()->beginDraw(projection,testSettings);
+        //Renderer::getInstance()->endDraw();
 
     }
     bool GPUParticlesScene::onKeyPressedInput(KeyPressedEvent& e){

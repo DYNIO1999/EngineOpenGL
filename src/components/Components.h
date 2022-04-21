@@ -13,7 +13,16 @@
 #include "particles/Emitter.h"
 
 namespace  DEngine {
-    struct
+    struct TagComponent{
+        std::string tag;
+        TagComponent() = default;
+        TagComponent(const TagComponent &) = default;
+        TagComponent(const std::string &_tag) : tag(_tag)
+        {
+        }
+        ~TagComponent() = default;
+    };
+
     struct TransformComponent {
         glm::mat4 transform;
         TransformComponent()=default;

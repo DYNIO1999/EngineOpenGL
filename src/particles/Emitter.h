@@ -42,10 +42,8 @@ namespace DEngine {
         std::vector<float> initialPositions;
         std::vector<float> initialVelocities;
         virtual void init(const ParticleProps& _particleProps) =0;
-        virtual void update(Shader& _computeShader) =0;
         virtual void update(Shader& _computeShader, float dt)=0;
-        virtual void emit(const ParticleProps& _particleProps)=0;
-        virtual void emit(Shader& _particleShader,const glm::mat4& _mvp) =0;
+        virtual void emit(Shader &_particleShader, const glm::mat4 &_projection, const glm::mat4 &_view,const glm::mat4 &_model) =0;
     protected:
     };
 }

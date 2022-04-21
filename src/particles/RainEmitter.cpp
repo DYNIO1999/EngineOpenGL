@@ -10,9 +10,9 @@ namespace DEngine{
         for( int i = 0; i < numberOfParticles.x; i++ ) {
             for( int j = 0; j < numberOfParticles.y; j++ ) {
                 for( int k = 0; k < numberOfParticles.z; k++ ) {
-                    p.x = Random::randomFloat(-1000,1000);
+                    p.x = Random::randomFloat(-5000,5000);
                     p.y = Random::randomFloat(-100,100);
-                    p.z = Random::randomFloat(-1000,1000);
+                    p.z = Random::randomFloat(-5000,5000);
                     p.w = 1.0f;
                     p = transf * p;
                     initialPositions.push_back(p.x);
@@ -60,28 +60,21 @@ namespace DEngine{
     void RainEmitter::update(Shader &_computeShader, float dt){
         _computeShader.bind();
         _computeShader.setUniform1f("u_DeltaTime", dt);
-        glDispatchCompute(totalParticles / 1000, 1, 1);
+        glDispatchCompute(totalParticles, 1, 1);
         glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
         _computeShader.unbind();
     }
-    void RainEmitter::update(Shader &_computeShader) {
-        //_computeShader.bind();
-        //glDispatchCompute(totalParticles / 1000, 1, 1);
-        //glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-        //_computeShader.unbind();
-    }
-    void RainEmitter::emit(Shader &_particleShader, const glm::mat4 &_mvp) {
+    void RainEmitter::emit(Shader &_particleShader, const glm::mat4 &_projection, const glm::mat4 &_view,const glm::mat4 &_model){
         _particleShader.bind();
-        _particleShader.setUniformMat4f("u_MVP", _mvp);
-        _particleShader.setUniformVec2f("u_Size",glm::vec2(particleProps.size,particleProps.size*2));
+        _particleShader.setUniformMat4f("u_Projection", _projection);
+        _particleShader.setUniformMat4f("u_View", _view);
+        _particleShader.setUniformMat4f("u_Model",_model);
+        _particleShader.setUniformVec2f("u_Size",glm::vec2(particleProps.size,(particleProps.size*8)));
         _particleShader.setUniformVec4f("u_Color", particleProps.color);
         glBindVertexArray(particlesVao);
         glPointSize(particleProps.size);
         glDrawArrays(GL_POINTS,0, totalParticles);
         _particleShader.unbind();
         glBindVertexArray(0);
-    }
-    void RainEmitter::emit(const ParticleProps &_particleProps) {
-
     }
 }

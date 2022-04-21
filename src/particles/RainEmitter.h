@@ -14,10 +14,8 @@ namespace DEngine {
 
         }
         void init(const ParticleProps& _particleProps) override;
-        void update(Shader& _computeShader) override;
         void update(Shader &_computeShader, float dt) override;
-        void emit(const ParticleProps& _particleProps) override;
-        void emit(Shader& _particleShader, const glm::mat4& _mvp) override;
+        void emit(Shader &_particleShader, const glm::mat4 &_projection, const glm::mat4 &_view,const glm::mat4 &_model);
     private:
         ParticleProps particleProps;
 
