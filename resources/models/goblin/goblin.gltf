@@ -1,0 +1,224 @@
+{
+    "asset" : {
+        "generator" : "Khronos glTF Blender I/O v1.2.75",
+        "version" : "2.0"
+    },
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                0
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "mesh" : 0,
+            "name" : "goblin",
+            "scale" : [
+                0.20529139041900635,
+                0.20529139041900635,
+                0.20529139041900635
+            ],
+            "translation" : [
+                0.3751729130744934,
+                0.49497145414352417,
+                0.4547632336616516
+            ]
+        }
+    ],
+    "materials" : [
+        {
+            "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
+            "name" : "Material.001",
+            "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 0,
+                    "texCoord" : 0
+                },
+                "metallicFactor" : 0,
+                "roughnessFactor" : 0.5
+            }
+        },
+        {
+            "doubleSided" : true,
+            "emissiveFactor" : [
+                0,
+                0,
+                0
+            ],
+            "name" : "Material.002",
+            "pbrMetallicRoughness" : {
+                "baseColorFactor" : [
+                    0.024694690480828285,
+                    0.025380702689290047,
+                    0.0901043489575386,
+                    1
+                ],
+                "metallicFactor" : 1,
+                "roughnessFactor" : 0.5
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "Sphere.001",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "NORMAL" : 1,
+                        "TEXCOORD_0" : 2
+                    },
+                    "indices" : 3,
+                    "material" : 0
+                },
+                {
+                    "attributes" : {
+                        "POSITION" : 4,
+                        "NORMAL" : 5,
+                        "TEXCOORD_0" : 6
+                    },
+                    "indices" : 7,
+                    "material" : 1
+                }
+            ]
+        }
+    ],
+    "textures" : [
+        {
+            "source" : 0
+        }
+    ],
+    "images" : [
+        {
+            "mimeType" : "image/png",
+            "name" : "Untitled",
+            "uri" : "Untitled.png"
+        }
+    ],
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5126,
+            "count" : 2092,
+            "max" : [
+                0.9872283339500427,
+                0.9996221661567688,
+                0.9823007583618164
+            ],
+            "min" : [
+                -4.447652816772461,
+                -1.0005877017974854,
+                -0.9910584092140198
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 2092,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5126,
+            "count" : 2092,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 3,
+            "componentType" : 5123,
+            "count" : 2106,
+            "type" : "SCALAR"
+        },
+        {
+            "bufferView" : 4,
+            "componentType" : 5126,
+            "count" : 18698,
+            "max" : [
+                5.784188270568848,
+                8.699947357177734,
+                3.35141658782959
+            ],
+            "min" : [
+                -9.435664176940918,
+                -7.271576881408691,
+                -12.624541282653809
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 5,
+            "componentType" : 5126,
+            "count" : 18698,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 6,
+            "componentType" : 5126,
+            "count" : 18698,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 7,
+            "componentType" : 5123,
+            "count" : 18864,
+            "type" : "SCALAR"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 25104,
+            "byteOffset" : 0
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 25104,
+            "byteOffset" : 25104
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 16736,
+            "byteOffset" : 50208
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 4212,
+            "byteOffset" : 66944
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 224376,
+            "byteOffset" : 71156
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 224376,
+            "byteOffset" : 295532
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 149584,
+            "byteOffset" : 519908
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 37728,
+            "byteOffset" : 669492
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 707220,
+            "uri" : "goblin.bin"
+        }
+    ]
+}

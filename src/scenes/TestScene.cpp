@@ -75,9 +75,10 @@ namespace DEngine{
         std::vector<Index> myIndexData{0, 1, 2,
                                        1, 2, 0};
 
-        testMesh = std::make_shared<Mesh>(myData, myIndexData);
+       // testMesh = std::make_shared<Mesh>(myData, myIndexData);
         //testMesh = std::make_shared<Mesh>(myData);
 
+        testModel = std::make_shared<Model>(PATH_MODELS+"goblin/goblin.gltf");
         entities.emplace_back(Engine::entitySystemManager.createEntity());
         entities.emplace_back(Engine::entitySystemManager.createEntity());
         entities.emplace_back(Engine::entitySystemManager.createEntity());
@@ -87,7 +88,7 @@ namespace DEngine{
         TransformComponent testComp;
         MeshComponent testMeshComp{};
 
-        testMeshComp.meshes.emplace_back(testMesh);
+        testMeshComp.mesh= testModel->meshes;
 
         testComp.transform = glm::mat4(1.0f);
         testComp.transform = glm::translate(testComp.transform, glm::vec3(0,1,-10));
@@ -142,8 +143,8 @@ namespace DEngine{
         //Engine::entitySystemManager.addComponent(entities[4],testComp);
         //Engine::entitySystemManager.addComponent(entities[4],testEmitter);
 
-        auto particleSystem =Engine::entitySystemManager.getSystem<ParticleSystem>();
-        particleSystem->init();
+       // auto particleSystem =Engine::entitySystemManager.getSystem<ParticleSystem>();
+       // particleSystem->init();
 
     }
     void TestScene::input(Event &e) {
@@ -161,26 +162,30 @@ namespace DEngine{
         DENGINE_TRACE("TIME:{}",timeCounter);
 
         DrawCallSettings  testSettings;
-        testSettings.enableBlendingFlag=false;
+        testSettings.enableBlendingFlag=true;
+        testSettings.enableDepthTestFlag=true;
         Renderer::getInstance()->clear(glm::vec4(0.5, 0.5, 0.5 , 1.0));
         Renderer::getInstance()->beginDraw(glm::mat4(1), testSettings);
         view = camera.GetViewMatrix();
-        textureTest.bind();
+        //textureTest.bind();
         testShader.bind();
-        testShader.setUniform1i("u_Texture",0);
+        //testShader.setUniform1i("u_Texture",0);
         testShader.setUniformMat4f("projection",projection);
         testShader.setUniformMat4f("view",view);
         for (const auto& ent: entities) {
             if(Engine::entitySystemManager.hasComponent<MeshComponent>(ent)) {
-                testShader.setUniformMat4f("model", model);
-                Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(ent), testShader);
+                for(size_t it =0 ; it<Engine::entitySystemManager.getComponent<MeshComponent>(ent).mesh.size();it++) {
+                    //testShader.setUniformMat4f("model", model);
+                    testShader.setUniformMat4f("model",testModel->matricesMeshes[it]);
+                    Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(ent).mesh.at(it), testShader);
+                }
             }
         }
-        textureTest.unbind();
+        //textureTest.unbind();
         testShader.unbind();
         Renderer::getInstance()->endDraw();
-        auto particleSystem =Engine::entitySystemManager.getSystem<ParticleSystem>();
-        particleSystem->update(dt, projection*view*model);
+     //   auto particleSystem =Engine::entitySystemManager.getSystem<ParticleSystem>();
+        //particleSystem->update(dt, projection*view*model);
 
         //POP SCENE IN PROPER WAY DONT REMOVE!
         //if(timeCounter>5){

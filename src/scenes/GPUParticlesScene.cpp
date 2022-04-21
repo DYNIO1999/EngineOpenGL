@@ -28,6 +28,13 @@ namespace DEngine{
                                        1, 2, 0};
 
 
+        std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(myData, myIndexData);
+        TransformComponent testTransform;
+        testTransform.transform = glm::mat4(1);
+
+        MeshComponent testMesh;
+        testMesh.meshes.push_back(mesh);
+
         entities.emplace_back(Engine::entitySystemManager.createEntity());
 
     }
@@ -50,6 +57,14 @@ namespace DEngine{
 
         Renderer::getInstance()->clear(glm::vec4(250.0f/255.0f, 125.0f/255.0f, 76.0f/255.0f ,1.0));
         Renderer::getInstance()->beginDraw(projection,testSettings);
+
+
+        //for (const auto& ent: entities) {
+        //    if(Engine::entitySystemManager.hasComponent<MeshComponent>(ent)){
+        //        Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(ent), )
+        //    }
+        //}
+
         //DRAW HERE
         Renderer::getInstance()->endDraw();
     }
