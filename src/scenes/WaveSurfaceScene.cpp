@@ -14,7 +14,7 @@ namespace DEngine{
         current = glm::translate(current,glm::vec3(0,0, -1.0));
         patch.push_back(current);
 
-        second = glm::translate(second,glm::vec3(2.5,0, -6));
+        second = glm::translate(second,glm::vec3(2.82,0, -6));
         second = glm::rotate(second,glm::radians(-45.0f), glm::vec3(0,0,1));
         second = glm::scale(second,glm::vec3(1,1, 5));
         patch.push_back(second);
