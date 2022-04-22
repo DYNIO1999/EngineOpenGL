@@ -45,10 +45,13 @@ namespace DEngine{
         }
         //ECS
         //SCENE PUSHING
-        sceneManager.pushScene(new WaveSurfaceScene("Waves", window));
+
+        //sceneManager.pushScene(new WaveSurfaceScene("Waves", window));
         //sceneManager.pushScene(new TestScene("HELLOOO", window));
 
-        //sceneManager.pushScene(new GPUParticlesScene("RainParticles", window));
+        sceneManager.pushScene(new GPUParticlesScene("RainParticles", window));
+
+
         editorScenePtr =  new EditorScene(window);
         sceneManager.pushSceneOverlay(editorScenePtr);
         //SCENE PUSHING
