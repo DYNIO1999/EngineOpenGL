@@ -16,6 +16,7 @@ namespace DEngine {
 
         void pushSceneOverlay(Scene *_overlay);
         void popSceneOverlay(Scene *_overlay);
+        void popOverlay();
 
         void disableScene(Scene* _scene);
         void disableScene(std::string _name);

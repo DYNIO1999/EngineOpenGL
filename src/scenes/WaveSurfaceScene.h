@@ -24,7 +24,7 @@ namespace  DEngine {
         };
         void initScene() override;
         void input(Event& e) override;
-        void update() override;
+        void update(float dt) override;
 
         bool onKeyPressedInput(KeyPressedEvent& e);
         bool windowClose(WindowCloseEvent& e);

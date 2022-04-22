@@ -18,38 +18,28 @@
 #include "IndexBuffer.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Mesh.h"
+
+#include "components/Components.h"
+
+
 namespace  DEngine {
 
     static const std::string PATH_TEXTURES = "../../resources/textures/";
     static const std::string PATH_SHADERS = "../../resources/shaders/";
-
-
-
-
-    typedef enum {
-        CHAR,
-        INT,
-        FLOAT,
-        DOUBLE
-    } TYPES;
-
-
-    struct VertexData{
-        glm::vec3 position;
-        glm::vec2 texturePosition;
-    };
+    static const std::string PATH_MODELS = "../../resources/models/";
 
     struct DrawCallSettings{
         DrawCallSettings():
         enableBlendingFlag(false),
-        enableDepthFlag(false),
-        enableStencilFlag(false),
+        enableDepthTestFlag(false),
+        enableStencilBufferFlag(false),
         clearColorBufferFlag(true){
         }
         
         bool enableBlendingFlag;
-        bool enableDepthFlag;
-        bool enableStencilFlag;
+        bool enableDepthTestFlag;
+        bool enableStencilBufferFlag;
         bool clearColorBufferFlag;
     };
 
@@ -66,6 +56,9 @@ namespace  DEngine {
         void beginDraw(glm::mat4 _projection, const DrawCallSettings& settings);
         void draw(VertexArray &va, IndexBuffer &ib, Shader &shader, unsigned int type = GL_TRIANGLES);
         void draw(VertexArray &va, Shader &shader, unsigned int type=  GL_TRIANGLES);
+
+        void draw(Mesh &mesh, Shader &shader);
+        void draw(MeshComponent& _meshComponent, Shader& _shader);
         void endDraw();
         void shutdown();
         void clear() const;

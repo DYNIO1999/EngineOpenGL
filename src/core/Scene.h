@@ -28,7 +28,7 @@ namespace DEngine {
         virtual void input(Event& e){
             //input
         }
-        virtual void update(){
+        virtual void update(float dt){
             //zmiana pozycji
             //rysowanie
 

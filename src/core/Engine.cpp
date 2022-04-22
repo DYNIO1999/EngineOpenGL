@@ -3,32 +3,80 @@
 #include "scenes/EditorScene.h"
 #include "scenes/WaveSurfaceScene.h"
 #include "renderer/Renderer.h"
+#include "components/Components.h"
+#include "scenes/GPUParticlesScene.h"
 
 namespace DEngine{
     SceneManager Engine::sceneManager;
+    EntitySystemManager Engine::entitySystemManager;
+    bool Engine::isRunning;
     Engine::Engine() {
         WindowData testData{"DEngine", 1600,900};
         window  = std::make_shared<Window>(testData);
         isRunning = true;
         window->setEventCallback(BIND_EVENT_FUNCTION(Engine::input));
         LogManager::init();
-        //sceneManager.pushScene(new TestScene("HELLOOO"));
 
+        //ECS
+
+        entitySystemManager.registerComponent<TagComponent>();
+        entitySystemManager.registerComponent<TransformComponent>();
+        entitySystemManager.registerComponent<GravityComponent>();
+        entitySystemManager.registerComponent<RigidBodyComponent>();
+        entitySystemManager.registerComponent<ParticleComponent>();
+        entitySystemManager.registerComponent<MeshComponent>();
+
+        auto physicsSystem= entitySystemManager.registerSystem<PhysicsSystem>();
+        {
+            ComponentsSignature signature;
+            //signature.set(entitySystemManager.getComponentType<TagComponent>());
+            signature.set(entitySystemManager.getComponentType<TransformComponent>());
+            signature.set(entitySystemManager.getComponentType<GravityComponent>());
+            signature.set(entitySystemManager.getComponentType<RigidBodyComponent>());
+            entitySystemManager.setSystemSignature<PhysicsSystem>(signature);
+        }
+        auto particleSystem = entitySystemManager.registerSystem<ParticleSystem>();
+        {
+            ComponentsSignature signature;
+            //signature.set(entitySystemManager.getComponentType<TagComponent>());
+            signature.set(entitySystemManager.getComponentType<TransformComponent>());
+            signature.set(entitySystemManager.getComponentType<ParticleComponent>());
+            entitySystemManager.setSystemSignature<ParticleSystem>(signature);
+        }
+        //ECS
+        //SCENE PUSHING
         sceneManager.pushScene(new WaveSurfaceScene("Waves", window));
+        //sceneManager.pushScene(new TestScene("HELLOOO", window));
+
+        //sceneManager.pushScene(new GPUParticlesScene("RainParticles", window));
         editorScenePtr =  new EditorScene(window);
         sceneManager.pushSceneOverlay(editorScenePtr);
+        //SCENE PUSHING
         Renderer::getInstance()->init();
+
     }
     Engine::~Engine() {
         Renderer::getInstance()->shutdown();
     }
     void Engine::run() {
-
+        static int i=0;
         while(isRunning){
+            auto currentFrameTime = static_cast<float>(glfwGetTime());
+            deltaTime = currentFrameTime - lastFrameTime;
+            lastFrameTime = currentFrameTime;
+
+
+
             editorScenePtr->beginGUI();
+            DENGINE_ERROR("_______________________");
             for (Scene* it: sceneManager) {
-                it->update();
+                it->update(deltaTime);
+                DENGINE_WARN("{}", i);
+                i++;
+
             }
+            DENGINE_ERROR("_______________________");
+            i=0;
             editorScenePtr->endGUI();
             window->Update();
         }
@@ -46,7 +94,7 @@ namespace DEngine{
     }
 
     bool Engine::windowClose(WindowCloseEvent &e) {
-        isRunning = false;
+        Engine::isRunning = false;
         return true;
     }
 }

@@ -1,6 +1,8 @@
-#version 330 core
+#version 460
 layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec2 texCords;
+layout (location = 1) in vec3 normals;
+layout (location = 2) in vec3 colors;
+layout (location = 3) in vec2 texCords;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -11,6 +13,6 @@ out vec2 v_TextCoord;
 void main()
 {
 
-    gl_Position = vec4(aPos,1);
+    gl_Position = projection*view*model*vec4(aPos,1);
     v_TextCoord = texCords;
 }

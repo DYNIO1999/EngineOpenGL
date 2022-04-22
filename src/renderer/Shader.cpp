@@ -7,15 +7,56 @@
 #include "Renderer.h"
 
 namespace DEngine{
+    Shader::Shader(const std::string &_computeShaderPath):
+            computeShaderFilePath(_computeShaderPath),
+            isTransformFeedbackOn(false),
+            shaderID(0)
+    {
+        ShaderProgramSource source{};
+        source.ComputeShaderSource= parseShader(computeShaderFilePath, GL_COMPUTE_SHADER);
+        shaderID = createShader(source.ComputeShaderSource);
+    }
+    Shader::Shader(const std::string &vertexFilePath,
+                   const std::string &fragmentFilePath,
+                   const std::vector<const char*>& _outputNames):
+            vertexShaderFilePath(vertexFilePath),
+            fragmentShaderFilePath(fragmentFilePath),
+            outputNames(_outputNames),
+            isTransformFeedbackOn(true),
+            shaderID(0)
+    {
+        ShaderProgramSource source{};
+        source.VertexSource= parseShader(vertexShaderFilePath, GL_VERTEX_SHADER);
+        source.FragmentSource= parseShader(fragmentShaderFilePath, GL_FRAGMENT_SHADER);
+        shaderID = createShader(source.VertexSource, source.FragmentSource);
+    }
     Shader::Shader(const std::string &vertexFilePath, const std::string &fragmentFilePath):
             vertexShaderFilePath(vertexFilePath),
-            fragmentShaderFilePath(fragmentFilePath)
+            fragmentShaderFilePath(fragmentFilePath),
+            isTransformFeedbackOn(false)
             ,shaderID(0)
     {
         ShaderProgramSource source{};
-        source.VertexSource= parseShader(vertexShaderFilePath);
-        source.FragmentSource= parseShader(fragmentShaderFilePath);
+        source.VertexSource= parseShader(vertexShaderFilePath, GL_VERTEX_SHADER);
+        source.FragmentSource= parseShader(fragmentShaderFilePath, GL_FRAGMENT_SHADER);
         shaderID = createShader(source.VertexSource, source.FragmentSource);
+    }
+
+    Shader::Shader(const std::string &vertexFilePath,
+           const std::string &geometryFilePath,
+           const std::string &fragmentFilePath
+    ):
+    vertexShaderFilePath(vertexFilePath),
+    geometryShaderFilePath(geometryFilePath),
+    fragmentShaderFilePath(fragmentFilePath),
+    isTransformFeedbackOn(false),
+    shaderID(0)
+    {
+        ShaderProgramSource source{};
+        source.VertexSource = parseShader(vertexShaderFilePath, GL_VERTEX_SHADER);
+        source.GeometryShaderSource = parseShader(geometryShaderFilePath, GL_GEOMETRY_SHADER);
+        source.FragmentSource = parseShader(fragmentShaderFilePath, GL_FRAGMENT_SHADER);
+        shaderID = createShader(source.VertexSource, source.GeometryShaderSource, source.FragmentSource);
     }
     Shader::Shader(const std::string &vertexFilePath,
            const std::string &fragmentFilePath,
@@ -26,13 +67,14 @@ namespace DEngine{
             fragmentShaderFilePath(fragmentFilePath),
             tessellationControlShaderFilePath(tessellationControlFilePath),
             tessellationEvaluationShaderFilePath(tessellationEvaluationFilePath),
+            isTransformFeedbackOn(false),
             shaderID(0)
     {
         ShaderProgramSource source{};
-        source.VertexSource= parseShader(vertexShaderFilePath);
-        source.FragmentSource= parseShader(fragmentShaderFilePath);
-        source.TessellationControlShaderSource = parseShader(tessellationControlShaderFilePath);
-        source.TessellationEvaluationShaderSource = parseShader(tessellationEvaluationShaderFilePath);
+        source.VertexSource= parseShader(vertexShaderFilePath, GL_VERTEX_SHADER);
+        source.FragmentSource= parseShader(fragmentShaderFilePath, GL_FRAGMENT_SHADER);
+        source.TessellationControlShaderSource = parseShader(tessellationControlShaderFilePath, GL_TESS_CONTROL_SHADER);
+        source.TessellationEvaluationShaderSource = parseShader(tessellationEvaluationShaderFilePath, GL_TESS_EVALUATION_SHADER);
         shaderID = createShader(source.VertexSource,
                                 source.FragmentSource,
                                 source.TessellationControlShaderSource,
@@ -43,7 +85,7 @@ namespace DEngine{
         glDeleteProgram(shaderID);
     }
 
-    std::string Shader::parseShader(const std::string &filepath)
+    std::string Shader::parseShader(const std::string &filepath, uint _type)
     {
         std::string sourceCode;
         std::ifstream sourceCodeFile;
@@ -55,7 +97,30 @@ namespace DEngine{
             sourceCodeFile.close();
             sourceCode = shaderStream.str();
         } catch (std::ifstream::failure& e) {
-            std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ: " << e.what() << '\n';
+
+            std::string shaderType;
+            switch (_type) {
+                case GL_VERTEX_SHADER:
+                    shaderType = "VERTEX";
+                    break;
+                case GL_FRAGMENT_SHADER:
+                    shaderType = "FRAGMENT";
+                    break;
+                case GL_TESS_CONTROL_SHADER:
+                    shaderType = "TESS_CONTROL";
+                    break;
+                case GL_TESS_EVALUATION_SHADER:
+                    shaderType = "TESS_EVALUATION";
+                    break;
+                case GL_GEOMETRY_SHADER:
+                    shaderType = "GEOMETRY";
+                    break;
+                case GL_COMPUTE_SHADER:
+                    shaderType = "COMPUTE";
+                    break;
+            }
+            DENGINE_ERROR("Cant read file {} SHADER \tfilepath {}", shaderType, filepath);
+            DENGINE_ERROR(e.what());
         }
         return sourceCode;
     }
@@ -75,9 +140,29 @@ namespace DEngine{
             glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
             char *message = (char *)alloca(length * sizeof(char));
             glGetShaderInfoLog(id, length, &length, message);
-            std::string shaderType = (type == GL_VERTEX_SHADER) ? "vertex" : "fragment";
-            std::cout << "Failed to compile " << shaderType << "shader" << std::endl;
-            std::cout << message << std::endl;
+            std::string shaderType;
+            switch (type) {
+                case GL_VERTEX_SHADER:
+                    shaderType = "VERTEX";
+                    break;
+                case GL_FRAGMENT_SHADER:
+                    shaderType = "FRAGMENT";
+                    break;
+                case GL_TESS_CONTROL_SHADER:
+                    shaderType = "TESS_CONTROL";
+                    break;
+                case GL_TESS_EVALUATION_SHADER:
+                    shaderType = "TESS_EVALUATION";
+                    break;
+                case GL_GEOMETRY_SHADER:
+                    shaderType = "GEOMETRY";
+                    break;
+                case GL_COMPUTE_SHADER:
+                    shaderType = "COMPUTE";
+                    break;
+            }
+            DENGINE_ERROR("Failed to compile {} SHADER!",shaderType);
+            DENGINE_ERROR(message);
             glDeleteShader(id);
             return 0;
         }
@@ -94,9 +179,36 @@ namespace DEngine{
 
         glAttachShader(program, vs);
         glAttachShader(program, fs);
+        if(isTransformFeedbackOn) {
+            DENGINE_ERROR("TRANSFORM FEEDBACK IS ON!");
+
+            glTransformFeedbackVaryings(program, static_cast<int>(outputNames.size()), outputNames.data(),
+                                        GL_SEPARATE_ATTRIBS);
+        }
         glLinkProgram(program);
         glValidateProgram(program);
         glDeleteShader(vs);
+        glDeleteShader(fs);
+
+        return program;
+    }
+
+
+    unsigned int Shader::createShader(const std::string &vertexShader,const std::string &geometryShader ,const std::string &fragmentShader){
+
+        unsigned int program = glCreateProgram();
+        unsigned int vs = compileShader(GL_VERTEX_SHADER, vertexShader);
+        unsigned int gs =  compileShader(GL_GEOMETRY_SHADER, geometryShader);
+        unsigned int fs = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
+
+
+        glAttachShader(program, vs);
+        glAttachShader(program, gs);
+        glAttachShader(program, fs);
+        glLinkProgram(program);
+        glValidateProgram(program);
+        glDeleteShader(vs);
+        glDeleteShader(gs);
         glDeleteShader(fs);
 
         return program;
@@ -126,6 +238,17 @@ namespace DEngine{
 
         return program;
     }
+    unsigned int Shader::createShader(const std::string &_computeShader){
+        unsigned int program = glCreateProgram();
+        unsigned int cs = compileShader(GL_COMPUTE_SHADER, _computeShader);
+        glAttachShader(program, cs);
+        glLinkProgram(program);
+        glValidateProgram(program);
+        glDeleteShader(cs);
+        return program;
+    }
+
+
 
     void Shader::bind() const
     {
@@ -157,6 +280,18 @@ namespace DEngine{
         glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix));
     }
 
+    void Shader::setUniformMat3f(const std::string &name, glm::mat3 matrix){
+        glUniformMatrix3fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix));
+    }
+    void Shader::setUniformVec2f(const std::string& _name, glm::vec2 _vector){
+        glUniform2f(getUniformLocation(_name), _vector.x, _vector.y);
+    }
+    void Shader::setUniformVec3f(const std::string &_name, glm::vec3 _vector) {
+        glUniform3f(getUniformLocation(_name), _vector.x, _vector.y, _vector.z);
+    }
+    void Shader::setUniformVec4f(const std::string& _name, glm::vec4 _vector){
+        glUniform4f(getUniformLocation(_name), _vector.x, _vector.y, _vector.z, _vector.w);
+    }
     int Shader::getUniformLocation(const std::string &name)
     {
         if (UniformLocationCache.find(name) != UniformLocationCache.end())

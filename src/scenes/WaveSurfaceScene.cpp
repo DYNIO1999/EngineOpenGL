@@ -14,7 +14,7 @@ namespace DEngine{
         current = glm::translate(current,glm::vec3(0,0, -1.0));
         patch.push_back(current);
 
-        second = glm::translate(second,glm::vec3(2.5,0, -6));
+        second = glm::translate(second,glm::vec3(2.82,0, -6));
         second = glm::rotate(second,glm::radians(-45.0f), glm::vec3(0,0,1));
         second = glm::scale(second,glm::vec3(1,1, 5));
         patch.push_back(second);
@@ -31,7 +31,7 @@ namespace DEngine{
         dispatcher.dispatch<MouseButtonReleased>(BIND_EVENT_FUNCTION(WaveSurfaceScene::onMouseReleased));
         dispatcher.dispatch<MouseMovedEvent>(BIND_EVENT_FUNCTION(WaveSurfaceScene::onMouseMovedEvent));
     }
-    void WaveSurfaceScene::update() {
+    void WaveSurfaceScene::update(float dt) {
         int test;
 
         DrawCallSettings  testSettings;
