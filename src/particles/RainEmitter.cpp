@@ -69,7 +69,7 @@ namespace DEngine{
         _particleShader.setUniformMat4f("u_Projection", _projection);
         _particleShader.setUniformMat4f("u_View", _view);
         _particleShader.setUniformMat4f("u_Model",_model);
-        _particleShader.setUniformVec2f("u_Size",glm::vec2(particleProps.size,(particleProps.size*8)));
+        _particleShader.setUniformVec2f("u_Size",glm::vec2(particleProps.size,(particleProps.size*6)));
         _particleShader.setUniformVec4f("u_Color", particleProps.color);
         glBindVertexArray(particlesVao);
         glPointSize(particleProps.size);
