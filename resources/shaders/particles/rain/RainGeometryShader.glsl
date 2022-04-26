@@ -24,17 +24,5 @@ void main(){
     gl_Position = u_Projection*u_View*(position + vec4(width, height, 0.0f, 0.0f));
     uv = vec2(1.0f, 1.0f);
     EmitVertex();
-    //gl_Position =u_Projection*u_View*(position + vec4(-width, -height, -0.5f, 0.0f));
-    //uv = vec2(0.0f, 0.0f);
-    //EmitVertex();
-    //gl_Position = u_Projection*u_View*(position + vec4(width, -height, -0.5f, 0.0f));
-    //uv = vec2(1.0f, 0.0f);
-    //EmitVertex();
-    //gl_Position = u_Projection*u_View*(position + vec4(-width, height, -0.5f, 0.0f));
-    //uv = vec2(0.0f, 1.0f);
-    //EmitVertex();
-    //gl_Position = u_Projection*u_View*(position + vec4(width, height, -0.5f, 0.0f));
-    //uv = vec2(1.0f, 1.0f);
-    //EmitVertex();
     EndPrimitive();
 }

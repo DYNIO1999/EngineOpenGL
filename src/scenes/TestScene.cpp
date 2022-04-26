@@ -78,7 +78,7 @@ namespace DEngine{
        // testMesh = std::make_shared<Mesh>(myData, myIndexData);
         //testMesh = std::make_shared<Mesh>(myData);
 
-        testModel = std::make_shared<Model>(PATH_MODELS+"tree/tree.gltf");
+        testModel = std::make_shared<Model>(PATH_MODELS+"sword/scene.gltf");
         entities.emplace_back(Engine::entitySystemManager.createEntity());
         entities.emplace_back(Engine::entitySystemManager.createEntity());
         entities.emplace_back(Engine::entitySystemManager.createEntity());
