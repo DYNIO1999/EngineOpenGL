@@ -183,6 +183,11 @@ namespace DEngine{
         //}
         //textureTest.unbind();
         testShader.unbind();
+
+
+        smokeShader.bind();
+        
+        smokeShader.unbind();
         Renderer::getInstance()->endDraw();
      //   auto particleSystem =Engine::entitySystemManager.getSystem<ParticleSystem>();
         //particleSystem->update(dt, projection*view*model);
