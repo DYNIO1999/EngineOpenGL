@@ -78,7 +78,7 @@ namespace DEngine{
        // testMesh = std::make_shared<Mesh>(myData, myIndexData);
         //testMesh = std::make_shared<Mesh>(myData);
 
-        testModel = std::make_shared<Model>(PATH_MODELS+"tree/tree.gltf");
+        testModel = std::make_shared<Model>(PATH_MODELS+"sword/scene.gltf");
         entities.emplace_back(Engine::entitySystemManager.createEntity());
         entities.emplace_back(Engine::entitySystemManager.createEntity());
         entities.emplace_back(Engine::entitySystemManager.createEntity());
@@ -172,15 +172,15 @@ namespace DEngine{
         //testShader.setUniform1i("u_Texture",0);
         testShader.setUniformMat4f("projection",projection);
         testShader.setUniformMat4f("view",view);
-        for (const auto& ent: entities) {
-            if(Engine::entitySystemManager.hasComponent<MeshComponent>(ent)) {
-                for(size_t it =0 ; it<Engine::entitySystemManager.getComponent<MeshComponent>(ent).mesh.size();it++) {
-                    //testShader.setUniformMat4f("model", model);
-                    testShader.setUniformMat4f("model",testModel->matricesMeshes[it]);
-                    Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(ent).mesh.at(it), testShader);
-                }
-            }
-        }
+        testShader.setUniformMat4f("model",model);
+        //for (const auto& ent: entities) {
+        //    if(Engine::entitySystemManager.hasComponent<MeshComponent>(ent)) {
+        //        for(size_t it =0 ; it<Engine::entitySystemManager.getComponent<MeshComponent>(ent).mesh.size();it++) {
+        //            //testShader.setUniformMat4f("model", model);
+        //            Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(ent).mesh.at(it), testShader);
+        //        }
+        //    }
+        //}
         //textureTest.unbind();
         testShader.unbind();
         Renderer::getInstance()->endDraw();
