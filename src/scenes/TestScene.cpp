@@ -145,7 +145,32 @@ namespace DEngine{
 
        // auto particleSystem =Engine::entitySystemManager.getSystem<ParticleSystem>();
        // particleSystem->init();
+        numberOfParticles = 8000;
 
+        glm::vec3 v(0.0f);
+        float velocity, theta, phi;
+        float *data = new float[numberOfParticles * 3];
+        for (unsigned int i = 0; i < numberOfParticles; i++) {
+
+            theta = glm::mix(0.0f, glm::pi<float>() / 6.0f, 10.0f);
+            phi = glm::mix(0.0f, glm::two_pi<float>(), 10.0f);
+
+            v.x = sinf(theta) * cosf(phi);
+            v.y = cosf(theta);
+            v.z = sinf(theta) * sinf(phi);
+
+            velocity = glm::mix(1.25f, 1.5f, 7.0f);
+            v = glm::normalize(v) * velocity;
+
+            data[3 * i] = v.x;
+            data[3 * i + 1] = v.y;
+            data[3 * i + 2] = v.z;
+        }
+        vbObj = new VertexBuffer(data, sizeof(numberOfParticles*3), numberOfParticles*3);
+        vbLayoutObj = new VertexBufferLayout;
+        vbLayoutObj->push<float>(3);
+        vaObj = new VertexArray();
+        vaObj->addBuffer(*vbObj,*vbLayoutObj);
     }
     void TestScene::input(Event &e) {
         EventDispatcher dispatcher(e);
@@ -186,7 +211,12 @@ namespace DEngine{
 
 
         smokeShader.bind();
-        
+        smokeShader.setUniformMat4f("projection",projection);
+        smokeShader.setUniformMat4f("view",view);
+        smokeShader.setUniformMat4f("model",model);
+        smokeShader.setUniform1f("u_Time", dt);
+        glPointSize(15.0f);
+        Renderer::getInstance()->draw(*vaObj,smokeShader,GL_POINTS);
         smokeShader.unbind();
         Renderer::getInstance()->endDraw();
      //   auto particleSystem =Engine::entitySystemManager.getSystem<ParticleSystem>();

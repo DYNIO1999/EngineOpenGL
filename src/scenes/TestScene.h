@@ -66,6 +66,11 @@ namespace DEngine {
         glm::mat4 model, view, projection;
         std::shared_ptr<Window> windowPtr;
 
+        VertexArray* vaObj;
+        VertexBuffer* vbObj;
+        VertexBufferLayout* vbLayoutObj;
+
+        int numberOfParticles;
 
         //glm::ivec3 nParticles;
         //uint totalParticles;

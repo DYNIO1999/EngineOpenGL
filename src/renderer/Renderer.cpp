@@ -57,6 +57,7 @@ namespace DEngine{
         shader.bind();
         va.bind();
         if (type == GL_POINTS){
+            DENGINE_ERROR("SIZE {}",va.getVertexCount());
             glDrawArrays(GL_POINTS, 0, va.getVertexCount());
         }
         else if (type == GL_LINES)
