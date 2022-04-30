@@ -15,6 +15,7 @@ uniform float PI = 3.14159265359;
 uniform float DeltaTime;
 uniform float maxLifeTime =1.0f;
 uniform mat3 EmitterBasis;
+uniform float MaxDist = 10.0;
 
 
 //vec3 randomInitialVelocity() {
@@ -42,12 +43,20 @@ void main() {
     uint idx = gl_GlobalInvocationID.x;
     vec3 pos = Position[idx].xyz;
     // Velocity[idx].xyz = vec3(0.2f,1.0f,0.0f);
+
+    vec3 d =  vec3(0.0f, 0.0f,0.0f)- Position[idx].xyz;
+    float dist = length(d);
+
     if(ParticleLifeTime[idx]>maxLifeTime){
 
     }
-    ParticleLifeTime[idx] = ParticleLifeTime[idx]+DeltaTime;
-    vec3 vel = Velocity[idx].xyz;
-    Position[idx].xyz= pos + vel *DeltaTime;
 
+    if( dist > MaxDist ) {
+    Position[idx] = vec4(0,0,0,1);
+    } else {
+        ParticleLifeTime[idx] = ParticleLifeTime[idx]+DeltaTime;
+        vec3 vel = Velocity[idx].xyz;
+        Position[idx].xyz= pos + vel *DeltaTime;
+    }
 }
 

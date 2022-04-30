@@ -181,15 +181,18 @@ namespace DEngine{
             initialPositions.push_back(p.z);
             initialPositions.push_back(p.w);
         }
-        float theta, phi;
+        float velocity,theta, phi;
         for( int i = 0; i < totalParticles; ++i) {
-            theta = glm::mix(0.0f, glm::pi<float>() / 6.0f, Random::randomFloat(0.0f, 10.0f));
-            phi = glm::mix(0.0f, glm::two_pi<float>(), Random::randomFloat(0.0f, 10.0f));
+            theta = glm::mix(0.0f, glm::pi<float>() / 2.0f, Random::randomFloat(0.0f, 1.0f));
+            phi = glm::mix(0.0f, glm::two_pi<float>(), Random::randomFloat(0.0f, 1.0f));
 
             p.x =sinf(theta) * cosf(phi);
             p.y =cosf(theta);
             p.z = sinf(theta) * sinf(phi);
             p.w = 0;
+
+            velocity = glm::mix(1.25f, 1.5f, Random::randomFloat(0.0f, 10.0f));
+            p = glm::normalize(p) * velocity;
             initialVelocities.push_back(p.x);
             initialVelocities.push_back(p.y);
             initialVelocities.push_back(p.z);
@@ -270,9 +273,12 @@ namespace DEngine{
         glDispatchCompute(1000, 1, 1);
         glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
-
+        DENGINE_ERROR("DT: {}", dt);
         smokeParticleShader->bind();
-        smokeParticleShader->setUniformVec4f("u_Color",glm::vec4(1.0f,0.5f,0.3f,1.0f));
+        smokeParticleShader->setUniform1f("ParticleLifetime",1.0f);
+        smokeParticleShader->setUniform1f("Time",dt*35);
+
+        smokeParticleShader->setUniformVec4f("u_Color",glm::vec4(0.631, 0.631, 0.631,1.0f));
         smokeParticleShader->setUniformMat4f("u_MVP",projection*view*model);
         glBindVertexArray(particlesVao);
         glPointSize(15.0f);
