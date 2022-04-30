@@ -12,6 +12,7 @@
 namespace DEngine{
 
 
+
     static glm::mat3 makeArbitraryBasis( const glm::vec3 & dir ) {
         glm::mat3 basis;
         glm::vec3 u, v, n;
@@ -158,13 +159,63 @@ namespace DEngine{
         smokeParticleShader = std::make_shared<Shader>(PATH_SHADERS + "particles/smoke/SmokeVertexShader.glsl",
                                                                               PATH_SHADERS + "particles/smoke/SmokeFragmentShader.glsl");
 
-
+        std::vector<float> initialPositions;
+        std::vector<float> initialVelocities;
+        std::vector<float> initialAge;
         totalParticles =1000;
-        glGenBuffers(1, posBuf);
-        glGenBuffers(1, velBuf);
-        glGenBuffers(1, age);
+        glGenBuffers(1, &posBuf);
+        glGenBuffers(1, &velBuf);
+        glGenBuffers(1, &age);
 
 
+        glm::vec4 p(0.0f, 0.0f, 0.0f, 1.0f);
+        glm::mat4 transf = glm::translate(glm::mat4(1.0f), glm::vec3(-1,-1,-1));
+        for( int i = 0; i < totalParticles; ++i ) {
+            p.x = 0.0f;
+            p.y = 0.0f;
+            p.z = 0.0f;
+            p.w = 1.0f;
+            p = transf * p;
+            initialPositions.push_back(p.x);
+            initialPositions.push_back(p.y);
+            initialPositions.push_back(p.z);
+            initialPositions.push_back(p.w);
+        }
+        float theta, phi;
+        for( int i = 0; i < totalParticles; ++i) {
+            theta = glm::mix(0.0f, glm::pi<float>() / 6.0f, Random::randomFloat(0.0f, 10.0f));
+            phi = glm::mix(0.0f, glm::two_pi<float>(), Random::randomFloat(0.0f, 10.0f));
+
+            p.x =sinf(theta) * cosf(phi);
+            p.y =cosf(theta);
+            p.z = sinf(theta) * sinf(phi);
+            p.w = 0;
+            initialVelocities.push_back(p.x);
+            initialVelocities.push_back(p.y);
+            initialVelocities.push_back(p.z);
+            initialVelocities.push_back(p.w);
+        }
+
+
+        for( int i = 0; i < totalParticles; ++i) {
+            initialAge.push_back(0.0f);
+        }
+
+        uint bufSize = totalParticles * 4 * sizeof(float);
+        uint bufSizeAge = totalParticles * sizeof(float);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, posBuf);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialPositions[0], GL_DYNAMIC_DRAW);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, velBuf);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialVelocities[0], GL_DYNAMIC_DRAW);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, age);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, bufSizeAge, &initialAge[0], GL_DYNAMIC_DRAW);
+
+        glGenVertexArrays(1, &particlesVao);
+        glBindVertexArray(particlesVao);
+        glBindBuffer(GL_ARRAY_BUFFER, posBuf);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+        glBindVertexArray(0);
 
 
     }
@@ -189,11 +240,11 @@ namespace DEngine{
         Renderer::getInstance()->beginDraw(glm::mat4(1), testSettings);
         view = camera.GetViewMatrix();
         //textureTest.bind();
-        testShader.bind();
-        //testShader.setUniform1i("u_Texture",0);
-        testShader.setUniformMat4f("projection",projection);
-        testShader.setUniformMat4f("view",view);
-        testShader.setUniformMat4f("model",model);
+        //testShader.bind();
+        ////testShader.setUniform1i("u_Texture",0);
+        //testShader.setUniformMat4f("projection",projection);
+        //testShader.setUniformMat4f("view",view);
+        //testShader.setUniformMat4f("model",model);
         //for (const auto& ent: entities) {
         //    if(Engine::entitySystemManager.hasComponent<MeshComponent>(ent)) {
         //        for(size_t it =0 ; it<Engine::entitySystemManager.getComponent<MeshComponent>(ent).mesh.size();it++) {
@@ -213,12 +264,19 @@ namespace DEngine{
 
 
         computeShader->bind();
-        glDispatchCompute(totalParticles, 1, 1);
+        //computeShader->setUniformMat3f("EmitterBasis",makeArbitraryBasis(emitterDir));
+        //computeShader->setUniformMat4f("EmitterBasis",glm::mat4(makeArbitraryBasis(emitterDir)));
+        computeShader->setUniform1f("DeltaTime",dt);
+        glDispatchCompute(1000, 1, 1);
         glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
-        //smokeParticleShader->bind();
-        //glPointSize(15.0f);
-        //glDrawArrays(GL_POINTS,0, totalParticles);
+
+        smokeParticleShader->bind();
+        smokeParticleShader->setUniformVec4f("u_Color",glm::vec4(1.0f,0.5f,0.3f,1.0f));
+        smokeParticleShader->setUniformMat4f("u_MVP",projection*view*model);
+        glBindVertexArray(particlesVao);
+        glPointSize(15.0f);
+        glDrawArrays(GL_POINTS,0, totalParticles);
         //Renderer::getInstance()->draw(*vaObj,smokeShader,GL_POINTS);
         //smokeShader.unbind();
 

@@ -66,15 +66,15 @@ namespace DEngine {
         glm::mat4 model, view, projection;
         std::shared_ptr<Window> windowPtr;
 
-        int numberOfParticles;
 
 
 
         //TEST SMOKE PARTICLES
+        glm::vec3 emitterDir{0,1,0};
         int totalParticles;
         std::shared_ptr<Shader> computeShader;
         std::shared_ptr<Shader> smokeParticleShader;
-
+        uint particlesVao;
         uint posBuf;
         uint velBuf;
         uint age;

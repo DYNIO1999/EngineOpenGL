@@ -34,7 +34,7 @@ namespace  DEngine {
 
 
         ~Shader();
-
+        uint getHandle(){return shaderID;};
         void bind() const;
 
         void unbind() const;
