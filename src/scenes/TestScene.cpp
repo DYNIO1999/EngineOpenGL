@@ -11,6 +11,23 @@
 
 namespace DEngine{
 
+
+    static glm::mat3 makeArbitraryBasis( const glm::vec3 & dir ) {
+        glm::mat3 basis;
+        glm::vec3 u, v, n;
+        v = dir;
+        n = glm::cross(glm::vec3(1,0,0), v);
+        if( glm::length(n) < 0.00001f ) {
+            n = glm::cross(glm::vec3(0,1,0), v);
+        }
+        u = glm::cross(v,n);
+        basis[0] = glm::normalize(u);
+        basis[1] = glm::normalize(v);
+        basis[2] = glm::normalize(n);
+        return basis;
+    }
+
+
     static void transformEditorDraw(){
         float col[3]{0,0,0};
         ImGui::Begin("Editor");
@@ -78,7 +95,7 @@ namespace DEngine{
        // testMesh = std::make_shared<Mesh>(myData, myIndexData);
         //testMesh = std::make_shared<Mesh>(myData);
 
-        testModel = std::make_shared<Model>(PATH_MODELS+"sword/scene.gltf");
+        //testModel = std::make_shared<Model>(PATH_MODELS+"sword/scene.gltf");
         entities.emplace_back(Engine::entitySystemManager.createEntity());
         entities.emplace_back(Engine::entitySystemManager.createEntity());
         entities.emplace_back(Engine::entitySystemManager.createEntity());
@@ -86,15 +103,14 @@ namespace DEngine{
         //entities.emplace_back(Engine::entitySystemManager.createEntity());
 
         TransformComponent testComp;
-        MeshComponent testMeshComp{};
-
-        testMeshComp.mesh= testModel->meshes;
+        //MeshComponent testMeshComp{};
+        //testMeshComp.mesh= testModel->meshes;
 
         testComp.transform = glm::mat4(1.0f);
         testComp.transform = glm::translate(testComp.transform, glm::vec3(0,1,-10));
         testComp.transform  = glm::rotate(testComp.transform, glm::radians(-10.0f), glm::vec3(1.0f, 0.0f,0.0f));
         Engine::entitySystemManager.addComponent(entities[0],testComp);
-        Engine::entitySystemManager.addComponent(entities[0],testMeshComp);
+        //Engine::entitySystemManager.addComponent(entities[0],testMeshComp);
 
 
 
@@ -104,16 +120,16 @@ namespace DEngine{
         testProps.color = glm::vec4(1,1,0.5,1);
         testProps.size = 5.0f;
 
-        ParticleComponent particleComponent;
-        particleComponent.particleProps = testProps;
-        particleComponent.texture = nullptr;
-        particleComponent.emitter = std::make_shared<PointEmitter>(glm::ivec3(100,100,100));
-        particleComponent.particleShader = std::make_shared<Shader>(PATH_SHADERS+ "particles/ParticleVertexShader.glsl",PATH_SHADERS+ "particles/ParticleFragmentShader.glsl");
-        particleComponent.computeShader = std::make_shared<Shader>(PATH_SHADERS +"particles/ParticleComputeShader.glsl");
+        //ParticleComponent particleComponent;
+        //particleComponent.particleProps = testProps;
+        //particleComponent.texture = nullptr;
+        //particleComponent.emitter = std::make_shared<PointEmitter>(glm::ivec3(100,100,100));
+        //particleComponent.particleShader = std::make_shared<Shader>(PATH_SHADERS+ "particles/ParticleVertexShader.glsl",PATH_SHADERS+ "particles/ParticleFragmentShader.glsl");
+        //particleComponent.computeShader = std::make_shared<Shader>(PATH_SHADERS +"particles/ParticleComputeShader.glsl");
 
 
         Engine::entitySystemManager.addComponent(entities[1],testComp);
-        Engine::entitySystemManager.addComponent(entities[1], particleComponent);
+        //Engine::entitySystemManager.addComponent(entities[1], particleComponent);
 
 
 
@@ -123,14 +139,7 @@ namespace DEngine{
         testProps2.size = 5.0f;
         testProps2.workGroups =2;
 
-        ParticleComponent particleComponent2;
-        particleComponent2.particleProps = testProps2;
-        particleComponent2.texture = nullptr;
-        particleComponent2.emitter = std::make_shared<PointEmitter>(glm::ivec3(100,100,100));
-        particleComponent2.particleShader = particleComponent.particleShader;
-        particleComponent2.computeShader =  std::make_shared<Shader>(PATH_SHADERS +"particles/ParticleComputeShader2.glsl");
         Engine::entitySystemManager.addComponent(entities[2],testComp);
-        Engine::entitySystemManager.addComponent(entities[2], particleComponent2);
         //testComp.transform = glm::mat4(1.0f);
         //testComp.transform = glm::translate(testComp.transform, glm::vec3(0,-2,0));
         //Engine::entitySystemManager.addComponent(entities[2],testComp);
@@ -145,32 +154,19 @@ namespace DEngine{
 
        // auto particleSystem =Engine::entitySystemManager.getSystem<ParticleSystem>();
        // particleSystem->init();
-        numberOfParticles = 8000;
+        computeShader      = std::make_shared<Shader>(PATH_SHADERS + "particles/smoke/SmokeComputeShader.glsl");
+        smokeParticleShader = std::make_shared<Shader>(PATH_SHADERS + "particles/smoke/SmokeVertexShader.glsl",
+                                                                              PATH_SHADERS + "particles/smoke/SmokeFragmentShader.glsl");
 
-        glm::vec3 v(0.0f);
-        float velocity, theta, phi;
-        float *data = new float[numberOfParticles * 3];
-        for (unsigned int i = 0; i < numberOfParticles; i++) {
 
-            theta = glm::mix(0.0f, glm::pi<float>() / 6.0f, 10.0f);
-            phi = glm::mix(0.0f, glm::two_pi<float>(), 10.0f);
+        totalParticles =1000;
+        glGenBuffers(1, posBuf);
+        glGenBuffers(1, velBuf);
+        glGenBuffers(1, age);
 
-            v.x = sinf(theta) * cosf(phi);
-            v.y = cosf(theta);
-            v.z = sinf(theta) * sinf(phi);
 
-            velocity = glm::mix(1.25f, 1.5f, 7.0f);
-            v = glm::normalize(v) * velocity;
 
-            data[3 * i] = v.x;
-            data[3 * i + 1] = v.y;
-            data[3 * i + 2] = v.z;
-        }
-        vbObj = new VertexBuffer(data, sizeof(numberOfParticles*3), numberOfParticles*3);
-        vbLayoutObj = new VertexBufferLayout;
-        vbLayoutObj->push<float>(3);
-        vaObj = new VertexArray();
-        vaObj->addBuffer(*vbObj,*vbLayoutObj);
+
     }
     void TestScene::input(Event &e) {
         EventDispatcher dispatcher(e);
@@ -207,17 +203,25 @@ namespace DEngine{
         //    }
         //}
         //textureTest.unbind();
-        testShader.unbind();
 
 
-        smokeShader.bind();
-        smokeShader.setUniformMat4f("projection",projection);
-        smokeShader.setUniformMat4f("view",view);
-        smokeShader.setUniformMat4f("model",model);
-        smokeShader.setUniform1f("u_Time", dt);
-        glPointSize(15.0f);
-        Renderer::getInstance()->draw(*vaObj,smokeShader,GL_POINTS);
-        smokeShader.unbind();
+        //smokeShader.bind();
+        //smokeShader.setUniformMat4f("projection",projection);
+        //smokeShader.setUniformMat4f("view",view);
+        //smokeShader.setUniformMat4f("model",model);
+        //smokeShader.setUniform1f("u_Time", dt);
+
+
+        computeShader->bind();
+        glDispatchCompute(totalParticles, 1, 1);
+        glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+        //smokeParticleShader->bind();
+        //glPointSize(15.0f);
+        //glDrawArrays(GL_POINTS,0, totalParticles);
+        //Renderer::getInstance()->draw(*vaObj,smokeShader,GL_POINTS);
+        //smokeShader.unbind();
+
         Renderer::getInstance()->endDraw();
      //   auto particleSystem =Engine::entitySystemManager.getSystem<ParticleSystem>();
         //particleSystem->update(dt, projection*view*model);

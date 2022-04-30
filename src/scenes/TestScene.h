@@ -66,11 +66,20 @@ namespace DEngine {
         glm::mat4 model, view, projection;
         std::shared_ptr<Window> windowPtr;
 
-        VertexArray* vaObj;
-        VertexBuffer* vbObj;
-        VertexBufferLayout* vbLayoutObj;
-
         int numberOfParticles;
+
+
+
+        //TEST SMOKE PARTICLES
+        int totalParticles;
+        std::shared_ptr<Shader> computeShader;
+        std::shared_ptr<Shader> smokeParticleShader;
+
+        uint posBuf;
+        uint velBuf;
+        uint age;
+        //TEST SMOKE PARTICLES
+
 
         //glm::ivec3 nParticles;
         //uint totalParticles;
