@@ -66,6 +66,7 @@ namespace DEngine{
     }
 
     void FogEmitter::update(Shader &_computeShader, float dt) {
+        glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
         _computeShader.bind();
         _computeShader.setUniform1f("u_DeltaTime", dt);
         glDispatchCompute(totalParticles, 1, 1);
@@ -75,6 +76,7 @@ namespace DEngine{
 
     void FogEmitter::emit(Shader &_particleShader, const glm::mat4 &_projection, const glm::mat4 &_view,
                             const glm::mat4 &_model) {
+        glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
         glDepthMask(GL_FALSE);
 
         _particleShader.bind();
@@ -86,6 +88,7 @@ namespace DEngine{
         glBindVertexArray(particlesVao);
         glDrawArrays(GL_POINTS,0, totalParticles);
         glDepthMask(GL_TRUE);
+        glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
     }
 
     void FogEmitter::setProperties(const ParticleProps &_particleProps) {

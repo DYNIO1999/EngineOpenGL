@@ -46,9 +46,9 @@ namespace DEngine{
         }
 
         uint bufSize = totalParticles * 4 * sizeof(float);
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, posBuf);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, posBuf);
         glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialPositions[0], GL_DYNAMIC_DRAW);
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, velBuf);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, velBuf);
         glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialVelocities[0], GL_DYNAMIC_DRAW);
 
         glGenVertexArrays(1, &particlesVao);
@@ -60,6 +60,7 @@ namespace DEngine{
     }
 
     void SmokeEmitter::update(Shader &_computeShader, float dt) {
+        glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
         _computeShader.bind();
         _computeShader.setUniform1f("u_DeltaTime", dt);
         glDispatchCompute(totalParticles, 1, 1);
@@ -69,6 +70,7 @@ namespace DEngine{
 
     void SmokeEmitter::emit(Shader &_particleShader, const glm::mat4 &_projection, const glm::mat4 &_view,
                             const glm::mat4 &_model) {
+        glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
         glDepthMask(GL_FALSE);
 
         _particleShader.bind();
@@ -82,6 +84,7 @@ namespace DEngine{
         glBindVertexArray(particlesVao);
         glDrawArrays(GL_POINTS,0, totalParticles);
         glDepthMask(GL_TRUE);
+        glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
     }
 
     void SmokeEmitter::setProperties(const ParticleProps &_particleProps) {

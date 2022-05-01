@@ -83,7 +83,8 @@ namespace DEngine{
         //testModel = std::make_shared<Model>(PATH_MODELS+"sword/scene.gltf");
         entities.emplace_back(Engine::entitySystemManager.createEntity());
         entities.emplace_back(Engine::entitySystemManager.createEntity());
-        //entities.emplace_back(Engine::entitySystemManager.createEntity());
+        entities.emplace_back(Engine::entitySystemManager.createEntity());
+        entities.emplace_back(Engine::entitySystemManager.createEntity());
 
         TransformComponent testComp;
         //MeshComponent testMeshComp{};
@@ -97,11 +98,25 @@ namespace DEngine{
 
 
         ///SMOKE PARTICLES BEGIN
+        std::shared_ptr<Shader> smokeComputeShader;
+        std::shared_ptr<Shader> smokeParticleShader;
 
-        computeShader      = std::make_shared<Shader>(PATH_SHADERS + "particles/fog/FogComputeShader.glsl");
+        std::shared_ptr<Shader> fogComputeShader;
+        std::shared_ptr<Shader> fogParticleShader;
+
+
+        fogComputeShader  = std::make_shared<Shader>(PATH_SHADERS + "particles/fog/FogComputeShader.glsl");
         fogParticleShader = std::make_shared<Shader>(PATH_SHADERS + "particles/fog/FogVertexShader.glsl",
                                                        PATH_SHADERS +"particles/fog/FogGeometryShader.glsl",
                                                        PATH_SHADERS + "particles/fog/FogFragmentShader.glsl");
+
+
+        smokeComputeShader = std::make_shared<Shader>(PATH_SHADERS + "particles/smoke/SmokeComputeShader.glsl");
+        smokeParticleShader = std::make_shared<Shader>(PATH_SHADERS + "particles/smoke/SmokeVertexShader.glsl",
+                                                     PATH_SHADERS +"particles/smoke/SmokeGeometryShader.glsl",
+                                                     PATH_SHADERS + "particles/smoke/SmokeFragmentShader.glsl");
+
+
 
         std::shared_ptr<Texture> particleTexture = std::make_shared<Texture>(PATH_TEXTURES+"smoke.png");
 
@@ -113,21 +128,37 @@ namespace DEngine{
         ParticleComponent particleComponent;
         particleComponent.emitter = std::make_shared<FogEmitter>(1000);
         particleComponent.particleShader = fogParticleShader;
-        particleComponent.computeShader = computeShader;
+        particleComponent.computeShader = fogComputeShader;
         particleComponent.texture =particleTexture;
 
         Engine::entitySystemManager.addComponent(entities[1],testComp);
         Engine::entitySystemManager.addComponent(entities[1], particleComponent);
         Engine::entitySystemManager.addComponent(entities[1], particlePropertiesComponent1);
 
-        //testComp.transform = glm::mat4(1.0f);
-        //testComp.transform = glm::translate(testComp.transform, glm::vec3(0.0f,10.0f,-10.0f));
-        //ParticlePropertiesComponent particlePropertiesComponent2;
-        //particlePropertiesComponent2.particleProps.size =1.0f;
-        //Engine::entitySystemManager.addComponent(entities[2],testComp);
-        //Engine::entitySystemManager.addComponent(entities[2], particleComponent);
-        //Engine::entitySystemManager.addComponent(entities[2], particlePropertiesComponent2);
-        ///SMOKE PARTICLES END
+        testComp.transform = glm::mat4(1.0f);
+        testComp.transform = glm::translate(testComp.transform, glm::vec3(-10.0f,0.0f,0.0f));
+        ParticlePropertiesComponent particlePropertiesComponent2;
+        particlePropertiesComponent2.particleProps.size =5.0f;
+        ParticleComponent particleComponent2;
+        particleComponent2.emitter = std::make_shared<SmokeEmitter>(1000);
+        particleComponent2.particleShader = smokeParticleShader;
+        particleComponent2.computeShader = smokeComputeShader;
+        particleComponent2.texture =particleTexture;
+
+        Engine::entitySystemManager.addComponent(entities[2],testComp);
+        Engine::entitySystemManager.addComponent(entities[2], particleComponent2);
+        Engine::entitySystemManager.addComponent(entities[2], particlePropertiesComponent2);
+
+
+        testComp.transform = glm::mat4(1.0f);
+        testComp.transform = glm::translate(testComp.transform, glm::vec3(10.0f,0.0f,0.0f));
+        ParticlePropertiesComponent particlePropertiesComponent3;
+        particlePropertiesComponent3.particleProps.size =5.0f;
+
+        Engine::entitySystemManager.addComponent(entities[3],testComp);
+        Engine::entitySystemManager.addComponent(entities[3], particleComponent2);
+        Engine::entitySystemManager.addComponent(entities[3], particlePropertiesComponent3);
+
 
 
         auto particleSystem =Engine::entitySystemManager.getSystem<ParticleSystem>();
