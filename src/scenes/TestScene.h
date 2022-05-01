@@ -22,7 +22,7 @@ namespace DEngine {
                                      testShader(PATH_SHADERS+ "TestVertexShader.glsl",PATH_SHADERS+ "TestFragmentShader.glsl")
                                      ,textureTest(PATH_TEXTURES + "particles/water.png")
                                      ,windowPtr(_windowPtr)
-                                     ,smokeShader(PATH_SHADERS+"particles/smoke/SmokeVertexShader.glsl",PATH_SHADERS+"particles/smoke/SmokeFragmentShader.glsl")
+                                     ,particleTexture(PATH_TEXTURES+"smoke.png")
         {
             initData();
         };
@@ -43,7 +43,6 @@ namespace DEngine {
         bool is_selected = false;
         float timeCounter;
         Shader testShader;
-        Shader smokeShader;
         //Shader particleComputeShader;
         //Shader particleShader;
         Texture textureTest;
@@ -78,6 +77,7 @@ namespace DEngine {
         uint posBuf;
         uint velBuf;
         uint age;
+        Texture particleTexture;
         //TEST SMOKE PARTICLES
 
 

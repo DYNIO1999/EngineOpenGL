@@ -1,12 +1,14 @@
 #version 460
 out vec4 FragColor;
-uniform vec4 u_Color;
-in float Transp;
+in vec2 uv;
 
+uniform sampler2D u_Texture;
 void main()
 {
-    FragColor = u_Color;
-    FragColor.a *= Transp;
+    vec4 texColor = texture(u_Texture,uv);
+    //texColor.a *= 0.1;
+    texColor.a *= 0.5;
+    FragColor = texColor;
 }
 
 

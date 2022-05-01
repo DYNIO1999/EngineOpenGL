@@ -157,7 +157,8 @@ namespace DEngine{
        // particleSystem->init();
         computeShader      = std::make_shared<Shader>(PATH_SHADERS + "particles/smoke/SmokeComputeShader.glsl");
         smokeParticleShader = std::make_shared<Shader>(PATH_SHADERS + "particles/smoke/SmokeVertexShader.glsl",
-                                                                              PATH_SHADERS + "particles/smoke/SmokeFragmentShader.glsl");
+                                                       PATH_SHADERS +"particles/smoke/SmokeGeometryShader.glsl",
+                                                       PATH_SHADERS + "particles/smoke/SmokeFragmentShader.glsl");
 
         std::vector<float> initialPositions;
         std::vector<float> initialVelocities;
@@ -199,19 +200,11 @@ namespace DEngine{
             initialVelocities.push_back(p.w);
         }
 
-
-        for( int i = 0; i < totalParticles; ++i) {
-            initialAge.push_back(0.0f);
-        }
-
         uint bufSize = totalParticles * 4 * sizeof(float);
-        uint bufSizeAge = totalParticles * sizeof(float);
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, posBuf);
         glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialPositions[0], GL_DYNAMIC_DRAW);
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, velBuf);
         glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialVelocities[0], GL_DYNAMIC_DRAW);
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, age);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, bufSizeAge, &initialAge[0], GL_DYNAMIC_DRAW);
 
         glGenVertexArrays(1, &particlesVao);
         glBindVertexArray(particlesVao);
@@ -239,7 +232,7 @@ namespace DEngine{
         DrawCallSettings  testSettings;
         testSettings.enableBlendingFlag=true;
         testSettings.enableDepthTestFlag=true;
-        Renderer::getInstance()->clear(glm::vec4(0.5, 0.5, 0.5 , 1.0));
+        Renderer::getInstance()->clear(glm::vec4(0.0, 0.0, 0.0 , 1.0));
         Renderer::getInstance()->beginDraw(glm::mat4(1), testSettings);
         view = camera.GetViewMatrix();
         //textureTest.bind();
@@ -273,16 +266,23 @@ namespace DEngine{
         glDispatchCompute(1000, 1, 1);
         glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
-        DENGINE_ERROR("DT: {}", dt);
-        smokeParticleShader->bind();
-        smokeParticleShader->setUniform1f("ParticleLifetime",1.0f);
-        smokeParticleShader->setUniform1f("Time",dt*35);
 
-        smokeParticleShader->setUniformVec4f("u_Color",glm::vec4(0.631, 0.631, 0.631,1.0f));
-        smokeParticleShader->setUniformMat4f("u_MVP",projection*view*model);
+
+
+
+        glDepthMask(GL_FALSE);
+        DENGINE_ERROR("DT: {}", dt);
+        particleTexture.bind();
+        smokeParticleShader->bind();
+        smokeParticleShader->setUniform1i("u_Texture",0);
+        smokeParticleShader->setUniformMat4f("u_Projection",projection);
+        smokeParticleShader->setUniformMat4f("u_View",view);
+        smokeParticleShader->setUniformMat4f("u_Model",model);
+        smokeParticleShader->setUniformVec2f("u_Size",glm::vec2(5.0f,5.0f));
+
         glBindVertexArray(particlesVao);
-        glPointSize(15.0f);
         glDrawArrays(GL_POINTS,0, totalParticles);
+        glDepthMask(GL_TRUE);
         //Renderer::getInstance()->draw(*vaObj,smokeShader,GL_POINTS);
         //smokeShader.unbind();
 
