@@ -19,9 +19,9 @@ namespace DEngine{
         glm::vec4 p(0.0f, 0.0f, 0.0f, 1.0f);
         glm::mat4 transf = glm::translate(glm::mat4(1.0f), glm::vec3(-1,-1,-1));
         for( int i = 0; i < totalParticles; ++i ) {
-            p.x = Random::randomFloat(0,50)-50.0f;
-            p.y = Random::randomFloat(0,50)-50.0f;
-            p.z = Random::randomFloat(0,50)-50.0f;
+            p.x = Random::randomFloat(-50,50);
+            p.y = Random::randomFloat(0,20);
+            p.z = Random::randomFloat(-50,50);
             p.w = 1.0f;
             p = transf * p;
             initialPositions.push_back(p.x);
@@ -35,11 +35,11 @@ namespace DEngine{
             phi = glm::mix(0.0f, glm::two_pi<float>(), Random::randomFloat(0.0f, 1.0f));
 
             p.x =sinf(theta) * cosf(phi);
-            p.y =cosf(theta);
+            p.y =-cosf(theta);
             p.z = sinf(theta) * sinf(phi);
             p.w = 0;
 
-            velocity = glm::mix(1.25f, 1.5f, Random::randomFloat(0.0f, 10.0f));
+            velocity = glm::mix(0.0f, 1.0f, Random::randomFloat(0.0f, 3.0f));
             p = glm::normalize(p) * velocity;
             initialVelocities.push_back(p.x);
             initialVelocities.push_back(p.y);
@@ -53,7 +53,7 @@ namespace DEngine{
         glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialPositions[0], GL_DYNAMIC_DRAW);
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, velBuf);
         glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialVelocities[0], GL_DYNAMIC_DRAW);
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, velBuf);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, startBuf);
         glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &startPositions[0], GL_DYNAMIC_DRAW);
 
 
@@ -82,9 +82,7 @@ namespace DEngine{
         _particleShader.setUniformMat4f("u_Projection",_projection);
         _particleShader.setUniformMat4f("u_View",_view);
         _particleShader.setUniformMat4f("u_Model",_model);
-        DENGINE_INFO("SIZE: {}",particleProps.size);
         _particleShader.setUniformVec2f("u_Size",glm::vec2{particleProps.size,particleProps.size});
-
         glBindVertexArray(particlesVao);
         glDrawArrays(GL_POINTS,0, totalParticles);
         glDepthMask(GL_TRUE);

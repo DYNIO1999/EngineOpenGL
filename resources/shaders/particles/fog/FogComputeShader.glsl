@@ -21,12 +21,12 @@ void main() {
     uint idx = gl_GlobalInvocationID.x;
     vec3 pos = Position[idx].xyz;
 
-    vec3 d =  vec3(0.0f, 0.0f,0.0f)- Position[idx].xyz;
+    vec3 d =  StartingPos[idx].xyz - Position[idx].xyz;
     float dist = length(d);
 
 
     if( dist > MaxDist ) {
-        Position[idx] = vec4(0,0,0,1);
+        Position[idx].xyz = StartingPos[idx].xyz;
     } else {
         vec3 vel = Velocity[idx].xyz;
         Position[idx].xyz= pos + vel *u_DeltaTime;
