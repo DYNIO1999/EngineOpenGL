@@ -1,4 +1,4 @@
-#include "TestScene.h"
+#include "LabScene.h"
 #include "core/LogManager.h"
 #include "core/Engine.h"
 
@@ -46,9 +46,9 @@ namespace DEngine{
         }
         ImGui::End();
     }
-    TestScene::~TestScene(){
+    LabScene::~LabScene(){
     }
-    void TestScene::detach() {
+    void LabScene::detach() {
             for(auto it = entities.begin();it<entities.end();it++){
 
                 std::cout<<*it<<' ';
@@ -59,7 +59,7 @@ namespace DEngine{
             std::cout<<'\n';
     }
 
-    void TestScene::initData() {
+    void LabScene::initData() {
         projection  = glm::perspective(glm::radians(camera.zoom), (float)1600/900, 0.1f, 100.0f);
 
 
@@ -215,15 +215,15 @@ namespace DEngine{
 
 
     }
-    void TestScene::input(Event &e) {
+    void LabScene::input(Event &e) {
         EventDispatcher dispatcher(e);
-        dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(TestScene::windowClose));
-        dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FUNCTION(TestScene::onKeyPressedInput));
-        dispatcher.dispatch<MouseButtonPressed>(BIND_EVENT_FUNCTION(TestScene::onMousePressed));
-        dispatcher.dispatch<MouseButtonReleased>(BIND_EVENT_FUNCTION(TestScene::onMouseReleased));
-        dispatcher.dispatch<MouseMovedEvent>(BIND_EVENT_FUNCTION(TestScene::onMouseMovedEvent));
+        dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FUNCTION(LabScene::windowClose));
+        dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FUNCTION(LabScene::onKeyPressedInput));
+        dispatcher.dispatch<MouseButtonPressed>(BIND_EVENT_FUNCTION(LabScene::onMousePressed));
+        dispatcher.dispatch<MouseButtonReleased>(BIND_EVENT_FUNCTION(LabScene::onMouseReleased));
+        dispatcher.dispatch<MouseMovedEvent>(BIND_EVENT_FUNCTION(LabScene::onMouseMovedEvent));
     }
-    void TestScene::update(float dt) {
+    void LabScene::update(float dt) {
         currentDeltaTime =dt;
         ImGUITest();
         timeCounter = glfwGetTime();
@@ -270,7 +270,7 @@ namespace DEngine{
 
 
 
-        glDepthMask(GL_FALSE);
+        Renderer::getInstance()->setDepthMask(false);
         DENGINE_ERROR("DT: {}", dt);
         particleTexture.bind();
         smokeParticleShader->bind();
@@ -282,7 +282,7 @@ namespace DEngine{
 
         glBindVertexArray(particlesVao);
         glDrawArrays(GL_POINTS,0, totalParticles);
-        glDepthMask(GL_TRUE);
+        Renderer::getInstance()->setDepthMask(true);
         //Renderer::getInstance()->draw(*vaObj,smokeShader,GL_POINTS);
         //smokeShader.unbind();
 
@@ -297,12 +297,12 @@ namespace DEngine{
         //    return;
         //}
     }
-    bool TestScene::windowClose(WindowCloseEvent& e){
+    bool LabScene::windowClose(WindowCloseEvent& e){
         Engine::isRunning = false;
         return true;
     }
 
-    bool TestScene::onKeyPressedInput(KeyPressedEvent& e){
+    bool LabScene::onKeyPressedInput(KeyPressedEvent& e){
 
         switch (e.getKeyCode()) {
             case W:
@@ -320,7 +320,7 @@ namespace DEngine{
         }
         return  true;
     }
-    bool TestScene::onMouseMovedEvent(MouseMovedEvent& e){
+    bool LabScene::onMouseMovedEvent(MouseMovedEvent& e){
         if(isButtonPressed) {
             double mouseX;
             double mouseY;
@@ -339,7 +339,7 @@ namespace DEngine{
     }
 
 
-    bool TestScene::onMousePressed(MouseButtonPressed &e) {
+    bool LabScene::onMousePressed(MouseButtonPressed &e) {
         if(e.getMouseCode() ==ButtonLeft){
             isButtonPressed =true;
         }
@@ -348,14 +348,14 @@ namespace DEngine{
         }
         return true;
     }
-    bool TestScene::onMouseReleased(MouseButtonReleased& e){
+    bool LabScene::onMouseReleased(MouseButtonReleased& e){
         if(e.getMouseCode() ==ButtonLeft){
             isButtonPressed = false;
         }
         return true;
     }
 
-    void TestScene::ImGUITest() {
+    void LabScene::ImGUITest() {
         static bool testBool = true;
         //DENGINE_TRACE("SCENE IS UPDATING: {} ", getSceneName());
         float col[3]{0,0,0};

@@ -22,9 +22,7 @@
 
 #include "components/Components.h"
 
-
 namespace  DEngine {
-
     static const std::string PATH_TEXTURES = "../../resources/textures/";
     static const std::string PATH_SHADERS = "../../resources/shaders/";
     static const std::string PATH_MODELS = "../../resources/models/";
@@ -46,6 +44,8 @@ namespace  DEngine {
     struct DrawCallData{
 
     };
+
+
     class Renderer {
     public:
         Renderer(Renderer &other) = delete;
@@ -64,6 +64,10 @@ namespace  DEngine {
         void clear() const;
         void clear(glm::vec4 _givenColor) const;
         static Renderer* getInstance();
+
+
+
+        void setDepthMask(bool _set);
 
     private:
         glm::mat4  currentProjection;

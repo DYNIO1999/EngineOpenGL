@@ -1,5 +1,5 @@
 #include "Engine.h"
-#include "scenes/TestScene.h"
+#include "scenes/LabScene.h"
 #include "scenes/EditorScene.h"
 #include "scenes/WaveSurfaceScene.h"
 #include "renderer/Renderer.h"
@@ -46,7 +46,7 @@ namespace DEngine{
         //ECS
         //SCENE PUSHING
 
-        sceneManager.pushScene(new TestScene("HELLOOO", window));
+        sceneManager.pushScene(new LabScene("Laboratoria", window));
         //sceneManager.pushScene(new WaveSurfaceScene("Waves", window));
         //sceneManager.pushScene(new GPUParticlesScene("RainParticles", window));
 

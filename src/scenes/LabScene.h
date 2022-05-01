@@ -1,5 +1,5 @@
-#ifndef DENGINE_TESTSCENE_H
-#define DENGINE_TESTSCENE_H
+#ifndef DENGINE_LABSCENE_H
+#define DENGINE_LABSCENE_H
 
 #include <unordered_set>
 #include <imgui.h>
@@ -16,9 +16,9 @@
 #include "core/Camera.h"
 
 namespace DEngine {
-    class TestScene : public Scene {
+    class LabScene : public Scene {
     public:
-        TestScene(std::string name, std::shared_ptr<Window> _windowPtr): Scene(name),
+        LabScene(std::string name, std::shared_ptr<Window> _windowPtr): Scene(name),
                                      testShader(PATH_SHADERS+ "TestVertexShader.glsl",PATH_SHADERS+ "TestFragmentShader.glsl")
                                      ,textureTest(PATH_TEXTURES + "particles/water.png")
                                      ,windowPtr(_windowPtr)
@@ -26,7 +26,7 @@ namespace DEngine {
         {
             initData();
         };
-        ~TestScene();
+        ~LabScene();
         void initScene() override{
 
         }

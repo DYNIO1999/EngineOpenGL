@@ -135,4 +135,12 @@ namespace DEngine{
     void Renderer::shutdown() {
 
     }
+
+    void Renderer::setDepthMask(bool _set) {
+        if(_set){
+            glDepthMask(GL_TRUE);
+        }else{
+            glDepthMask(GL_FALSE);
+        }
+    }
 }
