@@ -1,8 +1,7 @@
 #include "RainEmitter.h"
 
 namespace DEngine{
-    void RainEmitter::init(const ParticleProps &_particleProps) {
-        particleProps = _particleProps;
+    void RainEmitter::init() {
         totalParticles = numberOfParticles.x * numberOfParticles.y *numberOfParticles.z;
 
         glm::vec4 p(0.0f, 0.0f, 0.0f, 1.0f);
@@ -77,4 +76,8 @@ namespace DEngine{
         _particleShader.unbind();
         glBindVertexArray(0);
     }
+    void RainEmitter::setProperties(const ParticleProps &_particleProps) {
+        particleProps = _particleProps;
+    }
+
 }

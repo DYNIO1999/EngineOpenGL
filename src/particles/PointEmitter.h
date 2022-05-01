@@ -13,7 +13,8 @@ namespace DEngine {
         ~PointEmitter(){
 
         }
-        void init(const ParticleProps& _particleProps) override;
+        void init() override;
+        void setProperties(const ParticleProps &_particleProps) override;
         void update(Shader &_computeShader, float dt) override;
         void emit(Shader &_particleShader, const glm::mat4 &_projection, const glm::mat4 &_model, const glm::mat4 &_view) override;
 

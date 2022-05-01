@@ -23,7 +23,10 @@ namespace DEngine{
         entitySystemManager.registerComponent<TransformComponent>();
         entitySystemManager.registerComponent<GravityComponent>();
         entitySystemManager.registerComponent<RigidBodyComponent>();
+        //PARTICLES COMPONENTS BEGIN
         entitySystemManager.registerComponent<ParticleComponent>();
+        entitySystemManager.registerComponent<ParticlePropertiesComponent>();
+        //PARTICLES COMPONENTS END
         entitySystemManager.registerComponent<MeshComponent>();
 
         auto physicsSystem= entitySystemManager.registerSystem<PhysicsSystem>();
@@ -39,8 +42,10 @@ namespace DEngine{
         {
             ComponentsSignature signature;
             //signature.set(entitySystemManager.getComponentType<TagComponent>());
+
             signature.set(entitySystemManager.getComponentType<TransformComponent>());
             signature.set(entitySystemManager.getComponentType<ParticleComponent>());
+            signature.set(entitySystemManager.getComponentType<ParticlePropertiesComponent>());
             entitySystemManager.setSystemSignature<ParticleSystem>(signature);
         }
         //ECS

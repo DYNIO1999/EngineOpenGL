@@ -22,17 +22,19 @@ namespace DEngine{
                                                                               PATH_SHADERS + "particles/rain/RainFragmentShader.glsl");
 
         ParticleProps testParticleProperties;
-
         testParticleProperties.color= glm::vec4(0.549, 0.768, 0.933, 1.0f);
         testParticleProperties.size=0.1f;
 
         ParticleComponent testParticleComponent;
-        testParticleComponent.particleProps = testParticleProperties;
+        ParticlePropertiesComponent particlePropertiesComponent;
+
+        particlePropertiesComponent.particleProps =testParticleProperties;
         testParticleComponent.emitter = std::make_shared<RainEmitter>(glm::ivec3(100,100,100));
         testParticleComponent.computeShader = computeShader;
         testParticleComponent.particleShader = rainParticleShader;
 
         Engine::entitySystemManager.addComponent(entities[0], testParticleComponent);
+        Engine::entitySystemManager.addComponent(entities[0], particlePropertiesComponent);
 
         TransformComponent testObjTransform;
         testObjTransform.transform  = glm::mat4(1);
@@ -156,7 +158,7 @@ namespace DEngine{
         skyBoxShader.unbind();
         glDepthFunc(GL_LESS);
 
-        Engine::entitySystemManager.getSystem<ParticleSystem>()->update(dt, projection, view, model);
+        Engine::entitySystemManager.getSystem<ParticleSystem>()->update(dt, projection, view);
 
 
 

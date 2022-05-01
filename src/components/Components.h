@@ -55,11 +55,15 @@ namespace  DEngine {
     struct ParticleComponent {
         ParticleComponent()=default;
         ParticleComponent(const ParticleComponent&) =default;
-        ParticleProps particleProps;
         std::shared_ptr<Texture> texture;
         std::shared_ptr<Emitter> emitter;
         std::shared_ptr<Shader> computeShader;
         std::shared_ptr<Shader> particleShader;
+    };
+    struct ParticlePropertiesComponent{
+        ParticlePropertiesComponent() = default;
+        ParticlePropertiesComponent(const ParticlePropertiesComponent&) =default;
+        ParticleProps particleProps;
     };
 }
 #endif

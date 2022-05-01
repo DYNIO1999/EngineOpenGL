@@ -8,26 +8,9 @@
 #include "glm/gtx/string_cast.hpp"
 
 #include "particles/PointEmitter.h"
+#include "particles/SmokeEmitter.h"
 
 namespace DEngine{
-
-
-
-    static glm::mat3 makeArbitraryBasis( const glm::vec3 & dir ) {
-        glm::mat3 basis;
-        glm::vec3 u, v, n;
-        v = dir;
-        n = glm::cross(glm::vec3(1,0,0), v);
-        if( glm::length(n) < 0.00001f ) {
-            n = glm::cross(glm::vec3(0,1,0), v);
-        }
-        u = glm::cross(v,n);
-        basis[0] = glm::normalize(u);
-        basis[1] = glm::normalize(v);
-        basis[2] = glm::normalize(n);
-        return basis;
-    }
-
 
     static void transformEditorDraw(){
         float col[3]{0,0,0};
@@ -100,8 +83,6 @@ namespace DEngine{
         entities.emplace_back(Engine::entitySystemManager.createEntity());
         entities.emplace_back(Engine::entitySystemManager.createEntity());
         entities.emplace_back(Engine::entitySystemManager.createEntity());
-        //entities.emplace_back(Engine::entitySystemManager.createEntity());
-        //entities.emplace_back(Engine::entitySystemManager.createEntity());
 
         TransformComponent testComp;
         //MeshComponent testMeshComp{};
@@ -114,106 +95,48 @@ namespace DEngine{
         //Engine::entitySystemManager.addComponent(entities[0],testMeshComp);
 
 
+        ///SMOKE PARTICLES BEGIN
 
-        testComp.transform = glm::mat4(1.0f);
-
-        ParticleProps testProps;
-        testProps.color = glm::vec4(1,1,0.5,1);
-        testProps.size = 5.0f;
-
-        //ParticleComponent particleComponent;
-        //particleComponent.particleProps = testProps;
-        //particleComponent.texture = nullptr;
-        //particleComponent.emitter = std::make_shared<PointEmitter>(glm::ivec3(100,100,100));
-        //particleComponent.particleShader = std::make_shared<Shader>(PATH_SHADERS+ "particles/ParticleVertexShader.glsl",PATH_SHADERS+ "particles/ParticleFragmentShader.glsl");
-        //particleComponent.computeShader = std::make_shared<Shader>(PATH_SHADERS +"particles/ParticleComputeShader.glsl");
-
-
-        Engine::entitySystemManager.addComponent(entities[1],testComp);
-        //Engine::entitySystemManager.addComponent(entities[1], particleComponent);
-
-
-
-        testComp.transform = glm::mat4(1.0f);
-        ParticleProps testProps2;
-        testProps2.color = glm::vec4(1,0.3,0.7,1);
-        testProps2.size = 5.0f;
-        testProps2.workGroups =2;
-
-        Engine::entitySystemManager.addComponent(entities[2],testComp);
-        //testComp.transform = glm::mat4(1.0f);
-        //testComp.transform = glm::translate(testComp.transform, glm::vec3(0,-2,0));
-        //Engine::entitySystemManager.addComponent(entities[2],testComp);
-        //testComp.transform = glm::mat4(1.0f);
-        //testComp.transform = glm::translate(testComp.transform, glm::vec3(0,0,-2));
-        //Engine::entitySystemManager.addComponent(entities[3],testComp);
-        //ParticleCPUEmitterComponent testEmitter;
-        //testComp.transform = glm::mat4(1.0f);
-        //testComp.transform = glm::translate(testComp.transform, glm::vec3(0,0,-2));
-        //Engine::entitySystemManager.addComponent(entities[4],testComp);
-        //Engine::entitySystemManager.addComponent(entities[4],testEmitter);
-
-       // auto particleSystem =Engine::entitySystemManager.getSystem<ParticleSystem>();
-       // particleSystem->init();
         computeShader      = std::make_shared<Shader>(PATH_SHADERS + "particles/smoke/SmokeComputeShader.glsl");
         smokeParticleShader = std::make_shared<Shader>(PATH_SHADERS + "particles/smoke/SmokeVertexShader.glsl",
                                                        PATH_SHADERS +"particles/smoke/SmokeGeometryShader.glsl",
                                                        PATH_SHADERS + "particles/smoke/SmokeFragmentShader.glsl");
 
-        std::vector<float> initialPositions;
-        std::vector<float> initialVelocities;
-        std::vector<float> initialAge;
-        totalParticles =1000;
-        glGenBuffers(1, &posBuf);
-        glGenBuffers(1, &velBuf);
-        glGenBuffers(1, &age);
+        std::shared_ptr<Texture> particleTexture = std::make_shared<Texture>(PATH_TEXTURES+"smoke.png");
+
+        testComp.transform = glm::mat4(1.0f);
+        testComp.transform = glm::translate(testComp.transform, glm::vec3(-10.0f,0.0f,-10.0f));
 
 
-        glm::vec4 p(0.0f, 0.0f, 0.0f, 1.0f);
-        glm::mat4 transf = glm::translate(glm::mat4(1.0f), glm::vec3(-1,-1,-1));
-        for( int i = 0; i < totalParticles; ++i ) {
-            p.x = 0.0f;
-            p.y = 0.0f;
-            p.z = 0.0f;
-            p.w = 1.0f;
-            p = transf * p;
-            initialPositions.push_back(p.x);
-            initialPositions.push_back(p.y);
-            initialPositions.push_back(p.z);
-            initialPositions.push_back(p.w);
-        }
-        float velocity,theta, phi;
-        for( int i = 0; i < totalParticles; ++i) {
-            theta = glm::mix(0.0f, glm::pi<float>() / 2.0f, Random::randomFloat(0.0f, 1.0f));
-            phi = glm::mix(0.0f, glm::two_pi<float>(), Random::randomFloat(0.0f, 1.0f));
 
-            p.x =sinf(theta) * cosf(phi);
-            p.y =cosf(theta);
-            p.z = sinf(theta) * sinf(phi);
-            p.w = 0;
+        ParticlePropertiesComponent particlePropertiesComponent1;
+        particlePropertiesComponent1.particleProps;
+        particlePropertiesComponent1.particleProps.size =5.0f;
+        ParticleComponent particleComponent;
+        particleComponent.emitter = std::make_shared<SmokeEmitter>(1000);
+        particleComponent.particleShader = smokeParticleShader;
+        particleComponent.computeShader = computeShader;
+        particleComponent.texture =particleTexture;
 
-            velocity = glm::mix(1.25f, 1.5f, Random::randomFloat(0.0f, 10.0f));
-            p = glm::normalize(p) * velocity;
-            initialVelocities.push_back(p.x);
-            initialVelocities.push_back(p.y);
-            initialVelocities.push_back(p.z);
-            initialVelocities.push_back(p.w);
-        }
+        Engine::entitySystemManager.addComponent(entities[1],testComp);
+        Engine::entitySystemManager.addComponent(entities[1], particleComponent);
+        Engine::entitySystemManager.addComponent(entities[1], particlePropertiesComponent1);
 
-        uint bufSize = totalParticles * 4 * sizeof(float);
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, posBuf);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialPositions[0], GL_DYNAMIC_DRAW);
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, velBuf);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialVelocities[0], GL_DYNAMIC_DRAW);
-
-        glGenVertexArrays(1, &particlesVao);
-        glBindVertexArray(particlesVao);
-        glBindBuffer(GL_ARRAY_BUFFER, posBuf);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-        glBindVertexArray(0);
+        testComp.transform = glm::mat4(1.0f);
+        testComp.transform = glm::translate(testComp.transform, glm::vec3(0.0f,10.0f,-10.0f));
 
 
+        ParticlePropertiesComponent particlePropertiesComponent2;
+        particlePropertiesComponent2.particleProps.size =1.0f;
+
+        Engine::entitySystemManager.addComponent(entities[2],testComp);
+        Engine::entitySystemManager.addComponent(entities[2], particleComponent);
+        Engine::entitySystemManager.addComponent(entities[2], particlePropertiesComponent2);
+        ///SMOKE PARTICLES END
+
+
+        auto particleSystem =Engine::entitySystemManager.getSystem<ParticleSystem>();
+        particleSystem->init();
     }
     void LabScene::input(Event &e) {
         EventDispatcher dispatcher(e);
@@ -251,44 +174,11 @@ namespace DEngine{
         //}
         //textureTest.unbind();
 
+        auto particleSystem =Engine::entitySystemManager.getSystem<ParticleSystem>();
+        particleSystem->update(dt,projection,view);
 
-        //smokeShader.bind();
-        //smokeShader.setUniformMat4f("projection",projection);
-        //smokeShader.setUniformMat4f("view",view);
-        //smokeShader.setUniformMat4f("model",model);
-        //smokeShader.setUniform1f("u_Time", dt);
-
-
-        computeShader->bind();
-        //computeShader->setUniformMat3f("EmitterBasis",makeArbitraryBasis(emitterDir));
-        //computeShader->setUniformMat4f("EmitterBasis",glm::mat4(makeArbitraryBasis(emitterDir)));
-        computeShader->setUniform1f("DeltaTime",dt);
-        glDispatchCompute(1000, 1, 1);
-        glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-
-
-
-
-
-        Renderer::getInstance()->setDepthMask(false);
-        DENGINE_ERROR("DT: {}", dt);
-        particleTexture.bind();
-        smokeParticleShader->bind();
-        smokeParticleShader->setUniform1i("u_Texture",0);
-        smokeParticleShader->setUniformMat4f("u_Projection",projection);
-        smokeParticleShader->setUniformMat4f("u_View",view);
-        smokeParticleShader->setUniformMat4f("u_Model",model);
-        smokeParticleShader->setUniformVec2f("u_Size",glm::vec2(5.0f,5.0f));
-
-        glBindVertexArray(particlesVao);
-        glDrawArrays(GL_POINTS,0, totalParticles);
-        Renderer::getInstance()->setDepthMask(true);
-        //Renderer::getInstance()->draw(*vaObj,smokeShader,GL_POINTS);
-        //smokeShader.unbind();
 
         Renderer::getInstance()->endDraw();
-     //   auto particleSystem =Engine::entitySystemManager.getSystem<ParticleSystem>();
-        //particleSystem->update(dt, projection*view*model);
 
         //POP SCENE IN PROPER WAY DONT REMOVE!
         //if(timeCounter>5){

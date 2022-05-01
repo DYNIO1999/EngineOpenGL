@@ -1,8 +1,7 @@
 #include "PointEmitter.h"
 
 namespace DEngine{
-    void PointEmitter::init(const ParticleProps &_particleProps) {
-        particleProps = _particleProps;
+    void PointEmitter::init() {
         totalParticles = numberOfParticles.x * numberOfParticles.y *numberOfParticles.z;
 
         glm::vec4 p(0.0f, 0.0f, 0.0f, 1.0f);
@@ -48,28 +47,12 @@ namespace DEngine{
 
         uint bufSize = totalParticles * 4 * sizeof(float);
 
-
-
-
-        if(particleProps.workGroups==2){
-            DENGINE_ERROR("WORKING GROUP2");
-                glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, posBuf);
-                glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialPositions[0], GL_DYNAMIC_DRAW);
-
-                glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, velBuf);
-                glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialVelocities[0], GL_DYNAMIC_COPY);
-
-                glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, startPosBuf);
-                glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialPositions[0], GL_DYNAMIC_DRAW);
-        }else{
-            glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, posBuf);
-            glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialPositions[0], GL_DYNAMIC_DRAW);
-            glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, velBuf);
-            glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialVelocities[0], GL_DYNAMIC_COPY);
-            glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, startPosBuf);
-            glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialPositions[0], GL_DYNAMIC_DRAW);
-        }
-
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, posBuf);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialPositions[0], GL_DYNAMIC_DRAW);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, velBuf);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialVelocities[0], GL_DYNAMIC_COPY);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, startPosBuf);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, bufSize, &initialPositions[0], GL_DYNAMIC_DRAW);
 
         glGenVertexArrays(1, &particlesVao);
         glBindVertexArray(particlesVao);
@@ -95,4 +78,8 @@ namespace DEngine{
         _particleShader.unbind();
         glBindVertexArray(0);
     }
+    void PointEmitter::setProperties(const ParticleProps &_particleProps) {
+        particleProps = _particleProps;
+    }
+
 }

@@ -22,7 +22,6 @@ namespace DEngine {
                                      testShader(PATH_SHADERS+ "TestVertexShader.glsl",PATH_SHADERS+ "TestFragmentShader.glsl")
                                      ,textureTest(PATH_TEXTURES + "particles/water.png")
                                      ,windowPtr(_windowPtr)
-                                     ,particleTexture(PATH_TEXTURES+"smoke.png")
         {
             initData();
         };
@@ -73,11 +72,6 @@ namespace DEngine {
         int totalParticles;
         std::shared_ptr<Shader> computeShader;
         std::shared_ptr<Shader> smokeParticleShader;
-        uint particlesVao;
-        uint posBuf;
-        uint velBuf;
-        uint age;
-        Texture particleTexture;
         //TEST SMOKE PARTICLES
 
 

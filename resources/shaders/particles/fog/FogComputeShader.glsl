@@ -8,9 +8,14 @@ layout(std430, binding=0) buffer Pos {
 layout(std430, binding=1) buffer Vel {
     vec4 Velocity[];
 };
+layout(std430, binding=2) buffer StartPos {
+    vec4 StartingPos[];
+};
+
 uniform float PI = 3.14159265359;
 uniform float u_DeltaTime;
 uniform float MaxDist = 10.0;
+
 void main() {
 
     uint idx = gl_GlobalInvocationID.x;
@@ -21,10 +26,9 @@ void main() {
 
 
     if( dist > MaxDist ) {
-    Position[idx] = vec4(0,0,0,1);
+        Position[idx] = vec4(0,0,0,1);
     } else {
         vec3 vel = Velocity[idx].xyz;
         Position[idx].xyz= pos + vel *u_DeltaTime;
     }
 }
-
