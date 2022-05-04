@@ -47,6 +47,8 @@ file (GLOB_RECURSE PROJECT_SOURCES src/*.cpp
                                    src/*.c)
 
 file (GLOB         PROJECT_CONFIGS CMakeLists.txt)
+
+#add_compile_options(-Wall -Wextra)
 add_definitions (-DGLFW_INCLUDE_NONE
                  -DPROJECT_SOURCE_DIR=\"${PROJECT_SOURCE_DIR}\")
 add_executable (${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_HEADERS}

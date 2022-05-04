@@ -10,6 +10,7 @@
 #include "particles/PointEmitter.h"
 #include "particles/SmokeEmitter.h"
 #include "particles/FogEmitter.h"
+#include "primitives/Cube.h"
 
 namespace DEngine{
 
@@ -81,10 +82,18 @@ namespace DEngine{
         //testMesh = std::make_shared<Mesh>(myData);
 
         //testModel = std::make_shared<Model>(PATH_MODELS+"sword/scene.gltf");
-        entities.emplace_back(Engine::entitySystemManager.createEntity());
-        entities.emplace_back(Engine::entitySystemManager.createEntity());
-        entities.emplace_back(Engine::entitySystemManager.createEntity());
-        entities.emplace_back(Engine::entitySystemManager.createEntity());
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //0
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //1
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //2
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //3
+
+
+        //CUBES
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //4
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //5
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //6
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //7
+        //CUBES END
 
         TransformComponent testComp;
         //MeshComponent testMeshComp{};
@@ -161,6 +170,21 @@ namespace DEngine{
 
 
 
+
+
+        //4 CUBES DIFFERENT TEXTURES
+        TransformComponent testObjTransform;
+        testObjTransform.transform  = glm::mat4(1);
+        testObjTransform.transform =  glm::scale(testObjTransform.transform, glm::vec3(10.0f,5.0f,10.0f));
+        Engine::entitySystemManager.addComponent(entities[1], testObjTransform);
+        Cube testCubeMesh;
+
+
+        MeshComponent testObjMeshComponent;
+        testObjMeshComponent.mesh.push_back(testCubeMesh);
+        Engine::entitySystemManager.addComponent(entities[1], testObjMeshComponent);
+
+        //
         auto particleSystem =Engine::entitySystemManager.getSystem<ParticleSystem>();
         particleSystem->init();
     }
