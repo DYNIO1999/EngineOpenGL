@@ -415,11 +415,11 @@ namespace DEngine{
         testShader.bind();
         dengineTexture.bind(0);
         testShader.setUniform1i("u_Texture", 0);
-        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[5])) {
+        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[4])) {
             testShader.setUniformMat4f("projection", projection);
             testShader.setUniformMat4f("view", view);
-            testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>( entities[5]).transform);
-            Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[5]).mesh.at(0), testShader);
+            testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>( entities[4]).transform);
+            Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[4]).mesh.at(0), testShader);
         }
         textureTest.unbind();
 
