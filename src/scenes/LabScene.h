@@ -28,7 +28,7 @@ namespace DEngine {
                                      ,thirdToMultiTexturing(PATH_TEXTURES + "multiTexturing/pavement.jpg")
                                      ,secondToMultiTexturing(PATH_TEXTURES + "multiTexturing/path.png")
                                      ,multiTexture2Shader(PATH_SHADERS+ "TestVertexShader.glsl", PATH_SHADERS+"MultiTextureSecondFragmentShader.glsl")
-                                     ,fractalTexture(PATH_TEXTURES + "fractal.png")
+                                     ,dengineTexture(PATH_TEXTURES + "DEngine.png")
                                      ,windowPtr(_windowPtr)
         {
             initData();
@@ -55,7 +55,7 @@ namespace DEngine {
         //Shader particleComputeShader;
         //Shader particleShader;
         Texture textureTest;
-        Texture fractalTexture;
+        Texture dengineTexture;
         Texture firstToMultiTexturing;
         Texture secondToMultiTexturing;
         Texture thirdToMultiTexturing;
