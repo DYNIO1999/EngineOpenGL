@@ -15,6 +15,8 @@
 #include "renderer/Model.h"
 #include "core/Camera.h"
 
+#include "renderer/FrameBuffer.h"
+
 namespace DEngine {
     class LabScene : public Scene {
     public:
@@ -63,6 +65,8 @@ namespace DEngine {
         std::vector<Entity> entities;
         glm::mat4 model, view, projection;
         std::shared_ptr<Window> windowPtr;
+
+        std::shared_ptr<FrameBuffer> frameBuffer;
 
         //glm::ivec3 nParticles;
         //uint totalParticles;

@@ -89,10 +89,10 @@ namespace DEngine{
 
 
         //CUBES
-        //entities.emplace_back(Engine::entitySystemManager.createEntity()); //4
-        //entities.emplace_back(Engine::entitySystemManager.createEntity()); //5
-        //entities.emplace_back(Engine::entitySystemManager.createEntity()); //6
-        //entities.emplace_back(Engine::entitySystemManager.createEntity()); //7
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //4
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //5
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //6
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //7
         //CUBES END
 
         TransformComponent testComp;
@@ -173,15 +173,42 @@ namespace DEngine{
 
 
         //4 CUBES DIFFERENT TEXTURES
-        //TransformComponent testObjTransform;
-        //testObjTransform.transform  = glm::mat4(1);
-        //testObjTransform.transform =  glm::scale(testObjTransform.transform, glm::vec3(10.0f,5.0f,10.0f));
-        //Engine::entitySystemManager.addComponent(entities[1], testObjTransform);
-        //Cube testCubeMesh;
-        //MeshComponent testObjMeshComponent;
-        //testObjMeshComponent.mesh.push_back(testCubeMesh);
-        //Engine::entitySystemManager.addComponent(entities[1], testObjMeshComponent);
-        //
+        TransformComponent testObjTransform;
+        testObjTransform.transform  = glm::mat4(1);
+        Engine::entitySystemManager.addComponent(entities[4], testObjTransform);
+        Cube testCubeMesh;
+        MeshComponent testObjMeshComponent;
+        testObjMeshComponent.mesh.push_back(testCubeMesh);
+        Engine::entitySystemManager.addComponent(entities[4], testObjMeshComponent);
+
+
+        testObjTransform.transform  = glm::mat4(1);
+        Engine::entitySystemManager.addComponent(entities[5], testObjTransform);
+        MeshComponent testObjMeshComponent1;
+        testObjMeshComponent.mesh.push_back(testCubeMesh);
+        Engine::entitySystemManager.addComponent(entities[5], testObjMeshComponent1);
+
+
+
+        testObjTransform.transform  = glm::mat4(1);
+        testObjTransform.transform = glm::translate(testObjTransform.transform,glm::vec3(5.0f,0.0f,0.0f));
+        testObjTransform.transform =  glm::scale(testObjTransform.transform, glm::vec3(3.0f,3.0f,3.0f));
+        Engine::entitySystemManager.addComponent(entities[6], testObjTransform);
+        MeshComponent testObjMeshComponent2;
+        testObjMeshComponent.mesh.push_back(testCubeMesh);
+        Engine::entitySystemManager.addComponent(entities[6], testObjMeshComponent2);
+
+
+        testObjTransform.transform  = glm::mat4(1);
+        testObjTransform.transform = glm::translate(testObjTransform.transform,glm::vec3(5.0f,0.0f,0.0f));
+        testObjTransform.transform =  glm::scale(testObjTransform.transform, glm::vec3(3.0f,3.0f,3.0f));
+        Engine::entitySystemManager.addComponent(entities[7], testObjTransform);
+        MeshComponent testObjMeshComponent3;
+        testObjMeshComponent.mesh.push_back(testCubeMesh);
+        Engine::entitySystemManager.addComponent(entities[7], testObjMeshComponent3);
+
+
+
         auto particleSystem =Engine::entitySystemManager.getSystem<ParticleSystem>();
         particleSystem->init();
     }

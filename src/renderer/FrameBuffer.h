@@ -11,23 +11,26 @@ namespace  DEngine {
 
     struct FramebufferSpecification
     {
-        uint width = 0;
-        uint height = 0;
-        uint samples = 1;
+        int width = 0;
+        int height = 0;
+        int samples = 1;
     };
 
     class FrameBuffer {
 
     public:
-        FrameBuffer(const FramebufferSpecification& specs);
+        FrameBuffer(const FramebufferSpecification& _specs);
         ~FrameBuffer();
 
         void bind();
         void unBind();
-        void bindTexture(uint slot =0);
-        //uint get() const { return  frameColorAttachmentTextureID;}
+        void bindTexture(uint _slot =0);
+        uint getTexture()const{return frameBufferTextureID;};
+        uint getRenderBufferObject()const{return renderBufferObject;};
+
 
     private:
+        uint renderBufferObject;
         uint frameBufferTextureID;
         uint frameBufferID;
         FramebufferSpecification framebufferSpecification;
