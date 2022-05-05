@@ -402,7 +402,7 @@ namespace DEngine{
 
         multiTexture2Shader.bind();
         thirdToMultiTexturing.bind(0);
-        fractalTexture.bind(1);
+        dengineTexture.bind(1);
         multiTexture2Shader.setUniform1i("u_Texture0", 0);
         multiTexture2Shader.setUniform1i("u_Texture1", 1);
         if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[5])) {
