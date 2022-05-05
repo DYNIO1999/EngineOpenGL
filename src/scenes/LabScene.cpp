@@ -382,10 +382,40 @@ namespace DEngine{
             Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[7]).mesh.at(0), testShader);
         }
 
+        multTextureShader.bind();
+        firstToMultiTexturing.bind(0);
+        secondToMultiTexturing.bind(1);
+        thirdToMultiTexturing.bind(2);
+        multTextureShader.setUniform1i("u_Texture0", 0);
+        multTextureShader.setUniform1i("u_Texture1", 1);
+        multTextureShader.setUniform1i("u_Texture2", 2);
+        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[6])) {
+            multTextureShader.setUniformMat4f("projection", projection);
+            multTextureShader.setUniformMat4f("view", view);
+            multTextureShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>( entities[6]).transform);
+            Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[6]).mesh.at(0), multTextureShader);
+        }
+        firstToMultiTexturing.unbind();
+        secondToMultiTexturing.unbind();
+        thirdToMultiTexturing.unbind();
+
+
+        multiTexture2Shader.bind();
+        thirdToMultiTexturing.bind(0);
+        fractalTexture.bind(1);
+        multiTexture2Shader.setUniform1i("u_Texture0", 0);
+        multiTexture2Shader.setUniform1i("u_Texture1", 1);
+        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[5])) {
+            multiTexture2Shader.setUniformMat4f("projection", projection);
+            multiTexture2Shader.setUniformMat4f("view", view);
+            multiTexture2Shader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>( entities[5]).transform);
+            Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[5]).mesh.at(0), multiTexture2Shader);
+        }
+
         testShader.bind();
         textureTest.bind(0);
         testShader.setUniform1i("u_Texture", 0);
-        for (auto i =0u; i<(entities.size()-1u);i++) {
+        for (auto i =0u; i<(entities.size()-3u);i++) {
             if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[i])) {
                 testShader.setUniformMat4f("projection", projection);
                 testShader.setUniformMat4f("view", view);

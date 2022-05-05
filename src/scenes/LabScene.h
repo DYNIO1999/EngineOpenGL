@@ -24,9 +24,11 @@ namespace DEngine {
                                      testShader(PATH_SHADERS+ "TestVertexShader.glsl",PATH_SHADERS+ "TestFragmentShader.glsl")
                                      ,multTextureShader(PATH_SHADERS+ "TestVertexShader.glsl", PATH_SHADERS+"MultiTextureFragmentShader.glsl")
                                      ,textureTest(PATH_TEXTURES + "brick.png")
-                                     ,firstToMultiTexturing(PATH_TEXTURES + "brick.png")
-                                     ,secondToMultiTexturing(PATH_TEXTURES + "multiTexturing/pavement.png")
-                                     , maskToMultiTexturing(PATH_TEXTURES + "multiTexturing/path.png")
+                                     ,firstToMultiTexturing(PATH_TEXTURES + "multiTexturing/snow.png")
+                                     ,thirdToMultiTexturing(PATH_TEXTURES + "multiTexturing/pavement.jpg")
+                                     ,secondToMultiTexturing(PATH_TEXTURES + "multiTexturing/path.png")
+                                     ,multiTexture2Shader(PATH_SHADERS+ "TestVertexShader.glsl", PATH_SHADERS+"MultiTextureSecondFragmentShader.glsl")
+                                     ,fractalTexture(PATH_TEXTURES + "fractal.png")
                                      ,windowPtr(_windowPtr)
         {
             initData();
@@ -49,12 +51,14 @@ namespace DEngine {
         float timeCounter;
         Shader testShader;
         Shader multTextureShader;
+        Shader multiTexture2Shader;
         //Shader particleComputeShader;
         //Shader particleShader;
         Texture textureTest;
+        Texture fractalTexture;
         Texture firstToMultiTexturing;
         Texture secondToMultiTexturing;
-        Texture maskToMultiTexturing;
+        Texture thirdToMultiTexturing;
     private:
         void ImGUITest();
         void initData();
