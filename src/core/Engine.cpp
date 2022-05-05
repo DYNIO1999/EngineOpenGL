@@ -77,7 +77,6 @@ namespace DEngine{
             DENGINE_ERROR("_______________________");
             for (Scene* it: sceneManager) {
                 it->update(deltaTime);
-                DENGINE_WARN("{}", i);
                 i++;
 
             }

@@ -22,7 +22,11 @@ namespace DEngine {
     public:
         LabScene(std::string name, std::shared_ptr<Window> _windowPtr): Scene(name),
                                      testShader(PATH_SHADERS+ "TestVertexShader.glsl",PATH_SHADERS+ "TestFragmentShader.glsl")
-                                     ,textureTest(PATH_TEXTURES + "particles/water.png")
+                                     ,multTextureShader(PATH_SHADERS+ "TestVertexShader.glsl", PATH_SHADERS+"MultiTextureFragmentShader.glsl")
+                                     ,textureTest(PATH_TEXTURES + "brick.png")
+                                     ,firstToMultiTexturing(PATH_TEXTURES + "brick.png")
+                                     ,secondToMultiTexturing(PATH_TEXTURES + "multiTexturing/pavement.png")
+                                     , maskToMultiTexturing(PATH_TEXTURES + "multiTexturing/path.png")
                                      ,windowPtr(_windowPtr)
         {
             initData();
@@ -44,9 +48,13 @@ namespace DEngine {
         bool is_selected = false;
         float timeCounter;
         Shader testShader;
+        Shader multTextureShader;
         //Shader particleComputeShader;
         //Shader particleShader;
         Texture textureTest;
+        Texture firstToMultiTexturing;
+        Texture secondToMultiTexturing;
+        Texture maskToMultiTexturing;
     private:
         void ImGUITest();
         void initData();
@@ -68,6 +76,12 @@ namespace DEngine {
 
         std::shared_ptr<FrameBuffer> frameBuffer;
 
+
+
+        void particlesLab();
+        void texturesLab();
+        void shadersLab();
+        void lightsLab();
         //glm::ivec3 nParticles;
         //uint totalParticles;
         //float time, deltaT, speed, angle;
