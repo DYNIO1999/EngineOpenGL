@@ -93,8 +93,13 @@ namespace DEngine{
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //5
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //6
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //7
-        //entities.emplace_back(Engine::entitySystemManager.createEntity()); //8
         //CUBES END
+
+
+        //LIGHTNING CUBES
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //8
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //9
+        //LIGHTNING CUBES
 
         TransformComponent testComp;
         testComp.transform = glm::mat4(1.0f);
@@ -209,11 +214,33 @@ namespace DEngine{
         auto particleSystem =Engine::entitySystemManager.getSystem<ParticleSystem>();
         particleSystem->init();
 
+        //FRAMEBUFFER
         FramebufferSpecification framebufferSpecification;
         framebufferSpecification.width= windowPtr->getWidth();
         framebufferSpecification.height= windowPtr->getHeight();
         frameBuffer =  std::make_shared<FrameBuffer>(framebufferSpecification);
+        //FRAMEBUFFER
 
+
+        //LIGHTNING
+        TransformComponent ligthingCubeTransform;
+        ligthingCubeTransform.transform = glm::mat4(1);
+        ligthingCubeTransform.transform = glm::translate(ligthingCubeTransform.transform, glm::vec3(-5.0f, 0.0f, 0.0f));
+        ligthingCubeTransform.transform = glm::scale(ligthingCubeTransform.transform, glm::vec3(1.0f, 1.0f, 1.0f));
+        Engine::entitySystemManager.addComponent(entities[8], ligthingCubeTransform);
+        Cube ligthingCube;
+        MeshComponent lightningMeshComponent1;
+        lightningMeshComponent1.mesh.push_back(ligthingCube);
+        Engine::entitySystemManager.addComponent(entities[8], lightningMeshComponent1);
+
+        ligthingCubeTransform.transform = glm::mat4(1);
+        ligthingCubeTransform.transform = glm::translate(ligthingCubeTransform.transform, glm::vec3(0.0f, 0.0f, 0.0f));
+        ligthingCubeTransform.transform = glm::scale(ligthingCubeTransform.transform, glm::vec3(3.0f, 3.0f, 3.0f));
+        Engine::entitySystemManager.addComponent(entities[9], ligthingCubeTransform);
+        MeshComponent lightningMeshComponent2;
+        lightningMeshComponent2.mesh.push_back(ligthingCube);
+        Engine::entitySystemManager.addComponent(entities[9], lightningMeshComponent2);
+        // LIGHTNING
     }
     void LabScene::input(Event &e) {
         EventDispatcher dispatcher(e);
@@ -242,7 +269,14 @@ namespace DEngine{
             case 1:
                 particlesLab();
                 break;
+            case 2:
+                shadersLab();
+                break;
+            case 3:
+                lightsLab();
+                break;
         }
+
         Renderer::getInstance()->endDraw();
         //POP SCENE IN PROPER WAY DONT REMOVE!
         //if(timeCounter>5){
@@ -339,9 +373,9 @@ namespace DEngine{
                 }
                 ImGui::EndListBox();
             }
-            if(is_selected ){
-                transformEditorDraw();
-            }
+            //if(is_selected ){
+            //    transformEditorDraw();
+            //}
         }
         ImGui::End();
     }
@@ -426,7 +460,7 @@ namespace DEngine{
         testShader.bind();
         textureTest.bind(0);
         testShader.setUniform1i("u_Texture", 0);
-        for (auto i =0u; i<(entities.size()-4u);i++) {
+        for (auto i =0u; i<(entities.size()-6u);i++) {
             if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[i])) {
                 testShader.setUniformMat4f("projection", projection);
                 testShader.setUniformMat4f("view", view);
@@ -444,6 +478,27 @@ namespace DEngine{
     }
 
     void LabScene::lightsLab() {
+        Renderer::getInstance()->clear(glm::vec4(0.3, 0.4, 0.7, 1.0));
+        testShader.bind();
+        textureTest.bind(0);
+        testShader.setUniform1i("u_Texture", 0);
+        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[8]))
+        {
+                testShader.setUniformMat4f("projection", projection);
+                testShader.setUniformMat4f("view", view);
+                testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[8]).transform);
+                Renderer::getInstance()->draw(
+                    Engine::entitySystemManager.getComponent<MeshComponent>(entities[8]).mesh.at(0), testShader);
+        }
+        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[9]))
+        {
+            testShader.setUniformMat4f("projection", projection);
+            testShader.setUniformMat4f("view", view);
+            testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[9]).transform);
+            Renderer::getInstance()->draw(
+                Engine::entitySystemManager.getComponent<MeshComponent>(entities[9]).mesh.at(0), testShader);
+        }
 
+        textureTest.unbind();
     }
 }
