@@ -51,13 +51,7 @@ namespace  DEngine {
         std::vector<std::shared_ptr<Mesh>> meshes;
         std::vector<std::shared_ptr<Texture>> textures;
     };
-    struct LightComponent
-    {
-        LightComponent() = default;
-        LightComponent(const LightComponent& ) = default;
-        
-    };
-
+    
     struct ParticleComponent {
         ParticleComponent()=default;
         ParticleComponent(const ParticleComponent&) =default;

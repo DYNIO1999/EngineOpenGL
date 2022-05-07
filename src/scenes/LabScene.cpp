@@ -14,21 +14,27 @@
 
 namespace DEngine{
 
-    static void transformEditorDraw(){
-        float col[3]{0,0,0};
+    void LabScene::transformEditorDraw(){
         ImGui::Begin("Editor");
-        if (ImGui::CollapsingHeader("Position"))
+        //if (ImGui::CollapsingHeader("Position"))
+        //{
+        //    ImGui::InputFloat3("Position", col);
+        //}
+        //if (ImGui::CollapsingHeader("Rotation"))
+        //{
+        //    ImGui::InputFloat3("Rotation", col);
+        //}
+        if (ImGui::CollapsingHeader("Ambient Light Color"))
         {
-            ImGui::InputFloat3("Position", col);
+            ImGui::ColorPicker3("Color",&ambientLightColor[0], ImGuiColorEditFlags_PickerHueWheel | ImGuiColorEditFlags_DisplayRGB);
+
         }
-        if (ImGui::CollapsingHeader("Rotation"))
+        if (ImGui::CollapsingHeader("Object Color"))
         {
-            ImGui::InputFloat3("Rotation", col);
+            ImGui::ColorPicker3("Color", &objectColor[0], ImGuiColorEditFlags_PickerHueWheel | ImGuiColorEditFlags_DisplayRGB);
         }
-        if (ImGui::CollapsingHeader("Color"))
-        {
-            ImGui::ColorPicker3("Color",col, ImGuiColorEditFlags_PickerHueWheel | ImGuiColorEditFlags_DisplayRGB);
-        }
+        ImGui::CollapsingHeader("Light Intensity");
+        ImGui::SliderFloat(" Intensity",&ambientLightIntensity,0.0f,1.0f);
         ImGui::End();
     }
     LabScene::~LabScene(){
@@ -99,7 +105,16 @@ namespace DEngine{
         //LIGHTNING CUBES
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //8
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //9
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); // 10
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); // 11
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); // 12
         //LIGHTNING CUBES
+
+        //LIGHT SOURCE
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); // 13
+        // LIGHT SOURCE
+
+        
 
         TransformComponent testComp;
         testComp.transform = glm::mat4(1.0f);
@@ -225,7 +240,7 @@ namespace DEngine{
         //LIGHTNING
         TransformComponent ligthingCubeTransform;
         ligthingCubeTransform.transform = glm::mat4(1);
-        ligthingCubeTransform.transform = glm::translate(ligthingCubeTransform.transform, glm::vec3(-5.0f, 0.0f, 0.0f));
+        ligthingCubeTransform.transform = glm::translate(ligthingCubeTransform.transform, glm::vec3(-20.0f, 0.0f, 0.0f));
         ligthingCubeTransform.transform = glm::scale(ligthingCubeTransform.transform, glm::vec3(1.0f, 1.0f, 1.0f));
         Engine::entitySystemManager.addComponent(entities[8], ligthingCubeTransform);
         Cube ligthingCube;
@@ -240,7 +255,46 @@ namespace DEngine{
         MeshComponent lightningMeshComponent2;
         lightningMeshComponent2.mesh.push_back(ligthingCube);
         Engine::entitySystemManager.addComponent(entities[9], lightningMeshComponent2);
-        // LIGHTNING
+
+        ligthingCubeTransform.transform = glm::mat4(1);
+        ligthingCubeTransform.transform = glm::translate(ligthingCubeTransform.transform, glm::vec3(-10.0f, 0.0f, -5.0f));
+        ligthingCubeTransform.transform = glm::scale(ligthingCubeTransform.transform, glm::vec3(5.0f, 5.0f, 5.0f));
+        Engine::entitySystemManager.addComponent(entities[10], ligthingCubeTransform);
+        MeshComponent lightningMeshComponent3;
+        lightningMeshComponent3.mesh.push_back(ligthingCube);
+        Engine::entitySystemManager.addComponent(entities[10], lightningMeshComponent3);
+
+        ligthingCubeTransform.transform = glm::mat4(1);
+        ligthingCubeTransform.transform = glm::translate(ligthingCubeTransform.transform, glm::vec3(10.0f, 0.0f, -5.0f));
+        ligthingCubeTransform.transform = glm::scale(ligthingCubeTransform.transform, glm::vec3(3.0f, 3.0f, 3.0f));
+        Engine::entitySystemManager.addComponent(entities[11], ligthingCubeTransform);
+        MeshComponent lightningMeshComponent4;
+        lightningMeshComponent4.mesh.push_back(ligthingCube);
+        Engine::entitySystemManager.addComponent(entities[11], lightningMeshComponent4);
+
+        ligthingCubeTransform.transform = glm::mat4(1);
+        ligthingCubeTransform.transform = glm::translate(ligthingCubeTransform.transform, glm::vec3(0.0f, 0.0f, -12.0f));
+        ligthingCubeTransform.transform = glm::scale(ligthingCubeTransform.transform, glm::vec3(1.0f, 1.0f, 1.0f));
+        Engine::entitySystemManager.addComponent(entities[12], ligthingCubeTransform);
+        MeshComponent lightningMeshComponent5;
+        lightningMeshComponent5.mesh.push_back(ligthingCube);
+        Engine::entitySystemManager.addComponent(entities[12], lightningMeshComponent5);
+
+
+
+        //LIGHT SOURCE
+        ligthingCubeTransform.transform = glm::mat4(1);
+        lightSourcePosition =  glm::vec3(0.0f, 20.0f, -5.0f);
+        ligthingCubeTransform.transform = glm::translate(ligthingCubeTransform.transform, lightSourcePosition);
+        ligthingCubeTransform.transform = glm::scale(ligthingCubeTransform.transform, glm::vec3(1.0f, 1.0f, 1.0f));
+        Engine::entitySystemManager.addComponent(entities[13], ligthingCubeTransform);
+        MeshComponent lightningMeshComponent6;
+        lightningMeshComponent6.mesh.push_back(ligthingCube);
+        Engine::entitySystemManager.addComponent(entities[13], lightningMeshComponent6);
+        //LIGHT SOURCE
+        
+        
+        //LIGHTNING
     }
     void LabScene::input(Event &e) {
         EventDispatcher dispatcher(e);
@@ -248,7 +302,9 @@ namespace DEngine{
         dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FUNCTION(LabScene::onKeyPressedInput));
         dispatcher.dispatch<MouseButtonPressed>(BIND_EVENT_FUNCTION(LabScene::onMousePressed));
         dispatcher.dispatch<MouseButtonReleased>(BIND_EVENT_FUNCTION(LabScene::onMouseReleased));
+
         dispatcher.dispatch<MouseMovedEvent>(BIND_EVENT_FUNCTION(LabScene::onMouseMovedEvent));
+
     }
     void LabScene::update(float dt) {
         currentDeltaTime =dt;
@@ -328,18 +384,19 @@ namespace DEngine{
 
 
     bool LabScene::onMousePressed(MouseButtonPressed &e) {
-        if(e.getMouseCode() ==ButtonLeft){
-            isButtonPressed =true;
-        }
         if(e.getMouseCode() ==ButtonRight){
-            camera.front= glm::vec3(0.0f, 0.0f, -1.0f);
+            if(isButtonPressed){
+                isButtonPressed =false;
+            }else{
+                isButtonPressed =true;
+            }
         }
         return true;
     }
     bool LabScene::onMouseReleased(MouseButtonReleased& e){
-        if(e.getMouseCode() ==ButtonLeft){
-            isButtonPressed = false;
-        }
+        //if(e.getMouseCode() ==ButtonLeft){
+        //    isButtonPressed = false;
+        //}
         return true;
     }
 
@@ -362,7 +419,11 @@ namespace DEngine{
 
                     if (ImGui::Selectable(items[n], is_selected)) {
                         item_current_idx = n;
-                        is_selected = true;
+                        if(item_current_idx ==3){
+                            is_selected = true;
+                        }else{
+                            is_selected = false;
+                        }
                     }
                     // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
                     if (is_selected){
@@ -373,9 +434,9 @@ namespace DEngine{
                 }
                 ImGui::EndListBox();
             }
-            //if(is_selected ){
-            //    transformEditorDraw();
-            //}
+            if(is_selected){
+                transformEditorDraw();
+            }
         }
         ImGui::End();
     }
@@ -460,7 +521,7 @@ namespace DEngine{
         testShader.bind();
         textureTest.bind(0);
         testShader.setUniform1i("u_Texture", 0);
-        for (auto i =0u; i<(entities.size()-6u);i++) {
+        for (auto i =0u; i<(entities.size()-10u);i++) {
             if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[i])) {
                 testShader.setUniformMat4f("projection", projection);
                 testShader.setUniformMat4f("view", view);
@@ -478,27 +539,77 @@ namespace DEngine{
     }
 
     void LabScene::lightsLab() {
-        Renderer::getInstance()->clear(glm::vec4(0.3, 0.4, 0.7, 1.0));
+        
+        Renderer::getInstance()->clear(glm::vec4(0, 0, 0, 1.0));
+
+
+
+
+        glDisable(GL_BLEND);
+        ambientLightShader.bind();
+        ambientLightShader.setUniformVec4f("u_Color", glm::vec4(0.8, 0.352, 0.682, 1.0));
+        ambientLightShader.setUniformVec4f("u_AmbientLightColor", glm::vec4(ambientLightColor, 1.0f));
+        ambientLightShader.setUniform1f("u_AmbientIntensity", ambientLightIntensity);
+        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[8]))
+        {
+                ambientLightShader.setUniformMat4f("projection", projection);
+                ambientLightShader.setUniformMat4f("view", view);
+                ambientLightShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[8]).transform);
+                Renderer::getInstance()->draw(
+                    Engine::entitySystemManager.getComponent<MeshComponent>(entities[8]).mesh.at(0), ambientLightShader);
+        }
+        diffuseLightShader.bind();
+        diffuseLightShader.setUniformVec4f("u_Color", glm::vec4(objectColor, 1.0));
+        diffuseLightShader.setUniformVec3f("u_LightPosition", lightSourcePosition);
+
+        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[9]))
+        {
+            diffuseLightShader.setUniformMat4f("projection", projection);
+            diffuseLightShader.setUniformMat4f("view", view);
+            diffuseLightShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[9]).transform);
+            Renderer::getInstance()->draw(
+                Engine::entitySystemManager.getComponent<MeshComponent>(entities[9]).mesh.at(0), diffuseLightShader);
+        }
+
         testShader.bind();
         textureTest.bind(0);
         testShader.setUniform1i("u_Texture", 0);
-        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[8]))
-        {
-                testShader.setUniformMat4f("projection", projection);
-                testShader.setUniformMat4f("view", view);
-                testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[8]).transform);
-                Renderer::getInstance()->draw(
-                    Engine::entitySystemManager.getComponent<MeshComponent>(entities[8]).mesh.at(0), testShader);
-        }
-        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[9]))
+        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[10]))
         {
             testShader.setUniformMat4f("projection", projection);
             testShader.setUniformMat4f("view", view);
-            testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[9]).transform);
+            testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[10]).transform);
             Renderer::getInstance()->draw(
-                Engine::entitySystemManager.getComponent<MeshComponent>(entities[9]).mesh.at(0), testShader);
+                Engine::entitySystemManager.getComponent<MeshComponent>(entities[10]).mesh.at(0), testShader);
         }
-
+        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[11]))
+        {
+            testShader.setUniformMat4f("projection", projection);
+            testShader.setUniformMat4f("view", view);
+            testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[11]).transform);
+            Renderer::getInstance()->draw(
+                Engine::entitySystemManager.getComponent<MeshComponent>(entities[11]).mesh.at(0), testShader);
+        }
+        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[12]))
+        {
+            testShader.setUniformMat4f("projection", projection);
+            testShader.setUniformMat4f("view", view);
+            testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[12]).transform);
+            Renderer::getInstance()->draw(
+                Engine::entitySystemManager.getComponent<MeshComponent>(entities[12]).mesh.at(0), testShader);
+        }
         textureTest.unbind();
+
+        lightSourceShader.bind();
+        lightSourceShader.setUniformVec4f("u_Color", glm::vec4(ambientLightColor, 1.0f));
+        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[13]))
+        {
+            lightSourceShader.setUniformMat4f("projection", projection);
+            lightSourceShader.setUniformMat4f("view", view);
+            lightSourceShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[13]).transform);
+            Renderer::getInstance()->draw(
+                Engine::entitySystemManager.getComponent<MeshComponent>(entities[13]).mesh.at(0), lightSourceShader);
+        }
+        glEnable(GL_BLEND);
     }
 }

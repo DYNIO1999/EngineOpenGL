@@ -29,6 +29,10 @@ namespace DEngine {
                                      ,secondToMultiTexturing(PATH_TEXTURES + "multiTexturing/path.png")
                                      ,multiTexture2Shader(PATH_SHADERS+ "TestVertexShader.glsl", PATH_SHADERS+"MultiTextureSecondFragmentShader.glsl")
                                      ,dengineTexture(PATH_TEXTURES + "DEngine.png")
+                                     ,lightSourceShader(PATH_SHADERS + "lightning/light/VertexShader.glsl", PATH_SHADERS+"lightning/light/FragmentShader.glsl")
+                                     ,ambientLightShader(PATH_SHADERS + "lightning/ambient/VertexShader.glsl", PATH_SHADERS+"lightning/ambient/FragmentShader.glsl")
+                                     ,diffuseLightShader(PATH_SHADERS + "lightning/diffuse/VertexShader.glsl", PATH_SHADERS+"lightning/diffuse/FragmentShader.glsl")
+                                     ,isButtonPressed(false)
                                      ,windowPtr(_windowPtr)
         {
             initData();
@@ -59,7 +63,22 @@ namespace DEngine {
         Texture firstToMultiTexturing;
         Texture secondToMultiTexturing;
         Texture thirdToMultiTexturing;
+
+        Shader lightSourceShader;
+        Shader ambientLightShader;
+        Shader diffuseLightShader;
+        //Shader specularLightShader;
+
+
+        glm::vec3 lightSourcePosition;
+
+        glm::vec3 ambientLightColor{0.2f,0.1f,0.6f};
+        glm::vec3 objectColor{0.1f, 0.1f, 0.6f};
+        float ambientLightIntensity =0.1f;
+        bool guiIsBeingUsed = false;
     private:
+
+
         void ImGUITest();
         void initData();
 
@@ -82,6 +101,7 @@ namespace DEngine {
 
 
 
+        void transformEditorDraw();
         void particlesLab();
         void texturesLab();
         void shadersLab();

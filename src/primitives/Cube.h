@@ -12,37 +12,37 @@ public:
         //bottom
         {
                 glm::vec3{-1.0f,-1.0f,-1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,-1.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{0.0f, 0.0f}
         },
         {
                 glm::vec3{ 1.0f,-1.0f,-1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,-1.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{1.0f, 0.0f}
         },
         {
                 glm::vec3{-1.0f,-1.0f, 1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,-1.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{ 0.0f, 1.0f}
         },
         {
                 glm::vec3{1.0f,-1.0f,-1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,-1.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{1.0f, 0.0f}
         },
         {
                 glm::vec3{ 1.0f,-1.0f, 1.0f },
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,-1.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{ 1.0f, 1.0f}
         },
         {
                 glm::vec3{ -1.0f,-1.0f, 1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,-1.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{ 0.0f, 1.0f}
         },
@@ -50,185 +50,185 @@ public:
         //top
         {
                 glm::vec3{-1.0f, 1.0f,-1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,1.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{0.0f, 0.0f}
         },
         {
                 glm::vec3{-1.0f, 1.0f, 1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,1.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{0.0f, 1.0f}
         },
         {
                 glm::vec3{1.0f, 1.0f,-1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,1.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{1.0f, 0.0f}
         },
         {
                 glm::vec3{1.0f, 1.0f,-1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,1.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{1.0f, 0.0f}
         },
         {
                 glm::vec3{-1.0f, 1.0f, 1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,1.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{0.0f, 1.0f}
         },
         {
                 glm::vec3{1.0f, 1.0f, 1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,1.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{1.0f, 1.0f}
         },
         //front
         {
                 glm::vec3{-1.0f,-1.0f, 1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,0.0f,1.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{1.0f, 0.0f}
         },
         {
                 glm::vec3{1.0f,-1.0f, 1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,0.0f,1.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{0.0f, 0.0f}
         },
         {
                 glm::vec3{-1.0f, 1.0f, 1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,0.0f,1.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{1.0f, 1.0f}
         },
         {
                 glm::vec3{1.0f,-1.0f, 1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,0.0f,1.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{0.0f, 0.0f}
         },
         {
                 glm::vec3{1.0f, 1.0f, 1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,0.0f,1.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{0.0f, 1.0f}
         },
         {
                 glm::vec3{-1.0f, 1.0f, 1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,0.0f,1.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{1.0f, 1.0f}
         },
         //back
         {
                 glm::vec3{-1.0f,-1.0f,-1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,0.0f,-1.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{0.0f, 0.0f}
         },
         {
                 glm::vec3{-1.0f, 1.0f,-1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,0.0f,-1.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{0.0f, 1.0f}
         },
         {
                 glm::vec3{1.0f,-1.0f,-1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,0.0f,-1.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{1.0f, 0.0f}
         },
         {
                 glm::vec3{1.0f,-1.0f,-1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,0.0f,-1.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{1.0f, 0.0f}
         },
         {
                 glm::vec3{-1.0f, 1.0f,-1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,0.0f,-1.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{0.0f, 1.0f}
         },
         {
                 glm::vec3{1.0f, 1.0f,-1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{0.0f,0.0f,-1.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{1.0f, 1.0f}
         },
         //left
         {
                 glm::vec3{-1.0f,-1.0f, 1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{-1.0f,0.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{0.0f, 1.0f}
         },
         {
                 glm::vec3{-1.0f, 1.0f,-1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{-1.0f,0.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{1.0f, 0.0f}
         },
         {
                 glm::vec3{-1.0f,-1.0f,-1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{-1.0f,0.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{0.0f, 0.0f}
         },
         {
                 glm::vec3{-1.0f,-1.0f, 1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{-1.0f,0.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{0.0f, 1.0f}
         },
         {
                 glm::vec3{-1.0f, 1.0f, 1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{-1.0f,0.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{1.0f, 1.0f}
         },
         {
                 glm::vec3{-1.0f, 1.0f,-1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{-1.0f,0.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{1.0f, 0.0f}
         },
         //right
         {
                 glm::vec3{1.0f,-1.0f, 1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{1.0f,0.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{1.0f, 1.0f}
         },
         {
                 glm::vec3{1.0f,-1.0f,-1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{1.0f,0.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{1.0f, 0.0f}
         },
         {
                 glm::vec3{1.0f, 1.0f,-1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{1.0f,0.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{0.0f, 0.0f}
         },
         {
                 glm::vec3{1.0f,-1.0f, 1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{1.0f,0.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{1.0f, 1.0f}
         },
         {
                 glm::vec3{1.0f, 1.0f,-1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{1.0f,0.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{0.0f, 0.0f}
         },
         {
                 glm::vec3{1.0f, 1.0f, 1.0f},
-                glm::vec3{0.0f,0.0f,0.0f},
+                glm::vec3{1.0f,0.0f,0.0f},
                 glm::vec3{0.0f,0.0f,0.0f},
                 glm::vec2{0.0f, 1.0f}
         }
@@ -236,7 +236,6 @@ public:
         ){
 
     }
-
     ~Cube(){
 
     }
