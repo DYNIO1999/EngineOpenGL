@@ -118,7 +118,8 @@ namespace DEngine{
         entities.emplace_back(Engine::entitySystemManager.createEntity()); // 13
         // LIGHT SOURCE
 
-        
+        //TOON SHADING
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); // 14
 
         TransformComponent testComp;
         testComp.transform = glm::mat4(1.0f);
@@ -286,6 +287,7 @@ namespace DEngine{
 
 
 
+
         //LIGHT SOURCE
         ligthingCubeTransform.transform = glm::mat4(1);
         lightSourcePosition =  glm::vec3(0.0f, 20.0f, 0.0f);
@@ -296,7 +298,15 @@ namespace DEngine{
         lightningMeshComponent6.mesh.push_back(ligthingCube);
         Engine::entitySystemManager.addComponent(entities[13], lightningMeshComponent6);
         //LIGHT SOURCE
-        
+
+        ligthingCubeTransform.transform = glm::mat4(1);
+        ligthingCubeTransform.transform = glm::rotate(glm::radians(30.0f),glm::vec3(0,0,-1));
+        ligthingCubeTransform.transform = glm::translate(ligthingCubeTransform.transform, glm::vec3(0.0f, 20.0f, 3.0f));
+        ligthingCubeTransform.transform = glm::scale(ligthingCubeTransform.transform, glm::vec3(1.0f, 1.0f, 1.0f));
+        Engine::entitySystemManager.addComponent(entities[14], ligthingCubeTransform);
+        MeshComponent lightningMeshComponent7;
+        lightningMeshComponent6.mesh.push_back(ligthingCube);
+        Engine::entitySystemManager.addComponent(entities[14], lightningMeshComponent6);
         
         //LIGHTNING
     }
@@ -541,19 +551,19 @@ namespace DEngine{
     void LabScene::shadersLab() {
         Renderer::getInstance()->clear(glm::vec4(0.1f, 0.1f, 0.1f, 1.0));
         toonShader.bind();
-        toonShader.setUniformVec3f("u_Color", glm::vec4(0.5, 0.352, 0.482, 1.0));
+        toonShader.setUniformVec3f("u_Color", glm::vec4(0.4,0.4,0.4, 1.0));
         toonShader.setUniformVec3f("u_LightPosition", lightSourcePosition);
         toonShader.setUniformVec3f("u_LightColor", glm::vec3(1.0f, 1.0f, 1.0f));
         toonShader.setUniform1f("u_AmbientIntensity", ambientLightIntensity);
 
         //toonShader.setUniform1i("u_Levels", 4);
-        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[8]))
+        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[14]))
         {
             toonShader.setUniformMat4f("projection", projection);
             toonShader.setUniformMat4f("view", view);
-            toonShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[8]).transform);
+            toonShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[14]).transform);
             Renderer::getInstance()->draw(
-                    Engine::entitySystemManager.getComponent<MeshComponent>(entities[8]).mesh.at(0), toonShader);
+                    Engine::entitySystemManager.getComponent<MeshComponent>(entities[14]).mesh.at(0), toonShader);
         }
 
         lightSourceShader.bind();
