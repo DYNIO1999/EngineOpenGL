@@ -33,8 +33,12 @@ namespace DEngine{
         {
             ImGui::ColorPicker3("Color", &objectColor[0], ImGuiColorEditFlags_PickerHueWheel | ImGuiColorEditFlags_DisplayRGB);
         }
-        ImGui::CollapsingHeader("Light Intensity");
-        ImGui::SliderFloat(" Intensity",&ambientLightIntensity,0.0f,1.0f);
+        if (ImGui::CollapsingHeader("Ambient Intensity")){
+            ImGui::SliderFloat(" Intensity",&ambientLightIntensity,0.0f,1.0f);
+        }
+        if (ImGui::CollapsingHeader("Specular Intensity")){
+           ImGui::SliderFloat("Intensity", &specularLightIntensity, 0.0f, 1.0f);
+        }
         ImGui::End();
     }
     LabScene::~LabScene(){
@@ -265,8 +269,8 @@ namespace DEngine{
         Engine::entitySystemManager.addComponent(entities[10], lightningMeshComponent3);
 
         ligthingCubeTransform.transform = glm::mat4(1);
-        ligthingCubeTransform.transform = glm::translate(ligthingCubeTransform.transform, glm::vec3(10.0f, 0.0f, -5.0f));
-        ligthingCubeTransform.transform = glm::scale(ligthingCubeTransform.transform, glm::vec3(3.0f, 3.0f, 3.0f));
+        ligthingCubeTransform.transform = glm::translate(ligthingCubeTransform.transform, glm::vec3(5.0f, 10.0f, 0.0f));
+        ligthingCubeTransform.transform = glm::scale(ligthingCubeTransform.transform, glm::vec3(1.0f, 1.0f, 1.0f));
         Engine::entitySystemManager.addComponent(entities[11], ligthingCubeTransform);
         MeshComponent lightningMeshComponent4;
         lightningMeshComponent4.mesh.push_back(ligthingCube);
@@ -284,7 +288,7 @@ namespace DEngine{
 
         //LIGHT SOURCE
         ligthingCubeTransform.transform = glm::mat4(1);
-        lightSourcePosition =  glm::vec3(0.0f, 20.0f, -5.0f);
+        lightSourcePosition =  glm::vec3(0.0f, 20.0f, 0.0f);
         ligthingCubeTransform.transform = glm::translate(ligthingCubeTransform.transform, lightSourcePosition);
         ligthingCubeTransform.transform = glm::scale(ligthingCubeTransform.transform, glm::vec3(1.0f, 1.0f, 1.0f));
         Engine::entitySystemManager.addComponent(entities[13], ligthingCubeTransform);
@@ -540,7 +544,7 @@ namespace DEngine{
 
     void LabScene::lightsLab() {
         
-        Renderer::getInstance()->clear(glm::vec4(0, 0, 0, 1.0));
+        Renderer::getInstance()->clear(glm::vec4(0.1f, 0.1f, 0.1f, 1.0));
 
 
 
@@ -570,35 +574,53 @@ namespace DEngine{
             Renderer::getInstance()->draw(
                 Engine::entitySystemManager.getComponent<MeshComponent>(entities[9]).mesh.at(0), diffuseLightShader);
         }
-
-        testShader.bind();
-        textureTest.bind(0);
-        testShader.setUniform1i("u_Texture", 0);
+        specularLightShader.bind();
+        specularLightShader.setUniform1f("u_SpecularLight", specularLightIntensity);
+        specularLightShader.setUniformVec4f("u_Color", glm::vec4(objectColor, 1.0));
+        specularLightShader.setUniformVec3f("u_LightPosition", lightSourcePosition);
+        specularLightShader.setUniformVec3f("u_CameraPosition", camera.position);
         if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[10]))
         {
-            testShader.setUniformMat4f("projection", projection);
-            testShader.setUniformMat4f("view", view);
-            testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[10]).transform);
+            specularLightShader.setUniformMat4f("projection", projection);
+            specularLightShader.setUniformMat4f("view", view);
+            specularLightShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[10]).transform);
             Renderer::getInstance()->draw(
-                Engine::entitySystemManager.getComponent<MeshComponent>(entities[10]).mesh.at(0), testShader);
+                Engine::entitySystemManager.getComponent<MeshComponent>(entities[10]).mesh.at(0), specularLightShader);
         }
+        phongLightShader.bind();
+
+        phongLightShader.setUniform1f("u_AmbientIntensity", ambientLightIntensity);
+        phongLightShader.setUniform1f("u_SpecularLightStrength", specularLightIntensity);
+        phongLightShader.setUniformVec3f("u_Color", glm::vec3(1.0f, 0.5f, 0.31f));
+        phongLightShader.setUniformVec3f("u_LightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        phongLightShader.setUniformVec3f("u_LightPosition", lightSourcePosition);
+        phongLightShader.setUniformVec3f("u_CameraPosition", camera.position);
+
         if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[11]))
         {
-            testShader.setUniformMat4f("projection", projection);
-            testShader.setUniformMat4f("view", view);
-            testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[11]).transform);
+            phongLightShader.setUniformMat4f("projection", projection);
+            phongLightShader.setUniformMat4f("view", view);
+            phongLightShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[11]).transform);
             Renderer::getInstance()->draw(
-                Engine::entitySystemManager.getComponent<MeshComponent>(entities[11]).mesh.at(0), testShader);
+                Engine::entitySystemManager.getComponent<MeshComponent>(entities[11]).mesh.at(0), phongLightShader);
         }
+
+        blinnphongLightShader.bind();
+
+        blinnphongLightShader.setUniform1f("u_AmbientIntensity", ambientLightIntensity);
+        blinnphongLightShader.setUniform1f("u_SpecularLightStrength", specularLightIntensity);
+        blinnphongLightShader.setUniformVec3f("u_Color", glm::vec3(1.0f, 0.5f, 0.31f));
+        blinnphongLightShader.setUniformVec3f("u_LightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        blinnphongLightShader.setUniformVec3f("u_LightPosition", lightSourcePosition);
+        blinnphongLightShader.setUniformVec3f("u_CameraPosition", camera.position);
         if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[12]))
         {
-            testShader.setUniformMat4f("projection", projection);
-            testShader.setUniformMat4f("view", view);
-            testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[12]).transform);
+            blinnphongLightShader.setUniformMat4f("projection", projection);
+            blinnphongLightShader.setUniformMat4f("view", view);
+            blinnphongLightShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[12]).transform);
             Renderer::getInstance()->draw(
-                Engine::entitySystemManager.getComponent<MeshComponent>(entities[12]).mesh.at(0), testShader);
+                Engine::entitySystemManager.getComponent<MeshComponent>(entities[12]).mesh.at(0), blinnphongLightShader);
         }
-        textureTest.unbind();
 
         lightSourceShader.bind();
         lightSourceShader.setUniformVec4f("u_Color", glm::vec4(ambientLightColor, 1.0f));

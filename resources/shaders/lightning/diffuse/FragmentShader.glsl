@@ -10,7 +10,6 @@ void main()
     vec4 objectColor = u_Color;
     vec3 normalizedNormal = normalize(normal);
     vec3 lightDirection = normalize(u_LightPosition - currentPosition);
-    float diffuse = max(dot(normal, lightDirection), 0.0f);
-    vec4  result = objectColor *diffuse; 
+    float diffuse = max(dot(normalizedNormal, lightDirection), 0.0f);
     FragColor = objectColor *diffuse;
 }

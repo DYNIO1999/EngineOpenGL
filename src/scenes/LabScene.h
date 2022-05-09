@@ -32,6 +32,9 @@ namespace DEngine {
                                      ,lightSourceShader(PATH_SHADERS + "lightning/light/VertexShader.glsl", PATH_SHADERS+"lightning/light/FragmentShader.glsl")
                                      ,ambientLightShader(PATH_SHADERS + "lightning/ambient/VertexShader.glsl", PATH_SHADERS+"lightning/ambient/FragmentShader.glsl")
                                      ,diffuseLightShader(PATH_SHADERS + "lightning/diffuse/VertexShader.glsl", PATH_SHADERS+"lightning/diffuse/FragmentShader.glsl")
+                                     ,specularLightShader(PATH_SHADERS + "lightning/specular/VertexShader.glsl", PATH_SHADERS+"lightning/specular/FragmentShader.glsl")
+                                     ,phongLightShader(PATH_SHADERS + "lightning/phong/VertexShader.glsl", PATH_SHADERS+"lightning/phong/FragmentShader.glsl")
+                                     ,blinnphongLightShader(PATH_SHADERS + "lightning/blinnphong/VertexShader.glsl", PATH_SHADERS+"lightning/blinnphong/FragmentShader.glsl")
                                      ,isButtonPressed(false)
                                      ,windowPtr(_windowPtr)
         {
@@ -67,7 +70,9 @@ namespace DEngine {
         Shader lightSourceShader;
         Shader ambientLightShader;
         Shader diffuseLightShader;
-        //Shader specularLightShader;
+        Shader specularLightShader;
+        Shader phongLightShader;
+        Shader blinnphongLightShader;
 
 
         glm::vec3 lightSourcePosition;
@@ -75,6 +80,7 @@ namespace DEngine {
         glm::vec3 ambientLightColor{0.2f,0.1f,0.6f};
         glm::vec3 objectColor{0.1f, 0.1f, 0.6f};
         float ambientLightIntensity =0.1f;
+        float specularLightIntensity = 0.5f;
         bool guiIsBeingUsed = false;
     private:
 

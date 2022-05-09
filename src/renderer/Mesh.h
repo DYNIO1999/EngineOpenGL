@@ -22,6 +22,9 @@ namespace DEngine {
     
     class Mesh {    
         public:
+        Mesh(){
+
+        }
         Mesh(const std::vector<VertexData>& _vertices)
         :vertices(_vertices)
         {
