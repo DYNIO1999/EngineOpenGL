@@ -35,6 +35,7 @@ namespace DEngine {
                                      ,specularLightShader(PATH_SHADERS + "lightning/specular/VertexShader.glsl", PATH_SHADERS+"lightning/specular/FragmentShader.glsl")
                                      ,phongLightShader(PATH_SHADERS + "lightning/phong/VertexShader.glsl", PATH_SHADERS+"lightning/phong/FragmentShader.glsl")
                                      ,blinnphongLightShader(PATH_SHADERS + "lightning/blinnphong/VertexShader.glsl", PATH_SHADERS+"lightning/blinnphong/FragmentShader.glsl")
+                                     ,toonShader(PATH_SHADERS+"shadersLab/toonshading/VertexShader.glsl", PATH_SHADERS+"shadersLab/toonshading/FragmentShader.glsl")
                                      ,isButtonPressed(false)
                                      ,windowPtr(_windowPtr)
         {
@@ -73,7 +74,7 @@ namespace DEngine {
         Shader specularLightShader;
         Shader phongLightShader;
         Shader blinnphongLightShader;
-
+        Shader toonShader;
 
         glm::vec3 lightSourcePosition;
 

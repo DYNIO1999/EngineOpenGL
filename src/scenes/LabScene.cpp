@@ -539,7 +539,33 @@ namespace DEngine{
     }
 
     void LabScene::shadersLab() {
+        Renderer::getInstance()->clear(glm::vec4(0.1f, 0.1f, 0.1f, 1.0));
+        toonShader.bind();
+        toonShader.setUniformVec3f("u_Color", glm::vec4(0.5, 0.352, 0.482, 1.0));
+        toonShader.setUniformVec3f("u_LightPosition", lightSourcePosition);
+        toonShader.setUniformVec3f("u_LightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        toonShader.setUniform1f("u_AmbientIntensity", ambientLightIntensity);
 
+        //toonShader.setUniform1i("u_Levels", 4);
+        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[8]))
+        {
+            toonShader.setUniformMat4f("projection", projection);
+            toonShader.setUniformMat4f("view", view);
+            toonShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[8]).transform);
+            Renderer::getInstance()->draw(
+                    Engine::entitySystemManager.getComponent<MeshComponent>(entities[8]).mesh.at(0), toonShader);
+        }
+
+        lightSourceShader.bind();
+        lightSourceShader.setUniformVec4f("u_Color", glm::vec4(ambientLightColor, 1.0f));
+        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[13]))
+        {
+            lightSourceShader.setUniformMat4f("projection", projection);
+            lightSourceShader.setUniformMat4f("view", view);
+            lightSourceShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[13]).transform);
+            Renderer::getInstance()->draw(
+                    Engine::entitySystemManager.getComponent<MeshComponent>(entities[13]).mesh.at(0), lightSourceShader);
+        }
     }
 
     void LabScene::lightsLab() {
