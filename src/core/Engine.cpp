@@ -71,16 +71,12 @@ namespace DEngine{
             deltaTime = currentFrameTime - lastFrameTime;
             lastFrameTime = currentFrameTime;
 
-
-
             editorScenePtr->beginGUI();
-            DENGINE_ERROR("_______________________");
             for (Scene* it: sceneManager) {
                 it->update(deltaTime);
                 i++;
 
             }
-            DENGINE_ERROR("_______________________");
             i=0;
             editorScenePtr->endGUI();
             window->Update();

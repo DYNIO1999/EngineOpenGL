@@ -383,16 +383,16 @@ namespace DEngine{
 
         switch (e.getKeyCode()) {
             case W:
-                camera.processKeyboard(Camera_Movement::FORWARD_CAMERA_MOVE,10* currentDeltaTime);
+                camera.processKeyboard(Camera_Movement::FORWARD_CAMERA_MOVE,cameraSpeed* currentDeltaTime);
                 break;
             case A:
-                camera.processKeyboard(Camera_Movement::LEFT_CAMERA_MOVE, 10* currentDeltaTime);
+                camera.processKeyboard(Camera_Movement::LEFT_CAMERA_MOVE, cameraSpeed* currentDeltaTime);
                 break;
             case S:
-                camera.processKeyboard(Camera_Movement::BACKWARD_CAMERA_MOVE, 10* currentDeltaTime);
+                camera.processKeyboard(Camera_Movement::BACKWARD_CAMERA_MOVE, cameraSpeed* currentDeltaTime);
                 break;
             case D:
-                camera.processKeyboard(Camera_Movement::RIGHT_CAMERA_MOVE, 10* currentDeltaTime);
+                camera.processKeyboard(Camera_Movement::RIGHT_CAMERA_MOVE, cameraSpeed* currentDeltaTime);
                 break;
         }
         return  true;
@@ -458,11 +458,6 @@ namespace DEngine{
                             is_selected = false;
                         }
                     }
-                    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-                    if (is_selected){
-                        DENGINE_TRACE("SELECTED {}",item_current_idx);
-                    }
-
                     //ImGui::SetItemDefaultFocus();
                 }
                 ImGui::EndListBox();

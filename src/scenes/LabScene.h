@@ -114,12 +114,9 @@ namespace DEngine {
         void texturesLab();
         void shadersLab();
         void lightsLab();
-        //glm::ivec3 nParticles;
-        //uint totalParticles;
-        //float time, deltaT, speed, angle;
-        //uint particlesVao;
-        //uint bhVao, bhBuf;  // black hole VAO and buffer
-        //glm::vec4 bh1, bh2;
+
+
+        float cameraSpeed{500.0f};
     };
 }
 #endif
