@@ -5,7 +5,7 @@ uniform float u_AmbientIntensity;
 uniform vec3 u_Color;
 uniform vec3 u_LightColor;
 uniform vec3 u_LightPosition;
-uniform int u_Levels = 10;
+uniform int u_Levels = 3;
 
 in vec3 normal;
 in vec3 currentPosition;

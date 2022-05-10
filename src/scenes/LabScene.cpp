@@ -14,7 +14,7 @@
 
 namespace DEngine{
 
-    void LabScene::transformEditorDraw(){
+    void LabScene::editorLightsLab(){
         ImGui::Begin("Editor");
         //if (ImGui::CollapsingHeader("Position"))
         //{
@@ -38,6 +38,25 @@ namespace DEngine{
         }
         if (ImGui::CollapsingHeader("Specular Intensity")){
            ImGui::SliderFloat("Intensity", &specularLightIntensity, 0.0f, 1.0f);
+        }
+        ImGui::End();
+    }
+
+    void LabScene::editorShaderLab(){
+        ImGui::Begin("Editor");
+        if (ImGui::CollapsingHeader("Ambient Light Color"))
+        {
+            ImGui::ColorPicker3("Color",&ambientLightColor[0], ImGuiColorEditFlags_PickerHueWheel | ImGuiColorEditFlags_DisplayRGB);
+        }
+        if (ImGui::CollapsingHeader("Object Color"))
+        {
+            ImGui::ColorPicker3("Color", &objectColor[0], ImGuiColorEditFlags_PickerHueWheel | ImGuiColorEditFlags_DisplayRGB);
+        }
+        if (ImGui::CollapsingHeader("Ambient Intensity")){
+            ImGui::SliderFloat(" Intensity",&ambientLightIntensity,0.0f,1.0f);
+        }
+        if (ImGui::CollapsingHeader("Toon Levels")){
+            ImGui::SliderInt("Levels", &levels, 0, 100);
         }
         ImGui::End();
     }
@@ -433,7 +452,7 @@ namespace DEngine{
 
                     if (ImGui::Selectable(items[n], is_selected)) {
                         item_current_idx = n;
-                        if(item_current_idx ==3){
+                        if((item_current_idx ==3) || (item_current_idx ==2)){
                             is_selected = true;
                         }else{
                             is_selected = false;
@@ -448,8 +467,21 @@ namespace DEngine{
                 }
                 ImGui::EndListBox();
             }
-            if(is_selected){
-                transformEditorDraw();
+            if(is_selected) {
+                switch (item_current_idx) {
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        editorShaderLab();
+                        break;
+                    case 3:
+                        editorLightsLab();
+                        break;
+                    case 4 :
+                        break;
+                }
             }
         }
         ImGui::End();
@@ -551,10 +583,11 @@ namespace DEngine{
     void LabScene::shadersLab() {
         Renderer::getInstance()->clear(glm::vec4(0.1f, 0.1f, 0.1f, 1.0));
         toonShader.bind();
-        toonShader.setUniformVec3f("u_Color", glm::vec4(0.4,0.4,0.4, 1.0));
+        toonShader.setUniformVec3f("u_Color", objectColor);
         toonShader.setUniformVec3f("u_LightPosition", lightSourcePosition);
         toonShader.setUniformVec3f("u_LightColor", glm::vec3(1.0f, 1.0f, 1.0f));
         toonShader.setUniform1f("u_AmbientIntensity", ambientLightIntensity);
+        toonShader.setUniform1i("u_Levels", levels);
 
         //toonShader.setUniform1i("u_Levels", 4);
         if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[14]))

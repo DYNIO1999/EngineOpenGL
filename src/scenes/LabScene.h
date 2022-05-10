@@ -82,7 +82,7 @@ namespace DEngine {
         glm::vec3 objectColor{0.1f, 0.1f, 0.6f};
         float ambientLightIntensity =0.1f;
         float specularLightIntensity = 0.5f;
-        bool guiIsBeingUsed = false;
+        int levels = 3;
     private:
 
 
@@ -108,7 +108,8 @@ namespace DEngine {
 
 
 
-        void transformEditorDraw();
+        void editorShaderLab();
+        void editorLightsLab();
         void particlesLab();
         void texturesLab();
         void shadersLab();
