@@ -11,7 +11,7 @@ namespace DEngine{
     EntitySystemManager Engine::entitySystemManager;
     bool Engine::isRunning;
     Engine::Engine() {
-        WindowData testData{"DEngine", 1600,900};
+        WindowData testData{"EngineOpenGL", 1600,900};
         window  = std::make_shared<Window>(testData);
         isRunning = true;
         window->setEventCallback(BIND_EVENT_FUNCTION(Engine::input));
