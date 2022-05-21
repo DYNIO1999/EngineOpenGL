@@ -116,7 +116,7 @@ namespace DEngine {
         void lightsLab();
 
 
-        float cameraSpeed{500.0f};
+        float cameraSpeed{10.0f};
     };
 }
 #endif
