@@ -11,11 +11,11 @@ namespace DEngine{
     }
 
     void VertexArray::bind() {
-
+        glBindVertexArray(vertexArrayID);
     }
 
     void VertexArray::unBind() {
-
+        glBindVertexArray(0);
     }
 
     void VertexArray::addBuffer(VertexBuffer& vb, VertexBufferLayout& layout) {
@@ -30,5 +30,6 @@ namespace DEngine{
             glVertexAttribPointer(i,static_cast<GLint>(element.count),element.type,element.normalized,static_cast<GLint>(layout.getStride()),(const void*)offset);
             offset +=element.count * VertexBufferElement::getSizeType(element.type);
         }
+
     }
 }

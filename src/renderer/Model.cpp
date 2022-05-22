@@ -1,221 +1,94 @@
 #include "Model.h"
 namespace  DEngine {
 
-    static std::vector<glm::vec2> groupFloatsVec2(std::vector<float> floatVec)
-    {
-        std::vector<glm::vec2> vectors;
-        for (int i = 0; i < floatVec.size(); i)
-        {
-            vectors.push_back(glm::vec2(floatVec[i++], floatVec[i++]));
-        }
-        return vectors;
+
+
+    static glm::vec3 toVec3(const aiVector3D& v) {
+        return glm::vec3(v.x, v.y, v.z);
     }
-    static std::vector<glm::vec3> groupFloatsVec3(std::vector<float> floatVec)
-    {
-        std::vector<glm::vec3> vectors;
-        for (int i = 0; i < floatVec.size(); i)
-        {
-            vectors.push_back(glm::vec3(floatVec[i++], floatVec[i++], floatVec[i++]));
-        }
-        return vectors;
+
+    static glm::vec4 toVec4(const aiColor4D& c) {
+        return glm::vec4(c.r, c.g, c.b, c.a);
     }
-    static std::vector<glm::vec4> groupFloatsVec4(std::vector<float> floatVec)
-    {
-        std::vector<glm::vec4> vectors;
-        for (int i = 0; i < floatVec.size(); i)
-        {
-            vectors.push_back(glm::vec4(floatVec[i++], floatVec[i++], floatVec[i++], floatVec[i++]));
-        }
-        return vectors;
+
+    static glm::quat toQuat(const aiQuaternion& q) {
+        return glm::quat(q.w, q.x, q.y, q.z);
     }
-    static std::vector<VertexData> assembleVertices
-            (
-                    std::vector<glm::vec3> _positions,
-                    std::vector<glm::vec3> _normals,
-                    std::vector<glm::vec2> _textureCordinates
-            )
-    {
+
+    static glm::mat4 toMat4(const aiMatrix4x4& from) {
+        glm::mat4 to;
+        //the a, b, c, d in assimp is the row; the 1, 2, 3, 4 is the column
+        to[0][0] = from.a1; to[1][0] = from.a2; to[2][0] = from.a3; to[3][0] = from.a4;
+        to[0][1] = from.b1; to[1][1] = from.b2; to[2][1] = from.b3; to[3][1] = from.b4;
+        to[0][2] = from.c1; to[1][2] = from.c2; to[2][2] = from.c3; to[3][2] = from.c4;
+        to[0][3] = from.d1; to[1][3] = from.d2; to[2][3] = from.d3; to[3][3] = from.d4;
+        return to;
+    }
+
+    void Model::loadModel(const std::string &path) {
+
+
+        uint32_t flags = aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace |
+                         aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph | aiProcess_ValidateDataStructure |
+                         aiProcess_ImproveCacheLocality | aiProcess_FixInfacingNormals |
+                         aiProcess_GenUVCoords | aiProcess_FlipUVs;
+
+        Assimp::Importer importer;
+        const aiScene* scene = importer.ReadFile(path,flags);
+        if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+        {
+            DENGINE_ERROR("ERROR ASSIMP {}", importer.GetErrorString());
+            return;
+        }
+        directory = path.substr(0, path.find_last_of('/'));
+        processNode(scene->mRootNode, scene);
+    }
+
+    void Model::processNode(aiNode *node, const aiScene *scene) {
+        for (uint32_t i = 0; i < node->mNumMeshes; i++) {
+            parseMeshData(scene->mMeshes[node->mMeshes[i]]);
+        }
+
+        for (uint32_t i = 0; i < node->mNumChildren; i++) {
+            processNode(node->mChildren[i],scene);
+        }
+    }
+
+    void Model::parseMeshData(aiMesh* mesh) {
         std::vector<VertexData> vertices;
-        for (int i = 0; i < _positions.size(); i++)
-        {
-            vertices.push_back(VertexData{ _positions[i], _normals[i], glm::vec3(1.0f, 1.0f, 1.0f), _textureCordinates[i]});
+        std::vector<unsigned int> indices;
+
+        // vertices
+        for (uint32_t i = 0; i < mesh->mNumVertices; i++) {
+            VertexData vertex;
+            vertex.position = glm::vec3(0.0f,0.0f,0.0f);
+            vertex.normals = glm::vec3(0.0f,0.0f,0.0f);
+            vertex.color = glm::vec3(0.0f,0.0f,0.0f);
+            vertex.textureCords = glm::vec2(0.0f,0.0f);
+
+            vertex.position = toVec3(mesh->mVertices[i]);
+
+
+            vertex.normals = toVec3(mesh->mNormals[i]);
+
+
+            //vertex.textureCords.x = mesh->mTextureCoords[0][i].x;
+            //vertex.textureCords.y = mesh->mTextureCoords[0][i].y;
+
+            //// tangent, bitangent
+            //vertex.bitangent = AssimpHelpers::toVec3(ai_mesh->mBitangents[i]);
+            //vertex.tangent = AssimpHelpers::toVec3(ai_mesh->mTangents[i]);
+
+            // push to array
+            vertices.push_back(vertex);
         }
-        return vertices;
-    }
 
-
-    std::vector<uint> Model::getIndices(json _accessor)
-    {
-        std::vector<uint> indices;
-
-        uint buffViewInd = _accessor.value("bufferView", 0);
-        uint count = _accessor["count"];
-        uint accByteOffset = _accessor.value("byteOffset", 0);
-        uint componentType = _accessor["componentType"];
-
-        json bufferView = json_file["bufferViews"][buffViewInd];
-        uint byteOffset = bufferView["byteOffset"];
-
-        uint beginningOfData = byteOffset + accByteOffset;
-        if (componentType == 5125)
-        {
-            for (uint i = beginningOfData; i < byteOffset + accByteOffset + count * 4; i)
-            {
-                uchar bytes[] = { data[i++], data[i++], data[i++], data[i++] };
-                uint value;
-                std::memcpy(&value, bytes, sizeof(uint));
-                indices.push_back(value);
+        // indices
+        for (uint32_t i = 0; i < mesh->mNumFaces; i++) {
+            for (uint32_t k = 0; k < mesh->mFaces[i].mNumIndices; k++) {
+                indices.push_back(mesh->mFaces[i].mIndices[k]);
             }
         }
-        else if (componentType == 5123)
-        {
-            for (uint i = beginningOfData; i < byteOffset + accByteOffset + count * 2; i)
-            {
-                uchar bytes[] = { data[i++], data[i++] };
-                unsigned short value;
-                std::memcpy(&value, bytes, sizeof(unsigned short));
-                indices.push_back((uint)value);
-            }
-        }
-        else if (componentType == 5122)
-        {
-            for (uint i = beginningOfData; i < byteOffset + accByteOffset + count * 2; i)
-            {
-                uchar bytes[] = { data[i++], data[i++] };
-                short value;
-                std::memcpy(&value, bytes, sizeof(short));
-                indices.push_back((uint)value);
-            }
-        }
-
-        return indices;
-    }
-
-    std::vector<float> Model::getFloats(json _accessor)
-    {
-        std::vector<float> floatVec;
-
-        uint buffViewInd = _accessor.value("bufferView", 1);
-        uint count = _accessor["count"];
-        uint accByteOffset = _accessor.value("byteOffset", 0);
-        std::string type = _accessor["type"];
-
-        json bufferView = json_file["bufferViews"][buffViewInd];
-        uint byteOffset = bufferView["byteOffset"];
-
-        uint numPerVert;
-        if (type == "SCALAR") numPerVert = 1;
-        else if (type == "VEC2") numPerVert = 2;
-        else if (type == "VEC3") numPerVert = 3;
-        else if (type == "VEC4") numPerVert = 4;
-        else throw std::invalid_argument("Type is invalid (not SCALAR, VEC2, VEC3, or VEC4)");
-
-        uint beginningOfData = byteOffset + accByteOffset;
-        uint lengthOfData = count * 4 * numPerVert;
-        for (uint i = beginningOfData; i < beginningOfData + lengthOfData; i)
-        {
-            uchar bytes[] = { data[i++], data[i++], data[i++], data[i++] };
-            float value;
-            std::memcpy(&value, bytes, sizeof(float));
-            floatVec.push_back(value);
-        }
-
-        return floatVec;
-    }
-
-    std::vector<uchar> Model::getData() {
-        std::string bytesText;
-        std::string uri = json_file["buffers"][0]["uri"];
-        std::string fileDirectory = pathFile.substr(0,pathFile.find_last_of('/')+1);
-        bytesText = DEngine::readFile(fileDirectory+uri);
-        std::vector<uchar> tempData(bytesText.begin(), bytesText.end());
-        return tempData;
-    }
-
-    void Model::loadMesh(uint _meshIndex) {
-        uint positionAccessorsIndex = json_file["meshes"][_meshIndex]["primitives"][0]["attributes"]["POSITION"];
-        uint normalAccessorsIndex = json_file["meshes"][_meshIndex]["primitives"][0]["attributes"]["NORMAL"];
-        uint textureAccessorsIndex = json_file["meshes"][_meshIndex]["primitives"][0]["attributes"]["TEXCOORD_0"];
-        uint indicesAccessorsIndex = json_file["meshes"][_meshIndex]["primitives"][0]["indices"];
-
-        std::vector<float> posVec = getFloats(json_file["accessors"][positionAccessorsIndex]);
-        std::vector<glm::vec3> positions = DEngine::groupFloatsVec3(posVec);
-        std::vector<float> normalVec = getFloats(json_file["accessors"][normalAccessorsIndex]);
-        std::vector<glm::vec3> normals = DEngine::groupFloatsVec3(normalVec);
-        std::vector<float> texVec = getFloats(json_file["accessors"][textureAccessorsIndex]);
-        std::vector<glm::vec2> texUVs = DEngine::groupFloatsVec2(texVec);
-
-        std::vector<VertexData> vertices = assembleVertices(positions, normals, texUVs);
-        std::vector<uint> indices = getIndices(json_file["accessors"][indicesAccessorsIndex]);
-        //std::vector<Texture> textures = getTextures();
-        meshes.emplace_back(Mesh(vertices,indices));
-    }
-
-    void Model::traverseNode(uint _nextNode, glm::mat4 _matrix) {
-
-        json currentNode = json_file["nodes"][_nextNode];
-
-        glm::vec3 translationVector(0);
-        if(currentNode.find("translation")!=currentNode.end()){
-                float temp[3];
-                for(uint i =0; i < currentNode["translation"].size(); i++){
-                    temp[i] = (currentNode["translation"][i]);
-                }
-                translationVector = glm::vec3(temp[0],temp[1], temp[2]);
-        }
-
-        glm::quat rotationQuaternion = glm::quat(1.0f, 0.0f, 0.0f ,0.0f);
-        if(currentNode.find("rotation")!=currentNode.end()){
-            rotationQuaternion = glm::quat{currentNode["rotation"][3],
-                                           currentNode["rotation"][0],
-                                           currentNode["rotation"][1],
-                                           currentNode["rotation"][2]};
-        }
-
-        glm::vec3 scaleVector(1);
-        if(currentNode.find("scale")!=currentNode.end()){
-            float temp[3];
-            for(uint i =0; i < currentNode["scale"].size(); i++){
-                temp[i] = (currentNode["scale"][i]);
-            }
-            scaleVector = glm::vec3(temp[0],temp[1], temp[2]);
-        }
-
-
-        glm::mat4 transformCurrentNode(1.0f);
-        if(currentNode.find("matrix")!=currentNode.end()){
-            float temp[16];
-            for(uint i =0; i < currentNode["matrix"].size(); i++) {
-                temp[i] = (currentNode["matrix"][i]);
-            }
-            transformCurrentNode = glm::make_mat4(temp);
-        }
-
-        glm::mat4 trans = glm::mat4(1.0f);
-        glm::mat4 rot = glm::mat4(1.0f);
-        glm::mat4 sca = glm::mat4(1.0f);
-
-        trans = glm::translate(trans, translationVector);
-        rot = glm::mat4_cast(rotationQuaternion);
-        sca = glm::scale(sca, scaleVector);
-
-
-        glm::mat4 transformMatrixNextNode = _matrix * transformCurrentNode * trans * rot * sca;
-
-        if (currentNode.find("mesh") != currentNode.end()){
-            DENGINE_INFO("TRAVERSE!!!");
-            translationsMeshes.push_back(translationVector);
-            rotationsMeshes.push_back(rotationQuaternion);
-            scalesMeshes.push_back(scaleVector);
-            matricesMeshes.push_back(transformMatrixNextNode);
-            loadMesh(currentNode["mesh"]);
-        }
-        if (currentNode.find("children") != currentNode.end())
-        {
-            for (uint i = 0; i < currentNode["children"].size(); i++) {
-                traverseNode(currentNode["children"][i], transformMatrixNextNode);
-            }
-        }
-
+        meshes.emplace_back(new Mesh(vertices,indices));
     }
 }
