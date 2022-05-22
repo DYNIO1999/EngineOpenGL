@@ -16,3 +16,6 @@
 [submodule "vendor/nlohmann"]
 	path = vendor/nlohmann
 	url = https://github.com/nlohmann/json.git
+[submodule "vendor/assimp"]
+	path = vendor/assimp
+	url = https://github.com/assimp/assimp.git

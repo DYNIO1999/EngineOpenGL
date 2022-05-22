@@ -75,7 +75,7 @@ namespace DEngine {
         Shader phongLightShader;
         Shader blinnphongLightShader;
         Shader toonShader;
-
+        
         glm::vec3 lightSourcePosition;
 
         glm::vec3 ambientLightColor{0.2f,0.1f,0.6f};
@@ -116,7 +116,11 @@ namespace DEngine {
         void lightsLab();
 
 
-        float cameraSpeed{500.0f};
+        void modelLoadingLab();
+        void enviromentMappingLab();
+
+
+        float cameraSpeed{10.0f};
     };
 }
 #endif

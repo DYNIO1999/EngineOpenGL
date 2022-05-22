@@ -15,33 +15,17 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "Cube"
-        }
-    ],
-    "materials" : [
-        {
-            "doubleSided" : true,
-            "emissiveFactor" : [
-                0,
-                0,
-                0
-            ],
-            "name" : "Material",
-            "pbrMetallicRoughness" : {
-                "baseColorFactor" : [
-                    0.800000011920929,
-                    0.800000011920929,
-                    0.800000011920929,
-                    1
-                ],
-                "metallicFactor" : 0,
-                "roughnessFactor" : 0.4000000059604645
-            }
+            "name" : "Cube",
+            "scale" : [
+                0.9808250665664673,
+                4.0168328285217285,
+                8.033729553222656
+            ]
         }
     ],
     "meshes" : [
         {
-            "name" : "Cube",
+            "name" : "Cube.001",
             "primitives" : [
                 {
                     "attributes" : {
@@ -49,8 +33,7 @@
                         "NORMAL" : 1,
                         "TEXCOORD_0" : 2
                     },
-                    "indices" : 3,
-                    "material" : 0
+                    "indices" : 3
                 }
             ]
         }
@@ -116,7 +99,7 @@
     "buffers" : [
         {
             "byteLength" : 840,
-            "uri" : "hey.bin"
+            "uri" : "third.bin"
         }
     ]
 }

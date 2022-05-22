@@ -14,7 +14,19 @@ option (GLFW_INSTALL OFF)
 option (GLFW_BUILD_DOCS OFF)
 option (GLFW_BUILD_EXAMPLES OFF)
 option (GLFW_BUILD_TESTS OFF)
+
+set(ASSIMP_NO_EXPORT ON CACHE BOOL "")
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "")
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "")
+set(ASSIMP_INSTALL_PDB OFF CACHE BOOL "")
+set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF CACHE BOOL "")
+set(ASSIMP_BUILD_OBJ_IMPORTER ON CACHE BOOL "")
+set(ASSIMP_BUILD_GLTF_IMPORTER ON CACHE BOOL "")
+
+
+add_subdirectory(vendor/assimp)
 add_subdirectory (vendor/glfw)
+
 
 include_directories (src/
                      vendor/glad/include/
@@ -25,7 +37,9 @@ include_directories (src/
                      vendor/imgui/backends
                      vendor/spdlog/include
                      vendor/nlohmann/single_include
+                     vendor/assimp/include
                      )
+
 set(IMGUI_DIR ${PROJECT_SOURCE_DIR}/vendor/imgui)
 
 file (GLOB          IMGUI_SOURCES 
@@ -56,6 +70,7 @@ add_executable (${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_HEADERS}
                                 ${GLAD_SOURCES} ${IMGUI_SOURCES} ${STB_SOURCES})
 target_link_libraries (${PROJECT_NAME}
                        glfw
+                        assimp
                        ${GLFW_LIBRARIES}
                        ${GLAD_LIBRARIES})
 
