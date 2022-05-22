@@ -111,6 +111,10 @@ namespace DEngine{
         //testMesh = std::make_shared<Mesh>(myData);
 
         //testModel = std::make_shared<Model>(PATH_MODELS+"sword/scene.gltf");
+
+
+        testModel = std::make_shared<Model>(PATH_MODELS+"second.obj");
+
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //0
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //1
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //2
@@ -139,6 +143,9 @@ namespace DEngine{
 
         //TOON SHADING
         entities.emplace_back(Engine::entitySystemManager.createEntity()); // 14
+
+        //MODELS
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //15
 
         TransformComponent testComp;
         testComp.transform = glm::mat4(1.0f);
@@ -326,8 +333,17 @@ namespace DEngine{
         MeshComponent lightningMeshComponent7;
         lightningMeshComponent6.mesh.push_back(ligthingCube);
         Engine::entitySystemManager.addComponent(entities[14], lightningMeshComponent6);
-        
         //LIGHTNING
+
+        //MODELS
+
+        TransformComponent modelTransform;
+        modelTransform.transform = glm::mat4(1);
+        Engine::entitySystemManager.addComponent(entities[15],modelTransform);
+        MeshComponent modelMeshComp;
+        modelMeshComp.meshes = testModel->meshes;
+        Engine::entitySystemManager.addComponent(entities[15], modelMeshComp);
+
     }
     void LabScene::input(Event &e) {
         EventDispatcher dispatcher(e);
@@ -363,6 +379,12 @@ namespace DEngine{
                 break;
             case 3:
                 lightsLab();
+                break;
+            case 4 :
+                enviromentMappingLab();
+                break;
+            case 5 :
+                modelLoadingLab();
                 break;
         }
 
@@ -444,7 +466,7 @@ namespace DEngine{
         //    ImGui::ShowDemoWindow(&testBool);
         //}
         if (ImGui::CollapsingHeader("Laboratoria")) {
-            const char* items[] = { "Textures Lab", "Particles Lab", "Shaders Lab", "Lights Lab", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO" };
+            const char* items[] = { "Textures Lab", "Particles Lab", "Shaders Lab", "Lights Lab", "Environment Mapping", "Model Loading", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO" };
             if (ImGui::BeginListBox("##listbox 2", ImVec2(-FLT_MIN, 10 * ImGui::GetTextLineHeightWithSpacing())))
             {
                 for (int n = 0; n < IM_ARRAYSIZE(items); n++)
@@ -474,8 +496,6 @@ namespace DEngine{
                     case 3:
                         editorLightsLab();
                         break;
-                    case 4 :
-                        break;
                 }
             }
         }
@@ -494,13 +514,16 @@ namespace DEngine{
         textureTest.bind(0);
         testShader.setUniform1i("u_Texture", 0);
         for (const auto &ent: entities) {
-            if (Engine::entitySystemManager.hasComponent<MeshComponent>(ent)) {
-                testShader.setUniformMat4f("projection", projection);
-                testShader.setUniformMat4f("view", view);
-                testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(
-                        ent).transform);
-                Renderer::getInstance()->draw(
-                        Engine::entitySystemManager.getComponent<MeshComponent>(ent).mesh.at(0), testShader);
+
+                if (Engine::entitySystemManager.hasComponent<MeshComponent>(ent)) {
+                    if (!Engine::entitySystemManager.getComponent<MeshComponent>(ent).mesh.empty()) {
+                    testShader.setUniformMat4f("projection", projection);
+                    testShader.setUniformMat4f("view", view);
+                    testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(
+                            ent).transform);
+                    Renderer::getInstance()->draw(
+                            Engine::entitySystemManager.getComponent<MeshComponent>(ent).mesh.at(0), testShader);
+                }
             }
         }
         textureTest.unbind();
@@ -562,7 +585,7 @@ namespace DEngine{
         testShader.bind();
         textureTest.bind(0);
         testShader.setUniform1i("u_Texture", 0);
-        for (auto i =0u; i<(entities.size()-10u);i++) {
+        for (auto i =0u; i<(entities.size()-11u);i++) {
             if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[i])) {
                 testShader.setUniformMat4f("projection", projection);
                 testShader.setUniformMat4f("view", view);
@@ -607,7 +630,7 @@ namespace DEngine{
     }
 
     void LabScene::lightsLab() {
-        
+
         Renderer::getInstance()->clear(glm::vec4(0.1f, 0.1f, 0.1f, 1.0));
 
 
@@ -697,5 +720,46 @@ namespace DEngine{
                 Engine::entitySystemManager.getComponent<MeshComponent>(entities[13]).mesh.at(0), lightSourceShader);
         }
         glEnable(GL_BLEND);
+    }
+
+
+    void LabScene::enviromentMappingLab() {
+        Renderer::getInstance()->clear(glm::vec4(0.1f, 0.1f, 0.1f, 1.0));
+    }
+
+    void LabScene::modelLoadingLab() {
+        Renderer::getInstance()->clear(glm::vec4(0.862, 0.984, 0.996, 1.0));
+
+        /*
+        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[i])) {
+            testShader.setUniformMat4f("projection", projection);
+            testShader.setUniformMat4f("view", view);
+            testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(
+                    entities[i]).transform);
+            Renderer::getInstance()->draw(
+                    Engine::entitySystemManager.getComponent<MeshComponent>(entities[i]).mesh.at(0), testShader);
+        }*/
+
+
+       // for (const auto& it : Engine::entitySystemManager.getComponent<MeshComponent>(entities[15]).meshes) {
+       //     DENGINE_ERROR("VERTICES -->{}" , it->vertices.size());
+       //     DENGINE_ERROR("VERTICES -->{}" , testModel->meshes[0]->vertices.size());
+       // }
+
+
+        testShader.bind();
+        testShader.setUniformMat4f("projection", projection);
+        testShader.setUniformMat4f("view", view);
+        testShader.setUniformMat4f("model", glm::mat4(1));
+        testModel->meshes[0]->getVertexArrayObj()->bind();
+        glDrawElements( GL_TRIANGLES, testModel->meshes[0]->indices.size(),GL_UNSIGNED_INT, nullptr);
+        // testShader.bind();
+       // testShader.setUniformMat4f("projection", projection);
+       // testShader.setUniformMat4f("view", view);
+       // testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[15]).transform);
+       //    // DENGINE_INFO("SIZE: {}", Engine::entitySystemManager.getComponent<MeshComponent>(entities[15]).meshes.size());
+       //     Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[15]), testShader);
+
+
     }
 }
