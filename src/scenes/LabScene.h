@@ -98,7 +98,10 @@ namespace DEngine {
 
         float currentDeltaTime;
         Camera camera{glm::vec3(0.0f, 0.0f, 0.3f)};
-        std::shared_ptr<Model> testModel;
+        std::shared_ptr<Model> cubeModel;
+        std::shared_ptr<Model> sphereModel;
+
+
         std::shared_ptr<Mesh> testMesh;
         std::vector<Entity> entities;
         glm::mat4 model, view, projection;

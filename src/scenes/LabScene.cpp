@@ -107,13 +107,16 @@ namespace DEngine{
         std::vector<Index> myIndexData{0, 1, 2,
                                        1, 2, 0};
 
+
+
+        cubeModel = std::make_shared<Model>(PATH_MODELS+"cube.obj");
+        sphereModel = std::make_shared<Model>(PATH_MODELS+"sphere.obj");
        // testMesh = std::make_shared<Mesh>(myData, myIndexData);
         //testMesh = std::make_shared<Mesh>(myData);
 
         //testModel = std::make_shared<Model>(PATH_MODELS+"sword/scene.gltf");
 
 
-        testModel = std::make_shared<Model>(PATH_MODELS+"second.obj");
 
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //0
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //1
@@ -146,13 +149,14 @@ namespace DEngine{
 
         //MODELS
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //15
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //16
 
         TransformComponent testComp;
         testComp.transform = glm::mat4(1.0f);
 
-        ///SMOKE PARTICLES BEGIN
-        std::shared_ptr<Shader> smokeComputeShader;
+        /////SMOKE PARTICLES BEGIN
         std::shared_ptr<Shader> smokeParticleShader;
+        std::shared_ptr<Shader> smokeComputeShader;
 
         std::shared_ptr<Shader> fogComputeShader;
         std::shared_ptr<Shader> fogParticleShader;
@@ -162,9 +166,7 @@ namespace DEngine{
         fogParticleShader = std::make_shared<Shader>(PATH_SHADERS + "particles/fog/FogVertexShader.glsl",
                                                        PATH_SHADERS +"particles/fog/FogGeometryShader.glsl",
                                                        PATH_SHADERS + "particles/fog/FogFragmentShader.glsl");
-
-
-        DENGINE_ERROR("FOG PARTICLE SHADER->{}", fogParticleShader->getHandle());
+        //DENGINE_ERROR("FOG PARTICLE SHADER->{}", fogParticleShader->getHandle());
 
         smokeComputeShader = std::make_shared<Shader>(PATH_SHADERS + "particles/smoke/SmokeComputeShader.glsl");
         smokeParticleShader = std::make_shared<Shader>(PATH_SHADERS + "particles/smoke/SmokeVertexShader.glsl",
@@ -172,8 +174,8 @@ namespace DEngine{
                                                      PATH_SHADERS + "particles/smoke/SmokeFragmentShader.glsl");
 
 
-        DENGINE_ERROR("SMOKE PARTICLE SHADER->{}", smokeParticleShader->getHandle());
-        DENGINE_ERROR("STANDARD  SHADER->{}",testShader.getHandle());
+        //DENGINE_ERROR("SMOKE PARTICLE SHADER->{}", smokeParticleShader->getHandle());
+        //DENGINE_ERROR("STANDARD  SHADER->{}",testShader.getHandle());
         std::shared_ptr<Texture> particleTexture = std::make_shared<Texture>(PATH_TEXTURES+"smoke.png");
 
         testComp.transform = glm::mat4(1.0f);
@@ -204,7 +206,6 @@ namespace DEngine{
         Engine::entitySystemManager.addComponent(entities[1],testComp);
         Engine::entitySystemManager.addComponent(entities[1], particleComponent2);
         Engine::entitySystemManager.addComponent(entities[1], particlePropertiesComponent2);
-
 
         testComp.transform = glm::mat4(1.0f);
         testComp.transform = glm::translate(testComp.transform, glm::vec3(10.0f,0.0f,0.0f));
@@ -337,12 +338,25 @@ namespace DEngine{
 
         //MODELS
 
+
         TransformComponent modelTransform;
         modelTransform.transform = glm::mat4(1);
         Engine::entitySystemManager.addComponent(entities[15],modelTransform);
         MeshComponent modelMeshComp;
-        modelMeshComp.meshes = testModel->meshes;
+        modelMeshComp.meshes = cubeModel->meshes;
         Engine::entitySystemManager.addComponent(entities[15], modelMeshComp);
+
+
+
+
+        modelTransform.transform = glm::mat4(1);
+        modelTransform.transform = glm::translate(modelTransform.transform , glm::vec3(40.0f, 0.0f,0.0f));
+
+        MeshComponent modelMeshComp2;
+        modelMeshComp2.meshes = sphereModel->meshes;
+        Engine::entitySystemManager.addComponent(entities[16],modelTransform);
+        Engine::entitySystemManager.addComponent(entities[16], modelMeshComp2);
+
 
     }
     void LabScene::input(Event &e) {
@@ -585,7 +599,7 @@ namespace DEngine{
         testShader.bind();
         textureTest.bind(0);
         testShader.setUniform1i("u_Texture", 0);
-        for (auto i =0u; i<(entities.size()-11u);i++) {
+        for (auto i =0u; i<(entities.size()-12u);i++) {
             if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[i])) {
                 testShader.setUniformMat4f("projection", projection);
                 testShader.setUniformMat4f("view", view);
@@ -751,14 +765,27 @@ namespace DEngine{
         testShader.setUniformMat4f("projection", projection);
         testShader.setUniformMat4f("view", view);
         testShader.setUniformMat4f("model", glm::mat4(1));
-        testModel->meshes[0]->getVertexArrayObj()->bind();
-        glDrawElements( GL_TRIANGLES, testModel->meshes[0]->indices.size(),GL_UNSIGNED_INT, nullptr);
+        //DENGINE_INFO("MESHES{}",testModel->meshes.size());
+        //DENGINE_INFO("INDICES {}",testModel->meshes[0].indices.size());
+        //DENGINE_INFO("VERTICES{}",testModel->meshes[0].vertices.size());
+        //testModel->meshes[0].getVertexArrayObj()->bind();
+        //testModel->meshes[0].getIndexBufferObj()->bind();
+
         // testShader.bind();
        // testShader.setUniformMat4f("projection", projection);
        // testShader.setUniformMat4f("view", view);
        // testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[15]).transform);
        //    // DENGINE_INFO("SIZE: {}", Engine::entitySystemManager.getComponent<MeshComponent>(entities[15]).meshes.size());
-       //     Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[15]), testShader);
+       Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[15]), testShader);
+
+
+        testShader.bind();
+        testShader.setUniformMat4f("projection", projection);
+        testShader.setUniformMat4f("view", view);
+        testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[16]).transform);
+
+        Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[16]), testShader);
+
 
 
     }
