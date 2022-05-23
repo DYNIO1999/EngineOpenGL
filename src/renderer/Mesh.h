@@ -26,7 +26,8 @@ namespace DEngine {
 
         }
         Mesh(const std::vector<VertexData>& _vertices)
-        :vertices(_vertices)
+        :vertices(_vertices),
+         materialIndex(0)
         {
             initMesh();
 
@@ -34,7 +35,8 @@ namespace DEngine {
 
         Mesh(const std::vector<VertexData>& _vertices, const std::vector<Index>&  _indices)
         :vertices(_vertices),
-        indices(_indices)
+        indices(_indices),
+         materialIndex(0)
         {
             initMesh();
         }
@@ -53,10 +55,15 @@ namespace DEngine {
 
 
         std::vector<Index> indices;
+
+        void setMaterialIndex(uint _materialIndex){ materialIndex = _materialIndex;}
+        uint getMaterialIndex() const { return materialIndex;}
+
         protected:
 
         void initMesh();
 
+        uint materialIndex;
         std::shared_ptr<VertexBuffer> vertexBufferObj;
         std::shared_ptr<VertexBufferLayout> vertexBufferLayoutObj;
         std::shared_ptr<IndexBuffer> indexBufferObj;

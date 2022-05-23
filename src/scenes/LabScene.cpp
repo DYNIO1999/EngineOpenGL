@@ -111,6 +111,8 @@ namespace DEngine{
 
         cubeModel = std::make_shared<Model>(PATH_MODELS+"cube.obj");
         sphereModel = std::make_shared<Model>(PATH_MODELS+"sphere.obj");
+        backpackModel = std::make_shared<Model>(PATH_MODELS+"backpack/backpack.obj", true);
+        planeModel = std::make_shared<Model>(PATH_MODELS+"plane/plane.obj",true);
        // testMesh = std::make_shared<Mesh>(myData, myIndexData);
         //testMesh = std::make_shared<Mesh>(myData);
 
@@ -149,6 +151,8 @@ namespace DEngine{
 
         //MODELS
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //15
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //16
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //17
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //16
 
         TransformComponent testComp;
@@ -337,25 +341,39 @@ namespace DEngine{
         //LIGHTNING
 
         //MODELS
-
-
         TransformComponent modelTransform;
         modelTransform.transform = glm::mat4(1);
+        modelTransform.transform = glm::scale(modelTransform.transform ,glm::vec3(10,1,10));
         Engine::entitySystemManager.addComponent(entities[15],modelTransform);
         MeshComponent modelMeshComp;
         modelMeshComp.meshes = cubeModel->meshes;
         Engine::entitySystemManager.addComponent(entities[15], modelMeshComp);
 
-
-
-
         modelTransform.transform = glm::mat4(1);
-        modelTransform.transform = glm::translate(modelTransform.transform , glm::vec3(40.0f, 0.0f,0.0f));
+        modelTransform.transform = glm::translate(modelTransform.transform , glm::vec3(0.0f, 2.5f,0.0f));
 
         MeshComponent modelMeshComp2;
         modelMeshComp2.meshes = sphereModel->meshes;
+        modelMeshComp2.textures = sphereModel->textures;
         Engine::entitySystemManager.addComponent(entities[16],modelTransform);
         Engine::entitySystemManager.addComponent(entities[16], modelMeshComp2);
+
+        modelTransform.transform = glm::mat4(1);
+        modelTransform.transform = glm::translate(modelTransform.transform , glm::vec3(0.0f, 3.0f,5.0f));
+        MeshComponent modelMeshComp3;
+        modelMeshComp3.meshes = backpackModel->meshes;
+        modelMeshComp3.textures = backpackModel->textures;
+        Engine::entitySystemManager.addComponent(entities[17],modelTransform);
+        Engine::entitySystemManager.addComponent(entities[17], modelMeshComp3);
+
+        modelTransform.transform = glm::mat4(1);
+        modelTransform.transform = glm::translate(modelTransform.transform , glm::vec3(40.0f, 5.0f,0.0f));
+        MeshComponent modelMeshComp4;
+        modelMeshComp4.meshes = planeModel->meshes;
+        modelMeshComp4.textures = planeModel->textures;
+        Engine::entitySystemManager.addComponent(entities[18],modelTransform);
+        Engine::entitySystemManager.addComponent(entities[18],modelMeshComp4);
+        //MODELS
 
 
     }
@@ -599,7 +617,7 @@ namespace DEngine{
         testShader.bind();
         textureTest.bind(0);
         testShader.setUniform1i("u_Texture", 0);
-        for (auto i =0u; i<(entities.size()-12u);i++) {
+        for (auto i =0u; i<(entities.size()-14u);i++) {
             if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[i])) {
                 testShader.setUniformMat4f("projection", projection);
                 testShader.setUniformMat4f("view", view);
@@ -744,48 +762,59 @@ namespace DEngine{
     void LabScene::modelLoadingLab() {
         Renderer::getInstance()->clear(glm::vec4(0.862, 0.984, 0.996, 1.0));
 
-        /*
-        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[i])) {
-            testShader.setUniformMat4f("projection", projection);
-            testShader.setUniformMat4f("view", view);
-            testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(
-                    entities[i]).transform);
-            Renderer::getInstance()->draw(
-                    Engine::entitySystemManager.getComponent<MeshComponent>(entities[i]).mesh.at(0), testShader);
-        }*/
-
-
-       // for (const auto& it : Engine::entitySystemManager.getComponent<MeshComponent>(entities[15]).meshes) {
-       //     DENGINE_ERROR("VERTICES -->{}" , it->vertices.size());
-       //     DENGINE_ERROR("VERTICES -->{}" , testModel->meshes[0]->vertices.size());
-       // }
-
-
         testShader.bind();
         testShader.setUniformMat4f("projection", projection);
         testShader.setUniformMat4f("view", view);
-        testShader.setUniformMat4f("model", glm::mat4(1));
-        //DENGINE_INFO("MESHES{}",testModel->meshes.size());
-        //DENGINE_INFO("INDICES {}",testModel->meshes[0].indices.size());
-        //DENGINE_INFO("VERTICES{}",testModel->meshes[0].vertices.size());
-        //testModel->meshes[0].getVertexArrayObj()->bind();
-        //testModel->meshes[0].getIndexBufferObj()->bind();
+        testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[15]).transform);
 
-        // testShader.bind();
-       // testShader.setUniformMat4f("projection", projection);
-       // testShader.setUniformMat4f("view", view);
-       // testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[15]).transform);
-       //    // DENGINE_INFO("SIZE: {}", Engine::entitySystemManager.getComponent<MeshComponent>(entities[15]).meshes.size());
+
+       dirtTexture.bind();
+       testShader.setUniform1i("u_Texture", 0);
        Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[15]), testShader);
+       dirtTexture.unbind();
+
+        if(minMax.first>=minMax.second){
+            up = false;
+        }else if(minMax.first<0.0f){
+            up= true;
+        }
+
+
+       glm::vec3 current = glm::vec3(0.0f,minMax.first,0.0f);
+        testShader.bind();
+        testShader.setUniformMat4f("projection", projection);
+        testShader.setUniformMat4f("view", view);
+        testShader.setUniformMat4f("model", glm::translate( Engine::entitySystemManager.getComponent<TransformComponent>(entities[16]).transform, glm::vec3(0.0f,minMax.first,0.0f)));
+        dynioLove.bind();
+        testShader.setUniform1i("u_Texture", 0);
+        Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[16]), testShader);
+        dynioLove.unbind();
+
+       if(up){
+           minMax.first+=currentDeltaTime;
+           }else{
+           minMax.first-=(currentDeltaTime*1.3f);
+       }
+
 
 
         testShader.bind();
         testShader.setUniformMat4f("projection", projection);
         testShader.setUniformMat4f("view", view);
-        testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[16]).transform);
+        testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[17]).transform);
+        Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[17]), testShader);
 
-        Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[16]), testShader);
 
+
+
+        testShader.bind();
+        testShader.setUniformMat4f("projection", projection);
+        testShader.setUniformMat4f("view", view);
+        testShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[18]).transform);
+        Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[18]), testShader);
+
+        Engine::entitySystemManager.getComponent<TransformComponent>(entities[18]).transform = glm::translate(
+                Engine::entitySystemManager.getComponent<TransformComponent>(entities[18]).transform, glm::vec3(-5.0f* currentDeltaTime,0.0f,0.f));
 
 
     }

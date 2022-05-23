@@ -94,14 +94,21 @@ namespace DEngine{
     }
     void Renderer::draw(MeshComponent& _meshComponent, Shader& _shader){
         _shader.bind();
+        for (auto & item: _meshComponent.textures) {
+            item->bind(0);
+            _shader.setUniform1i("u_Texture", 0);
+        }
         for(auto it = _meshComponent.meshes.begin(); it<_meshComponent.meshes.end();it++){
-            (*it)->getVertexArrayObj()->bind();
-            if((*it)->getIndexBufferObj()!= nullptr) {
-                (*it)->getIndexBufferObj()->bind();
-                glDrawElements(GL_TRIANGLES,  (*it)->getIndexBufferObj()->getCount(), GL_UNSIGNED_INT, nullptr);
+            (*it).getVertexArrayObj()->bind();
+            if((*it).getIndexBufferObj()!= nullptr) {
+                (*it).getIndexBufferObj()->bind();
+                glDrawElements(GL_TRIANGLES,  (*it).getIndexBufferObj()->getCount(), GL_UNSIGNED_INT, nullptr);
             }else{
-                glDrawArrays(GL_TRIANGLES,0,(*it)->getVertexArrayObj()->getVertexCount());
+                glDrawArrays(GL_TRIANGLES,0,(*it).getVertexArrayObj()->getVertexCount());
             }
+        }
+        for (auto & item: _meshComponent.textures) {
+            item->unbind();
         }
     }
     void Renderer::clear() const {
