@@ -6,6 +6,8 @@
 namespace DEngine {
     class Texture {
     public:
+        Texture() = default;
+        Texture(const Texture&) = default;
         Texture(const std::string& path);
         ~Texture();
 

@@ -41,16 +41,17 @@ namespace  DEngine {
             return;
         }
         directory = path.substr(0, path.find_last_of('/'));
-        processNode(scene->mRootNode, scene);
+        parseNodeData(scene->mRootNode, scene);
+
     }
 
-    void Model::processNode(aiNode *node, const aiScene *scene) {
+    void Model::parseNodeData(aiNode *node, const aiScene *scene) {
         for (uint32_t i = 0; i < node->mNumMeshes; i++) {
             parseMeshData(scene->mMeshes[node->mMeshes[i]]);
         }
 
         for (uint32_t i = 0; i < node->mNumChildren; i++) {
-            processNode(node->mChildren[i],scene);
+            parseNodeData(node->mChildren[i],scene);
         }
     }
 
@@ -89,6 +90,15 @@ namespace  DEngine {
                 indices.push_back(mesh->mFaces[i].mIndices[k]);
             }
         }
-        meshes.emplace_back(new Mesh(vertices,indices));
+
+
+
+        Mesh temp{vertices,indices};
+        temp.setMaterialIndex(mesh->mMaterialIndex);
+        meshes.emplace_back(temp);
+    }
+
+    void Model::parseMaterials(aiScene *scene, const std::string &directory) {
+
     }
 }

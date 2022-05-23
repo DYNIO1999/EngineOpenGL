@@ -12,6 +12,7 @@
 
 #include "Mesh.h"
 #include "Texture.h"
+#include "Material.h"
 
 namespace  DEngine {
 
@@ -20,18 +21,15 @@ namespace  DEngine {
         Model(const std::string& _pathFile):pathFile(_pathFile){
             loadModel(pathFile);
         }
-
-
-        std::vector<Mesh*> meshes;
+        std::vector<Material> materials;
+        std::vector<Mesh> meshes;
         std::vector<Texture> textures;
 
     private:
         void loadModel(const std::string& path);
-        void processNode(aiNode *node, const aiScene *scene);
-
+        void parseNodeData(aiNode *node, const aiScene *scene);
         void parseMeshData(aiMesh* mesh);
-
-
+        void parseMaterials(aiScene* scene, const std::string& directory);
         std::string directory;
         std::string pathFile;
     };
