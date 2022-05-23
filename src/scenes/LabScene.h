@@ -37,6 +37,8 @@ namespace DEngine {
                                      ,blinnphongLightShader(PATH_SHADERS + "lightning/blinnphong/VertexShader.glsl", PATH_SHADERS+"lightning/blinnphong/FragmentShader.glsl")
                                      ,toonShader(PATH_SHADERS+"shadersLab/toonshading/VertexShader.glsl", PATH_SHADERS+"shadersLab/toonshading/FragmentShader.glsl")
                                      ,isButtonPressed(false)
+                                     ,dirtTexture(PATH_TEXTURES + "dirt.png")
+                                     ,dynioLove(PATH_TEXTURES + "dyniolove.png")
                                      ,windowPtr(_windowPtr)
         {
             initData();
@@ -67,6 +69,8 @@ namespace DEngine {
         Texture firstToMultiTexturing;
         Texture secondToMultiTexturing;
         Texture thirdToMultiTexturing;
+        Texture dirtTexture;
+        Texture dynioLove;
 
         Shader lightSourceShader;
         Shader ambientLightShader;
@@ -97,10 +101,14 @@ namespace DEngine {
         bool onMouseMovedEvent(MouseMovedEvent& e);
 
         float currentDeltaTime;
+        bool up{true};
         Camera camera{glm::vec3(0.0f, 0.0f, 0.3f)};
         std::shared_ptr<Model> cubeModel;
         std::shared_ptr<Model> sphereModel;
+        std::shared_ptr<Model> backpackModel;
+        std::shared_ptr<Model> planeModel;
 
+        std::pair<float,float> minMax{0.0f,1.0f};
 
         std::shared_ptr<Mesh> testMesh;
         std::vector<Entity> entities;

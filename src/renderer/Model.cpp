@@ -40,9 +40,15 @@ namespace  DEngine {
             DENGINE_ERROR("ERROR ASSIMP {}", importer.GetErrorString());
             return;
         }
-        directory = path.substr(0, path.find_last_of('/'));
+
+        directory = path.substr(0, path.find_last_of('/')).append("/");
+
         parseNodeData(scene->mRootNode, scene);
 
+        DENGINE_ERROR("CHECK --->{}", withTexture);
+        if(withTexture) {
+            parseTextures();
+        }
     }
 
     void Model::parseNodeData(aiNode *node, const aiScene *scene) {
@@ -72,33 +78,24 @@ namespace  DEngine {
 
             vertex.normals = toVec3(mesh->mNormals[i]);
 
-
-            //vertex.textureCords.x = mesh->mTextureCoords[0][i].x;
-            //vertex.textureCords.y = mesh->mTextureCoords[0][i].y;
-
-            //// tangent, bitangent
-            //vertex.bitangent = AssimpHelpers::toVec3(ai_mesh->mBitangents[i]);
-            //vertex.tangent = AssimpHelpers::toVec3(ai_mesh->mTangents[i]);
-
-            // push to array
+            if (mesh->mTextureCoords[0]) {
+                vertex.textureCords.x = mesh->mTextureCoords[0][i].x;
+                vertex.textureCords.y = mesh->mTextureCoords[0][i].y;
+            }
             vertices.push_back(vertex);
         }
-
-        // indices
         for (uint32_t i = 0; i < mesh->mNumFaces; i++) {
             for (uint32_t k = 0; k < mesh->mFaces[i].mNumIndices; k++) {
                 indices.push_back(mesh->mFaces[i].mIndices[k]);
             }
         }
 
-
-
         Mesh temp{vertices,indices};
-        temp.setMaterialIndex(mesh->mMaterialIndex);
         meshes.emplace_back(temp);
     }
 
-    void Model::parseMaterials(aiScene *scene, const std::string &directory) {
-
+    void Model::parseTextures() {
+        DENGINE_WARN("PATH --> {}", directory);
+        textures.emplace_back(std::make_shared<Texture>(directory+"texture.png"));
     }
 }

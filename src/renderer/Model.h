@@ -4,6 +4,8 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <assimp/pbrmaterial.h>
+
 
 #include "core/LogManager.h"
 #include "core/Helpers.h"
@@ -18,20 +20,26 @@ namespace  DEngine {
 
     class Model {
     public:
-        Model(const std::string& _pathFile):pathFile(_pathFile){
+        Model(const std::string& _pathFile, bool _withTexture=false):pathFile(_pathFile), withTexture(_withTexture){
             loadModel(pathFile);
         }
-        std::vector<Material> materials;
+        ~Model(){
+            //materials.clear();
+            meshes.clear();
+            textures.clear();
+        }
+        //std::vector<Material> materials;
         std::vector<Mesh> meshes;
-        std::vector<Texture> textures;
+        std::vector<std::shared_ptr<Texture>> textures;
 
     private:
         void loadModel(const std::string& path);
         void parseNodeData(aiNode *node, const aiScene *scene);
         void parseMeshData(aiMesh* mesh);
-        void parseMaterials(aiScene* scene, const std::string& directory);
+        void parseTextures();
         std::string directory;
         std::string pathFile;
+        bool withTexture;
     };
 }
 #endif
