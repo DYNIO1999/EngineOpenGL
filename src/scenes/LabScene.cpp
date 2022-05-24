@@ -108,6 +108,9 @@ namespace DEngine{
                                        1, 2, 0};
 
 
+        quadMesh = std::make_shared<Mesh>(myData, myIndexData);
+
+
 
         cubeModel = std::make_shared<Model>(PATH_MODELS+"cube.obj");
         sphereModel = std::make_shared<Model>(PATH_MODELS+"sphere.obj");
@@ -156,6 +159,8 @@ namespace DEngine{
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //18
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //19
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //20
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //21
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //22
 
         TransformComponent testComp;
         testComp.transform = glm::mat4(1.0f);
@@ -446,6 +451,24 @@ namespace DEngine{
         Engine::entitySystemManager.addComponent(entities[20], modelMeshComp6);
         //ENV MAPPING
 
+
+        //TRESHOLDING
+
+        modelTransform.transform = glm::mat4(1);
+        modelTransform.transform =  glm::translate(modelTransform.transform, glm::vec3(0.0f,0.0f,0.0f));
+        Engine::entitySystemManager.addComponent(entities[21],modelTransform);
+        MeshComponent modelMeshComp7;
+        modelMeshComp7.meshes.emplace_back(*quadMesh);
+        Engine::entitySystemManager.addComponent(entities[21], modelMeshComp7);
+
+        modelTransform.transform = glm::mat4(1);
+        modelTransform.transform =  glm::translate(modelTransform.transform, glm::vec3(-5.0f,0.0f,0.0f));
+        Engine::entitySystemManager.addComponent(entities[22],modelTransform);
+        MeshComponent modelMeshComp8;
+        modelMeshComp8.meshes.emplace_back(*quadMesh);
+        Engine::entitySystemManager.addComponent(entities[22], modelMeshComp8);
+        //TRESHOLDING
+
     }
     void LabScene::input(Event &e) {
         EventDispatcher dispatcher(e);
@@ -687,7 +710,7 @@ namespace DEngine{
         testShader.bind();
         textureTest.bind(0);
         testShader.setUniform1i("u_Texture", 0);
-        for (auto i =0u; i<(entities.size()-16u);i++) {
+        for (auto i =0u; i<(entities.size()-18u);i++) {
             if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[i])) {
                 testShader.setUniformMat4f("projection", projection);
                 testShader.setUniformMat4f("view", view);
@@ -701,7 +724,36 @@ namespace DEngine{
     }
 
     void LabScene::shadersLab() {
-        Renderer::getInstance()->clear(glm::vec4(0.1f, 0.1f, 0.1f, 1.0));
+        Renderer::getInstance()->clear(glm::vec4(0.8, 0.9, 0.9, 1.0));
+
+
+
+
+        treshHoldingColorShader.bind();
+        windowTexture.bind();
+        treshHoldingColorShader.setUniform1i("u_TreshHolding", 1);
+        treshHoldingColorShader.setUniform1i("u_Texture", 0);
+        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[21])) {
+            treshHoldingColorShader.setUniformMat4f("projection", projection);
+            treshHoldingColorShader.setUniformMat4f("view", view);
+            treshHoldingColorShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>( entities[21]).transform);
+            Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[21]),treshHoldingColorShader);
+        }
+
+
+        treshHoldingColorShader.bind();
+        textureTest.bind();
+        treshHoldingColorShader.setUniform1i("u_TreshHolding", 2);
+        treshHoldingColorShader.setUniform1i("u_Texture", 0);
+        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[22])) {
+            treshHoldingColorShader.setUniformMat4f("projection", projection);
+            treshHoldingColorShader.setUniformMat4f("view", view);
+            treshHoldingColorShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>( entities[22]).transform);
+            Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[22]),treshHoldingColorShader);
+        }
+
+
+
         toonShader.bind();
         toonShader.setUniformVec3f("u_Color", objectColor);
         toonShader.setUniformVec3f("u_LightPosition", lightSourcePosition);
