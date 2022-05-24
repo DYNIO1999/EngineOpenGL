@@ -153,7 +153,9 @@ namespace DEngine{
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //15
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //16
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //17
-        entities.emplace_back(Engine::entitySystemManager.createEntity()); //16
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //18
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //19
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //20
 
         TransformComponent testComp;
         testComp.transform = glm::mat4(1.0f);
@@ -375,6 +377,74 @@ namespace DEngine{
         Engine::entitySystemManager.addComponent(entities[18],modelMeshComp4);
         //MODELS
 
+
+
+
+        //ENV MAPPING
+
+        float skyboxVertices[] = {
+                -1.0f,  1.0f, -1.0f,
+                -1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+
+                -1.0f, -1.0f,  1.0f,
+                -1.0f, -1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f,  1.0f,
+                -1.0f, -1.0f,  1.0f,
+
+                1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+
+                -1.0f, -1.0f,  1.0f,
+                -1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f, -1.0f,  1.0f,
+                -1.0f, -1.0f,  1.0f,
+
+                -1.0f,  1.0f, -1.0f,
+                1.0f,  1.0f, -1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                -1.0f,  1.0f,  1.0f,
+                -1.0f,  1.0f, -1.0f,
+
+                -1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f,  1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f,  1.0f,
+                1.0f, -1.0f,  1.0f
+        };
+        vertexBufferSkybox = std::make_shared<VertexBuffer>(skyboxVertices, sizeof(skyboxVertices),sizeof(skyboxVertices)/sizeof(float));
+        vertexBufferLayoutSkybox = std::make_shared<VertexBufferLayout>();
+        vertexBufferLayoutSkybox->push<float>(3);
+        vertexArraySkybox = std::make_shared<VertexArray>();
+        vertexArraySkybox->addBuffer(*vertexBufferSkybox, *vertexBufferLayoutSkybox);
+
+        modelTransform.transform = glm::mat4(1);
+        Engine::entitySystemManager.addComponent(entities[19],modelTransform);
+        MeshComponent modelMeshComp5;
+        modelMeshComp5.meshes = cubeModel->meshes;
+        Engine::entitySystemManager.addComponent(entities[19], modelMeshComp5);
+
+
+        modelTransform.transform = glm::mat4(1);
+        modelTransform.transform =  glm::translate(modelTransform.transform, glm::vec3(5.0f,0.0f,0.0f));
+        Engine::entitySystemManager.addComponent(entities[20],modelTransform);
+        MeshComponent modelMeshComp6;
+        modelMeshComp6.meshes = sphereModel->meshes;
+        Engine::entitySystemManager.addComponent(entities[20], modelMeshComp6);
+        //ENV MAPPING
 
     }
     void LabScene::input(Event &e) {
@@ -617,7 +687,7 @@ namespace DEngine{
         testShader.bind();
         textureTest.bind(0);
         testShader.setUniform1i("u_Texture", 0);
-        for (auto i =0u; i<(entities.size()-14u);i++) {
+        for (auto i =0u; i<(entities.size()-16u);i++) {
             if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[i])) {
                 testShader.setUniformMat4f("projection", projection);
                 testShader.setUniformMat4f("view", view);
@@ -647,6 +717,25 @@ namespace DEngine{
             toonShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[14]).transform);
             Renderer::getInstance()->draw(
                     Engine::entitySystemManager.getComponent<MeshComponent>(entities[14]).mesh.at(0), toonShader);
+        }
+
+
+
+
+        toonShader.bind();
+        toonShader.setUniformVec3f("u_Color", objectColor);
+        toonShader.setUniformVec3f("u_LightPosition", lightSourcePosition);
+        toonShader.setUniformVec3f("u_LightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        toonShader.setUniform1f("u_AmbientIntensity", ambientLightIntensity);
+        toonShader.setUniform1i("u_Levels", levels);
+
+        //toonShader.setUniform1i("u_Levels", 4);
+        if (Engine::entitySystemManager.hasComponent<MeshComponent>(entities[20]))
+        {
+            toonShader.setUniformMat4f("projection", projection);
+            toonShader.setUniformMat4f("view", view);
+            toonShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[20]).transform);
+            Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[20]),toonShader);
         }
 
         lightSourceShader.bind();
@@ -757,6 +846,42 @@ namespace DEngine{
 
     void LabScene::enviromentMappingLab() {
         Renderer::getInstance()->clear(glm::vec4(0.1f, 0.1f, 0.1f, 1.0));
+        glm::mat4 secondView = glm::mat4(glm::mat3(camera.GetViewMatrix()));
+
+
+        envMapShader.bind();
+        envMapShader.setUniformMat4f("projection", projection);
+        envMapShader.setUniformMat4f("view", view);
+        envMapShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[19]).transform);
+        envMapShader.setUniformVec3f("u_CameraPos", camera.position);
+        cubeMap.bind();
+        envMapShader.setUniform1i("u_Skybox", 0);
+        Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[19]),envMapShader);
+        cubeMap.unbind();
+
+
+
+        refractionShader.bind();
+        refractionShader.setUniformMat4f("projection", projection);
+        refractionShader.setUniformMat4f("view", view);
+        refractionShader.setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[20]).transform);
+        refractionShader.setUniformVec3f("u_CameraPos", camera.position);
+        cubeMap.bind();
+        refractionShader.setUniform1i("u_Skybox", 0);
+        Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[20]),refractionShader);
+        cubeMap.unbind();
+
+
+        glDepthFunc(GL_LEQUAL);
+        skyBoxShader.bind();
+        cubeMap.bind(1);
+        skyBoxShader.setUniform1i("u_Skybox", 1);
+        skyBoxShader.setUniformMat4f("projection", projection);
+        skyBoxShader.setUniformMat4f("view", secondView);
+        Renderer::getInstance()->draw(*vertexArraySkybox, skyBoxShader);
+        cubeMap.unbind();
+        skyBoxShader.unbind();
+        glDepthFunc(GL_LESS);
     }
 
     void LabScene::modelLoadingLab() {
@@ -814,7 +939,7 @@ namespace DEngine{
         Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[18]), testShader);
 
         Engine::entitySystemManager.getComponent<TransformComponent>(entities[18]).transform = glm::translate(
-                Engine::entitySystemManager.getComponent<TransformComponent>(entities[18]).transform, glm::vec3(-5.0f* currentDeltaTime,0.0f,0.f));
+                Engine::entitySystemManager.getComponent<TransformComponent>(entities[18]).transform, glm::vec3(-10.0f* currentDeltaTime,0.0f,0.f));
 
 
     }
