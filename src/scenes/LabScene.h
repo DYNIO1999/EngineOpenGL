@@ -26,6 +26,7 @@ namespace DEngine {
                                      testShader(PATH_SHADERS+ "TestVertexShader.glsl",PATH_SHADERS+ "TestFragmentShader.glsl")
                                      ,multTextureShader(PATH_SHADERS+ "TestVertexShader.glsl", PATH_SHADERS+"MultiTextureFragmentShader.glsl")
                                      ,textureTest(PATH_TEXTURES + "brick.png")
+                                     ,windowTexture(PATH_TEXTURES + "test.png")
                                      ,firstToMultiTexturing(PATH_TEXTURES + "multiTexturing/snow.png")
                                      ,thirdToMultiTexturing(PATH_TEXTURES + "multiTexturing/pavement.jpg")
                                      ,secondToMultiTexturing(PATH_TEXTURES + "multiTexturing/path.png")
@@ -44,7 +45,8 @@ namespace DEngine {
                                      skyBoxShader(PATH_SHADERS+"envMapping/SkyBoxVertexShader.glsl", PATH_SHADERS+"envMapping/SkyBoxFragmentShader.glsl"),
                                      envMapShader(PATH_SHADERS+"envMapping/EnvMapVertexShader.glsl", PATH_SHADERS+"envMapping/EnvMapFragmentShader.glsl"),
                                      refractionShader(PATH_SHADERS+"envMapping/RefractionVertexShader.glsl", PATH_SHADERS+"envMapping/RefractionFragmentShader.glsl")
-                                    ,cubeMap({{PATH_TEXTURES+"cubemaps/skybox/right.jpg"},
+                                     ,treshHoldingColorShader(PATH_SHADERS+"treshholding/VertexShader.glsl", PATH_SHADERS+"treshholding/FragmentShader.glsl")
+                                     ,cubeMap({{PATH_TEXTURES+"cubemaps/skybox/right.jpg"},
                                                {PATH_TEXTURES+"cubemaps/skybox/left.jpg"},
                                                {PATH_TEXTURES+"cubemaps/skybox/top.jpg"},
                                                {PATH_TEXTURES+"cubemaps/skybox/bottom.jpg"},
@@ -67,6 +69,7 @@ namespace DEngine {
         int counter = 0;
 
 
+        std::shared_ptr<Mesh> quadMesh;
 
         std::shared_ptr<VertexArray> vertexArraySkybox;
         std::shared_ptr<VertexBuffer> vertexBufferSkybox;
@@ -89,6 +92,7 @@ namespace DEngine {
         Texture thirdToMultiTexturing;
         Texture dirtTexture;
         Texture dynioLove;
+        Texture windowTexture;
 
         Shader lightSourceShader;
         Shader ambientLightShader;
@@ -100,7 +104,8 @@ namespace DEngine {
         Shader envMapShader;
         Shader refractionShader;
         Shader skyBoxShader;
-        
+        Shader treshHoldingColorShader;
+
         glm::vec3 lightSourcePosition;
 
         glm::vec3 ambientLightColor{0.2f,0.1f,0.6f};
@@ -152,7 +157,7 @@ namespace DEngine {
         void enviromentMappingLab();
 
 
-        float cameraSpeed{10.0f};
+        float cameraSpeed{300.0f};
     };
 }
 #endif
