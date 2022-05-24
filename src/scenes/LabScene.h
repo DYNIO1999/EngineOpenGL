@@ -16,6 +16,8 @@
 #include "core/Camera.h"
 
 #include "renderer/FrameBuffer.h"
+#include "renderer/CubeMap.h"
+
 
 namespace DEngine {
     class LabScene : public Scene {
@@ -38,8 +40,18 @@ namespace DEngine {
                                      ,toonShader(PATH_SHADERS+"shadersLab/toonshading/VertexShader.glsl", PATH_SHADERS+"shadersLab/toonshading/FragmentShader.glsl")
                                      ,isButtonPressed(false)
                                      ,dirtTexture(PATH_TEXTURES + "dirt.png")
-                                     ,dynioLove(PATH_TEXTURES + "dyniolove.png")
-                                     ,windowPtr(_windowPtr)
+                                     ,dynioLove(PATH_TEXTURES + "dyniolove.png"),
+                                     skyBoxShader(PATH_SHADERS+"envMapping/SkyBoxVertexShader.glsl", PATH_SHADERS+"envMapping/SkyBoxFragmentShader.glsl"),
+                                     envMapShader(PATH_SHADERS+"envMapping/EnvMapVertexShader.glsl", PATH_SHADERS+"envMapping/EnvMapFragmentShader.glsl"),
+                                     refractionShader(PATH_SHADERS+"envMapping/RefractionVertexShader.glsl", PATH_SHADERS+"envMapping/RefractionFragmentShader.glsl")
+                                    ,cubeMap({{PATH_TEXTURES+"cubemaps/skybox/right.jpg"},
+                                               {PATH_TEXTURES+"cubemaps/skybox/left.jpg"},
+                                               {PATH_TEXTURES+"cubemaps/skybox/top.jpg"},
+                                               {PATH_TEXTURES+"cubemaps/skybox/bottom.jpg"},
+                                               {PATH_TEXTURES+"cubemaps/skybox/front.jpg"},
+                                               {PATH_TEXTURES+"cubemaps/skybox/back.jpg"},}),
+
+                                     windowPtr(_windowPtr)
         {
             initData();
         };
@@ -56,14 +68,20 @@ namespace DEngine {
 
 
 
+        std::shared_ptr<VertexArray> vertexArraySkybox;
+        std::shared_ptr<VertexBuffer> vertexBufferSkybox;
+        std::shared_ptr<VertexBufferLayout> vertexBufferLayoutSkybox;
+
         int item_current_idx = 0;
         bool is_selected = false;
         float timeCounter;
         Shader testShader;
         Shader multTextureShader;
         Shader multiTexture2Shader;
-        //Shader particleComputeShader;
-        //Shader particleShader;
+
+        CubeMap cubeMap;
+
+
         Texture textureTest;
         Texture dengineTexture;
         Texture firstToMultiTexturing;
@@ -79,6 +97,9 @@ namespace DEngine {
         Shader phongLightShader;
         Shader blinnphongLightShader;
         Shader toonShader;
+        Shader envMapShader;
+        Shader refractionShader;
+        Shader skyBoxShader;
         
         glm::vec3 lightSourcePosition;
 
