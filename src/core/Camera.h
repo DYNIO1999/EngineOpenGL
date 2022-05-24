@@ -46,6 +46,10 @@ namespace DEngine {
         {
             return glm::lookAt(position, position + front, up);
         }
+        inline glm::mat4 Get3RDPersonViewMatrix(const glm::vec3& cameraPos,const glm::vec3& cameraTarget){
+            return glm::lookAt(cameraPos, cameraTarget , up);
+        }
+
         Camera(glm::vec3 _position = glm::vec3(0.0f, 0.0f, 0.0f),glm::vec3 _up = glm::vec3(0.0f, 1.0f, 0.0f), float _yaw = YAW, float _pitch = PITCH):
                 front(glm::vec3(0.0f, 0.0f, -1.0f)),
                 movementSpeed(SPEED),

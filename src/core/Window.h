@@ -37,12 +37,12 @@ namespace DEngine {
         void setVSync(bool _on);
         void Update();
         GLFWwindow* getGLFWWindow(){return  (window!= nullptr) ? window : nullptr;}
+        static GLFWwindow* window;
     private:
         void initGLAD();
         void init();
         void cleanUp();
         WindowData windowData;
-        GLFWwindow* window;
     };
 }
 #endif

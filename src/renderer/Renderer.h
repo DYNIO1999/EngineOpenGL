@@ -27,6 +27,11 @@ namespace  DEngine {
     static const std::string PATH_SHADERS = "../../resources/shaders/";
     static const std::string PATH_MODELS = "../../resources/models/";
 
+    static const std::string PATH_MODELS_GAME = "../../resources/models/bombingSimulator/";
+    static const std::string PATH_TEXTURES_GAME = "../../resources/textures/bombingSimulator/";
+    static const std::string PATH_SHADERS_GAME = "../../resources/shaders/bombingSimulator/";
+
+
     struct DrawCallSettings{
         DrawCallSettings():
         enableBlendingFlag(false),

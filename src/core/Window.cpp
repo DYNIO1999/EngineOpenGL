@@ -1,7 +1,7 @@
 #include "Window.h"
 
 namespace  DEngine {
-
+    GLFWwindow* Window::window = nullptr;
     static void glfwErrorCallback(int error, const char* description)
     {
         std::cout<<"ERROR: "<<error<<" "<<description;

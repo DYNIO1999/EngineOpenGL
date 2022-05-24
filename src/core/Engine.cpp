@@ -5,6 +5,8 @@
 #include "renderer/Renderer.h"
 #include "components/Components.h"
 #include "scenes/GPUParticlesScene.h"
+#include "scenes/game/GameScene.h"
+
 
 namespace DEngine{
     SceneManager Engine::sceneManager;
@@ -51,7 +53,8 @@ namespace DEngine{
         //ECS
         //SCENE PUSHING
 
-        sceneManager.pushScene(new LabScene("Laboratoria", window));
+        sceneManager.pushScene(new GameScene("BombingSimulator", window));
+        //sceneManager.pushScene(new LabScene("Laboratoria", window));
         //sceneManager.pushScene(new WaveSurfaceScene("Waves", window));
         //sceneManager.pushScene(new GPUParticlesScene("RainParticles", window));
 

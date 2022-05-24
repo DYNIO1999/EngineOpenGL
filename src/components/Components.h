@@ -25,6 +25,8 @@ namespace  DEngine {
 
     struct TransformComponent {
         glm::mat4 transform;
+        glm::vec3 position;
+        glm::vec3 rotarion;
         TransformComponent()=default;
         TransformComponent(const TransformComponent&) =default;
         TransformComponent(const glm::mat4& _transform):transform(_transform){
