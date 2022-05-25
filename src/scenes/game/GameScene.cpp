@@ -69,35 +69,35 @@ namespace DEngine{
 
         DENGINE_WARN("{}, {},{}",maxPlaneAngle[0],maxPlaneAngle[1], maxPlaneAngle[2]);
         if(Input::isKeyPressed(GLFW_KEY_W)){
-            if(maxPlaneAngle[0]<=(90.0f)) {
+            if(maxPlaneAngle[0]<=(120.0f)) {
                 maxPlaneAngle += glm::vec3(1.0f, 0.0f, 0.0f);
                 Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform = glm::rotate(
                         Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform,
-                        glm::radians(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+                        glm::radians(0.2f), glm::vec3(1.0f, 0.0f, 0.0f));
             }
         }else if(Input::isKeyPressed(GLFW_KEY_S)){
-            if(maxPlaneAngle[0]>=(-90.0f)) {
+            if(maxPlaneAngle[0]>=(-120.0f)) {
                 maxPlaneAngle += glm::vec3(-1.0f, 0.0f, 0.0f);
                 Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform = glm::rotate(
                         Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform,
-                        glm::radians(-1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+                        glm::radians(-0.2f), glm::vec3(1.0f, 0.0f, 0.0f));
             }
         }else if(Input::isKeyPressed(GLFW_KEY_A)){
-                if(maxPlaneAngle[2]<=(45.0f)) {
+                if(maxPlaneAngle[2]<=(120.0f)) {
                     dir =glm::vec3(-1.0f,0.0f,0.0f);
                     maxPlaneAngle += glm::vec3(0.0f, 0.0f, 1.0f);
                     Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform = glm::rotate(
                             Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform,
-                            glm::radians(1.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                            glm::radians(0.2f), glm::vec3(0.0f, 0.0f, 1.0f));
 
             }
         }else if(Input::isKeyPressed(GLFW_KEY_D)){
-                if(maxPlaneAngle[2]>=(-45.0f)) {
+                if(maxPlaneAngle[2]>=(-120.0f)) {
                     dir =glm::vec3(1.0f,0.0f,0.0f);
                     maxPlaneAngle += glm::vec3(0.0f, 0.0f, -1.0f);
                     Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform = glm::rotate(
                             Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform,
-                            glm::radians(-1.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                            glm::radians(-0.2f), glm::vec3(0.0f, 0.0f, 1.0f));
                 }
         }
         DENGINE_ERROR("{},{},{}", camera.position[0],camera.position[1], camera.position[2]);
