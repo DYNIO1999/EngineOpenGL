@@ -69,37 +69,47 @@ namespace DEngine{
 
         DENGINE_WARN("{}, {},{}",maxPlaneAngle[0],maxPlaneAngle[1], maxPlaneAngle[2]);
         if(Input::isKeyPressed(GLFW_KEY_W)){
-            if(maxPlaneAngle[0]<=(120.0f)) {
-                maxPlaneAngle += glm::vec3(1.0f, 0.0f, 0.0f);
-                Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform = glm::rotate(
-                        Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform,
-                        glm::radians(0.2f), glm::vec3(1.0f, 0.0f, 0.0f));
-            }
-        }else if(Input::isKeyPressed(GLFW_KEY_S)){
-            if(maxPlaneAngle[0]>=(-120.0f)) {
-                maxPlaneAngle += glm::vec3(-1.0f, 0.0f, 0.0f);
-                Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform = glm::rotate(
-                        Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform,
-                        glm::radians(-0.2f), glm::vec3(1.0f, 0.0f, 0.0f));
-            }
-        }else if(Input::isKeyPressed(GLFW_KEY_A)){
-                if(maxPlaneAngle[2]<=(120.0f)) {
-                    dir =glm::vec3(-1.0f,0.0f,0.0f);
-                    maxPlaneAngle += glm::vec3(0.0f, 0.0f, 1.0f);
+            if((maxPlaneAngle[2]>=-0.1f )&& (maxPlaneAngle[2]<=0.1f) ) {
+                if (maxPlaneAngle[0] <= (120.0f)) {
+                    maxPlaneAngle += glm::vec3(1.0f * dt, 0.0f, 0.0f);
                     Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform = glm::rotate(
                             Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform,
-                            glm::radians(0.2f), glm::vec3(0.0f, 0.0f, 1.0f));
+                            glm::radians(rotationSpeed * dt), glm::vec3(1.0f, 0.0f, 0.0f));
+                }
+            }
+        }else if(Input::isKeyPressed(GLFW_KEY_S)){
+            if((maxPlaneAngle[2]>=-0.1f )&& (maxPlaneAngle[2]<=0.1f) ) {
+                if (maxPlaneAngle[0] >= (-120.0f)) {
+                    maxPlaneAngle += glm::vec3(-1.0f * dt, 0.0f, 0.0f);
+                    Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform = glm::rotate(
+                            Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform,
+                            glm::radians(-rotationSpeed * dt), glm::vec3(1.0f, 0.0f, 0.0f));
+                }
+            }
+        }else if(Input::isKeyPressed(GLFW_KEY_A)){
+                if (maxPlaneAngle[2] <= (120.0f)) {
+                    dir = glm::vec3(-1.0f *(rotationSpeed/(rotationSpeed/2.0f)), 0.0f, 0.0f);
+                    maxPlaneAngle += glm::vec3(0.0f, 0.0f, 1.0f*dt);
+                    Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform = glm::rotate(
+                            Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform,
+                            glm::radians(rotationSpeed * dt), glm::vec3(0.0f, 0.0f, 1.0f));
 
             }
         }else if(Input::isKeyPressed(GLFW_KEY_D)){
-                if(maxPlaneAngle[2]>=(-120.0f)) {
-                    dir =glm::vec3(1.0f,0.0f,0.0f);
-                    maxPlaneAngle += glm::vec3(0.0f, 0.0f, -1.0f);
+
+                if (maxPlaneAngle[2] >= (-120.0f)) {
+                    dir = glm::vec3(1.0f*(rotationSpeed/(rotationSpeed/2.0f)), 0.0f, 0.0f);
+                    maxPlaneAngle += glm::vec3(0.0f, 0.0f, -1.0f*dt);
                     Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform = glm::rotate(
                             Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform,
-                            glm::radians(-0.2f), glm::vec3(0.0f, 0.0f, 1.0f));
+                            glm::radians(-rotationSpeed * dt), glm::vec3(0.0f, 0.0f, 1.0f));
                 }
         }
+
+        if((maxPlaneAngle[2] >= -0.1f) &&  (maxPlaneAngle[2] <= 0.1f)){
+            dir = glm::vec3(0.0f,0.0f,0.0f);
+        }
+
         DENGINE_ERROR("{},{},{}", camera.position[0],camera.position[1], camera.position[2]);
         currentDeltaTime = dt;
 
@@ -108,7 +118,7 @@ namespace DEngine{
                 glm::translate( Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform, glm::vec3(dir[0]*dt,0.0f,-10.0f*dt));
 
 
-        glm::vec3 cameraPos = glm::vec3(Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform[3])+glm::vec3(0.0f,1.0f,5.0f);
+        glm::vec3 cameraPos = glm::vec3(Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform[3])+glm::vec3(0.0f,3.0f,10.0f);
         glm::vec3 cameraTarget =glm::vec3(Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform[3]);
         playerview = camera.Get3RDPersonViewMatrix(cameraPos, cameraTarget);
 

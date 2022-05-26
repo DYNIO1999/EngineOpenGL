@@ -48,6 +48,7 @@ namespace DEngine {
 
         glm::vec3 maxPlaneAngle{0.0f,0.0f,0.0f};
 
+        float rotationSpeed{50.0f};
         bool isButtonPressed;
         bool onKeyPressedInput(KeyPressedEvent& e);
         bool windowClose(WindowCloseEvent& e);
