@@ -25,10 +25,13 @@ namespace DEngine{
 
         bombModel = std::make_shared<Model>(PATH_MODELS_GAME+ "bomb.obj");
 
+        cubeModel = std::make_shared<Model>(PATH_MODELS_GAME +"cube.obj");
+
         //MODEL LOADING
 
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //0
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //1
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //2
 
         //PLAYER
         TagComponent playerTagComp;
@@ -51,6 +54,16 @@ namespace DEngine{
         MeshComponent testCubeMeshComp;
         testCubeMeshComp.meshes = bombModel->meshes;
         Engine::entitySystemManager.addComponent(entities[1], testCubeMeshComp);
+
+
+        TransformComponent groundCubeTransformComp;
+        groundCubeTransformComp.transform = glm::mat4(1.0f);
+        groundCubeTransformComp.transform =  glm::translate(groundCubeTransformComp.transform, glm::vec3(0.0f,-5.0f,-100.0f));
+        groundCubeTransformComp.transform =  glm::scale(groundCubeTransformComp.transform, glm::vec3(100.0f,0.0f,100.0f));
+        Engine::entitySystemManager.addComponent(entities[2],groundCubeTransformComp);
+        MeshComponent groundCubeMeshComp;
+        groundCubeMeshComp.meshes = cubeModel->meshes;
+        Engine::entitySystemManager.addComponent(entities[2], groundCubeMeshComp);
 
 
     }
@@ -88,7 +101,7 @@ namespace DEngine{
             }
         }else if(Input::isKeyPressed(GLFW_KEY_A)){
                 if (maxPlaneAngle[2] <= (120.0f)) {
-                    dir = glm::vec3(-1.0f *(rotationSpeed/(rotationSpeed/2.0f)), 0.0f, 0.0f);
+                    dir = glm::vec3(-1.0f *(rotationSpeed/5.0f), 0.0f, 0.0f);
                     maxPlaneAngle += glm::vec3(0.0f, 0.0f, 1.0f*dt);
                     Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform = glm::rotate(
                             Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform,
@@ -98,7 +111,7 @@ namespace DEngine{
         }else if(Input::isKeyPressed(GLFW_KEY_D)){
 
                 if (maxPlaneAngle[2] >= (-120.0f)) {
-                    dir = glm::vec3(1.0f*(rotationSpeed/(rotationSpeed/2.0f)), 0.0f, 0.0f);
+                    dir = glm::vec3(1.0f*(rotationSpeed/5.0f), 0.0f, 0.0f);
                     maxPlaneAngle += glm::vec3(0.0f, 0.0f, -1.0f*dt);
                     Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform = glm::rotate(
                             Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform,
@@ -106,7 +119,7 @@ namespace DEngine{
                 }
         }
 
-        if((maxPlaneAngle[2] >= -0.1f) &&  (maxPlaneAngle[2] <= 0.1f)){
+        if((maxPlaneAngle[2] >= -0.01f) &&  (maxPlaneAngle[2] <= 0.01f)){
             dir = glm::vec3(0.0f,0.0f,0.0f);
         }
 
@@ -144,6 +157,14 @@ namespace DEngine{
         playerShader->setUniformMat4f("view", playerview);
         playerShader->setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[1]).transform);
         Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[1]), *playerShader);
+
+
+        playerShader->bind();
+        playerShader->setUniformMat4f("projection", projection);
+        playerShader->setUniformMat4f("view", playerview);
+        playerShader->setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[2]).transform);
+        Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[2]), *playerShader);
+
 
         Renderer::getInstance()->endDraw();
         //POP SCENE IN PROPER WAY DONT REMOVE!
