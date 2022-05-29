@@ -9,6 +9,8 @@
 
 #include <vector>
 
+#include "LogManager.h"
+
 
 namespace DEngine {
 
@@ -41,14 +43,32 @@ namespace DEngine {
         glm::vec3 up;
         glm::vec3 right;
         glm::vec3 worldUp;
-
+        glm::vec3 cameraTarget;
         inline glm::mat4 GetViewMatrix() const
         {
             return glm::lookAt(position, position + front, up);
         }
-        inline glm::mat4 Get3RDPersonViewMatrix(const glm::vec3& cameraPos,const glm::vec3& cameraTarget){
-            return glm::lookAt(cameraPos, cameraTarget , up);
+        inline glm::mat4 Get3RDPersonViewMatrix(const glm::vec3& cameraPos,const glm::vec3& _cameraTarget){
+            cameraTarget = _cameraTarget;
+            return glm::lookAt(cameraPos, cameraTarget+front , up);
         }
+        void RotateY(float dt) {
+
+            front = glm::vec3(0.0f,0.0f,-1.0f*dt);
+            //float rotY = dt;
+            //float rotX = 0.0f;
+            //glm::vec3 newOrientation = glm::rotate(front, glm::radians(-rotX), glm::normalize(glm::cross(front, up)));
+            //if (std::abs(glm::angle(newOrientation, up) - glm::radians(90.0f)) <= glm::radians(85.0f))
+            //{
+            //    DENGINE_ERROR("NEW ORIENTATION angle {}, angle  {}, angle  {}",newOrientation[0],newOrientation[1], newOrientation[2]);
+            //    front = newOrientation;
+            //}
+            //front = glm::rotate(cameraTarget+front, glm::radians(-rotY), up);
+            //updateCamera();
+        }
+
+
+
 
         Camera(glm::vec3 _position = glm::vec3(0.0f, 0.0f, 0.0f),glm::vec3 _up = glm::vec3(0.0f, 1.0f, 0.0f), float _yaw = YAW, float _pitch = PITCH):
                 front(glm::vec3(0.0f, 0.0f, -1.0f)),

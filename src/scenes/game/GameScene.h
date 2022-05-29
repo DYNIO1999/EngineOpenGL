@@ -32,6 +32,14 @@ namespace DEngine {
 
 
     private:
+
+
+        float planeSpeed{10.0f};
+
+        glm::vec3 cameraTarget;
+        glm::vec3 cameraPos;
+
+
         std::shared_ptr<Window> windowPtr;
         glm::vec3 dir{0.0f,0.0f,0.0f};
         float cameraSpeed{10.0f};
@@ -41,13 +49,20 @@ namespace DEngine {
         glm::mat4 playerview;
         std::vector<Entity> entities;
         std::shared_ptr<Shader> playerShader;
+
+
+        std::shared_ptr<Shader> groundShader;
+
+        std::shared_ptr<Model> rockModel;
+        std::shared_ptr<Model> treeModel;
         std::shared_ptr<Model> planeModel;
         std::shared_ptr<Model> cubeModel;
         std::shared_ptr<Model> bombModel;
 
-
+        glm::mat4 backUpTransform;
+        bool isFowardCamera{true};
         glm::vec3 maxPlaneAngle{0.0f,0.0f,0.0f};
-
+        bool switched = false;
         float rotationSpeed{50.0f};
         bool isButtonPressed;
         bool onKeyPressedInput(KeyPressedEvent& e);

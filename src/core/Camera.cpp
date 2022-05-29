@@ -20,6 +20,7 @@ namespace DEngine{
         glm::vec3 newOrientation = glm::rotate(front, glm::radians(-rotX), glm::normalize(glm::cross(front, up)));
         if (std::abs(glm::angle(newOrientation, up) - glm::radians(90.0f)) <= glm::radians(85.0f))
         {
+
             front = newOrientation;
         }
         front = glm::rotate(front, glm::radians(-rotY), up);
