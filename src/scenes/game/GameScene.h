@@ -58,6 +58,7 @@ namespace DEngine {
         std::shared_ptr<Model> planeModel;
         std::shared_ptr<Model> cubeModel;
         std::shared_ptr<Model> bombModel;
+        std::shared_ptr<Model> kremlModel;
 
         glm::mat4 backUpTransform;
         bool isFowardCamera{true};

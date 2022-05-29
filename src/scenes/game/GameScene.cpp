@@ -24,13 +24,13 @@ namespace DEngine{
         planeModel = std::make_shared<Model>(PATH_MODELS+"plane/plane.obj",true);
         playerShader =  std::make_shared<Shader>(PATH_SHADERS+ "TestVertexShader.glsl",PATH_SHADERS+ "TestFragmentShader.glsl");
 
-        bombModel = std::make_shared<Model>(PATH_MODELS_GAME+ "bomb.obj");
+        bombModel = std::make_shared<Model>(PATH_MODELS_GAME+ "bomb/bomb.obj",true);
 
         cubeModel = std::make_shared<Model>(PATH_MODELS_GAME +"cube/cube.obj", true);
 
         treeModel =  std::make_shared<Model>(PATH_MODELS_GAME +"tree/tree.obj", true);
         rockModel = std::make_shared<Model>(PATH_MODELS_GAME +"rock/rock.obj", true);
-
+        kremlModel = std::make_shared<Model>(PATH_MODELS_GAME +"kreml/kreml.obj", true);
         //MODEL LOADING
 
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //0
@@ -44,12 +44,13 @@ namespace DEngine{
             entities.emplace_back(Engine::entitySystemManager.createEntity());
         }
         // LAST 2003
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //2003
         //PLAYER
         TagComponent playerTagComp;
         playerTagComp.tag = "PLAYER";
         Engine::entitySystemManager.addComponent(entities[0],playerTagComp);
         TransformComponent playerTransformComp;
-        playerTransformComp.transform = glm::translate(glm::mat4(1), glm::vec3(0.0f,-1.0f,-5.0f));
+        playerTransformComp.transform = glm::translate(glm::mat4(1), glm::vec3(0.0f,5.0f,125.0f));
         //playerTransformComp.transform =  glm::rotate(playerTransformComp.transform,glm::radians(270.f), glm::vec3(0.0f,1.0f,0.0f));
         Engine::entitySystemManager.addComponent(entities[0],playerTransformComp);
         MeshComponent playerMeshComp;
@@ -60,10 +61,12 @@ namespace DEngine{
 
         TransformComponent testCubeTransformComp;
         testCubeTransformComp.transform = glm::mat4(1.0f);
-        testCubeTransformComp.transform =  glm::translate(testCubeTransformComp.transform, glm::vec3(0.0f,0.0f,-100.0f));
+        testCubeTransformComp.transform =  glm::translate(testCubeTransformComp.transform, glm::vec3(0.0f,3.0f,125.0f));
+        testCubeTransformComp.transform =  glm::scale(testCubeTransformComp.transform, glm::vec3(0.25f,0.25f,0.5f));
         Engine::entitySystemManager.addComponent(entities[1],testCubeTransformComp);
         MeshComponent testCubeMeshComp;
         testCubeMeshComp.meshes = bombModel->meshes;
+        testCubeMeshComp.textures = bombModel->textures;
         Engine::entitySystemManager.addComponent(entities[1], testCubeMeshComp);
 
 
@@ -101,6 +104,16 @@ namespace DEngine{
            rockMeshComp.textures = rockModel->textures;
             Engine::entitySystemManager.addComponent(entities[i], rockMeshComp);
         }
+
+        TransformComponent kremlTransformComp;
+        kremlTransformComp.transform = glm::mat4(1.0f);
+        kremlTransformComp.transform =  glm::translate(kremlTransformComp.transform,glm::vec3(0.0f,-5.0f,0.0f));
+        kremlTransformComp.transform =  glm::scale(kremlTransformComp.transform, glm::vec3(0.25f,0.25f,0.25f));
+        Engine::entitySystemManager.addComponent(entities[2003],kremlTransformComp);
+        MeshComponent kremlMeshComp;
+        kremlMeshComp.meshes = kremlModel->meshes;
+        kremlMeshComp.textures = kremlModel->textures;
+        Engine::entitySystemManager.addComponent(entities[2003], kremlMeshComp);
     }
     void GameScene::input(Event& e){
         EventDispatcher dispatcher(e);
@@ -221,10 +234,13 @@ namespace DEngine{
 
 
 
+
         playerShader->bind();
         playerShader->setUniformMat4f("projection", projection);
         playerShader->setUniformMat4f("view", playerview);
-        playerShader->setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[1]).transform);
+        Engine::entitySystemManager.getComponent<TransformComponent>(entities[1]).transform =Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform;
+        Engine::entitySystemManager.getComponent<TransformComponent>(entities[1]).transform = glm::scale(Engine::entitySystemManager.getComponent<TransformComponent>(entities[1]).transform,glm::vec3(0.20f,0.20f,0.25f));
+        playerShader->setUniformMat4f("model", glm::translate(  Engine::entitySystemManager.getComponent<TransformComponent>(entities[1]).transform,glm::vec3(1.5f,-1.0f,0.0f)));
         Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[1]), *playerShader);
 
 
@@ -253,6 +269,11 @@ namespace DEngine{
             Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[i]), *playerShader);
         }
 
+        playerShader->bind();
+        playerShader->setUniformMat4f("projection", projection);
+        playerShader->setUniformMat4f("view", playerview);
+        playerShader->setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[2003]).transform);
+        Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[2003]), *playerShader);
         Renderer::getInstance()->endDraw();
         //POP SCENE IN PROPER WAY DONT REMOVE!
         //if(timeCounter>5){
