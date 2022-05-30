@@ -2,7 +2,8 @@
 #include "input/Input.h"
 #include "core/Engine.h"
 #include "core/Random.h"
-
+#include "physics/ColisionDetection.h"
+#include "primitives/Cube.h"
 
 namespace DEngine{
 
@@ -19,11 +20,11 @@ namespace DEngine{
         model = glm::mat4(1.0f);
         playerview = glm::mat4(1.0f);
 
-
+        debugCube =  std::make_shared<Cube>();
         //MODEL LOADING
         planeModel = std::make_shared<Model>(PATH_MODELS+"plane/plane.obj",true);
         playerShader =  std::make_shared<Shader>(PATH_SHADERS+ "TestVertexShader.glsl",PATH_SHADERS+ "TestFragmentShader.glsl");
-
+        debugColisionShader = std::make_shared<Shader>(PATH_SHADERS_GAME +"ground/VertexShader.glsl", PATH_SHADERS_GAME+ "ground/FragmentShader.glsl");
         bombModel = std::make_shared<Model>(PATH_MODELS_GAME+ "bomb/bomb.obj",true);
 
         cubeModel = std::make_shared<Model>(PATH_MODELS_GAME +"cube/cube.obj", true);
@@ -45,6 +46,8 @@ namespace DEngine{
         }
         // LAST 2003
         entities.emplace_back(Engine::entitySystemManager.createEntity()); //2003
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //2004
+        entities.emplace_back(Engine::entitySystemManager.createEntity()); //2005
         //PLAYER
         TagComponent playerTagComp;
         playerTagComp.tag = "PLAYER";
@@ -57,6 +60,11 @@ namespace DEngine{
         playerMeshComp.meshes = planeModel->meshes;
         playerMeshComp.textures= planeModel->textures;
         Engine::entitySystemManager.addComponent(entities[0], playerMeshComp);
+
+        BoxCollider playerCollider(glm::vec3(playerTransformComp.transform[3]),glm::vec3(1.0f,1.0f,1.0f));
+        playerCollider.debugCube = debugCube;
+        Engine::entitySystemManager.addComponent(entities[0], playerCollider);
+        //BoxCollider(const glm::vec3& _min, const glm::vec3& _max )
         //PLAYER
 
         TransformComponent testCubeTransformComp;
@@ -79,6 +87,10 @@ namespace DEngine{
         groundCubeMeshComp.meshes = cubeModel->meshes;
         groundCubeMeshComp.textures = cubeModel->textures;
         Engine::entitySystemManager.addComponent(entities[2], groundCubeMeshComp);
+
+        BoxCollider groundCollider(glm::vec3(groundCubeTransformComp.transform[3]),glm::vec3(50.0f,0.0,200.0f));
+        groundCollider.debugCube = debugCube;
+        Engine::entitySystemManager.addComponent(entities[2], groundCollider);
 
 
         int startTreeIndex = 3;
@@ -114,6 +126,42 @@ namespace DEngine{
         kremlMeshComp.meshes = kremlModel->meshes;
         kremlMeshComp.textures = kremlModel->textures;
         Engine::entitySystemManager.addComponent(entities[2003], kremlMeshComp);
+
+        BoxCollider kremlCollider(glm::vec3(kremlTransformComp.transform[3]),glm::vec3(1.0f,5.0f,1.0f));
+        kremlCollider.debugCube = debugCube;
+        Engine::entitySystemManager.addComponent(entities[2003], kremlCollider);
+
+
+
+        TransformComponent bombLeftTransformComp;
+        bombLeftTransformComp.transform = glm::mat4(1.0f);
+        bombLeftTransformComp.transform =  glm::translate(bombLeftTransformComp.transform, glm::vec3(0.0f,3.0f,125.0f));
+        bombLeftTransformComp.transform =  glm::scale(bombLeftTransformComp.transform, glm::vec3(0.25f,0.25f,0.5f));
+        Engine::entitySystemManager.addComponent(entities[2004],bombLeftTransformComp);
+        MeshComponent bombLeftMeshComp;
+        bombLeftMeshComp.meshes = bombModel->meshes;
+        bombLeftMeshComp.textures = bombModel->textures;
+        Engine::entitySystemManager.addComponent(entities[2004], bombLeftMeshComp);
+
+        BoxCollider bombLeftCollider(glm::vec3(bombLeftTransformComp.transform[3]),glm::vec3(0.25f,0.25f,0.25f));
+        bombLeftCollider.debugCube = debugCube;
+        Engine::entitySystemManager.addComponent(entities[2004], bombLeftCollider);
+
+        TransformComponent bombRightTransformComp;
+        bombRightTransformComp.transform = glm::mat4(1.0f);
+        bombRightTransformComp.transform =  glm::translate(bombRightTransformComp.transform, glm::vec3(0.0f,3.0f,125.0f));
+        bombRightTransformComp.transform =  glm::scale(bombRightTransformComp.transform, glm::vec3(0.25f,0.25f,0.5f));
+        Engine::entitySystemManager.addComponent(entities[2005],bombRightTransformComp);
+        MeshComponent bombRightMeshComp;
+        bombRightMeshComp.meshes = bombModel->meshes;
+        bombRightMeshComp.textures = bombModel->textures;
+        Engine::entitySystemManager.addComponent(entities[2005], bombLeftMeshComp);
+
+        BoxCollider bombRightCollider(glm::vec3(bombRightTransformComp.transform[3]),glm::vec3(0.25f,0.25f,0.25f));
+        bombRightCollider.debugCube = debugCube;
+        Engine::entitySystemManager.addComponent(entities[2005], bombRightCollider);
+
+
     }
     void GameScene::input(Event& e){
         EventDispatcher dispatcher(e);
@@ -215,14 +263,140 @@ namespace DEngine{
 
         playerview = camera.Get3RDPersonViewMatrix(cameraPos, cameraTarget);
 
+        Engine::entitySystemManager.getComponent<BoxCollider>(entities[0]).center = glm::vec3(Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform[3]);
 
+
+        if(ColisionDetection::collideAABBtoAABB( Engine::entitySystemManager.getComponent<BoxCollider>(entities[0]), Engine::entitySystemManager.getComponent<BoxCollider>(entities[2]))){
+            Renderer::getInstance()->clear(glm::vec4(0.886f, 0.156f, 0.156f, 1.0f));
+            Engine::sceneManager.popScene();
+            return;
+        }
+
+        if(ColisionDetection::collideAABBtoAABB( Engine::entitySystemManager.getComponent<BoxCollider>(entities[0]), Engine::entitySystemManager.getComponent<BoxCollider>(entities[2003]))){
+            Renderer::getInstance()->clear(glm::vec4(0.886f, 0.156f, 0.156f, 1.0f));
+            Engine::sceneManager.popScene();
+            return;
+        }
 
 
         DrawCallSettings  testSettings;
         testSettings.enableBlendingFlag=true;
         testSettings.enableDepthTestFlag=true;
+
+
         Renderer::getInstance()->clear(glm::vec4(0.1f, 0.1f, 0.1f, 1.0));
         Renderer::getInstance()->beginDraw(glm::mat4(1), testSettings);
+
+        playerShader->bind();
+        playerShader->setUniformMat4f("projection", projection);
+        playerShader->setUniformMat4f("view", playerview);
+        Engine::entitySystemManager.getComponent<TransformComponent>(entities[2004]).transform =Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform;
+        Engine::entitySystemManager.getComponent<TransformComponent>(entities[2004]).transform = glm::scale(Engine::entitySystemManager.getComponent<TransformComponent>(entities[2004]).transform,glm::vec3(0.20f,0.20f,0.25f));
+        playerShader->setUniformMat4f("model", glm::translate(  Engine::entitySystemManager.getComponent<TransformComponent>(entities[2004]).transform,glm::vec3(-1.5f,-1.0f,0.0f)));
+        Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[2004]), *playerShader);
+
+
+
+        playerShader->bind();
+        playerShader->setUniformMat4f("projection", projection);
+        playerShader->setUniformMat4f("view", playerview);
+        Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform =Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform;
+        Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform = glm::scale(Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform,glm::vec3(0.20f,0.20f,0.25f));
+        playerShader->setUniformMat4f("model", glm::translate(  Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform,glm::vec3(1.5f,-1.0f,0.0f)));
+        Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[2005]), *playerShader);
+
+
+
+        if(isDebug) {
+            debugColisionShader->bind();
+            debugColisionShader->setUniformMat4f("projection", projection);
+            debugColisionShader->setUniformMat4f("view", playerview);
+            glm::mat4 debugTransform = glm::mat4(1);
+            debugColisionShader->setUniformMat4f("model", glm::translate(debugTransform,
+                                                                         Engine::entitySystemManager.getComponent<BoxCollider>(
+                                                                                 entities[0]).center) *
+                                                          glm::scale(debugTransform,
+                                                                     Engine::entitySystemManager.getComponent<BoxCollider>(
+                                                                             entities[0]).extents));
+            debugColisionShader->setUniformVec4f("u_Color", glm::vec4(0.886f, 0.156f, 0.156f, 1.0f));
+            Renderer::getInstance()->drawDebug(
+                    *Engine::entitySystemManager.getComponent<BoxCollider>(entities[0]).debugCube,
+                    *debugColisionShader);
+        }
+
+        if(isDebug) {
+            debugColisionShader->bind();
+            debugColisionShader->setUniformMat4f("projection", projection);
+            debugColisionShader->setUniformMat4f("view", playerview);
+            glm::mat4 debugTransform = glm::mat4(1);
+            debugColisionShader->setUniformMat4f("model", glm::translate(debugTransform,
+                                                                         Engine::entitySystemManager.getComponent<BoxCollider>(
+                                                                                 entities[2]).center) *
+                                                          glm::scale(debugTransform,
+                                                                     Engine::entitySystemManager.getComponent<BoxCollider>(
+                                                                             entities[2]).extents));
+            debugColisionShader->setUniformVec4f("u_Color", glm::vec4(0.886f, 0.156f, 0.156f, 1.0f));
+            Renderer::getInstance()->drawDebug(
+                    *Engine::entitySystemManager.getComponent<BoxCollider>(entities[2]).debugCube,
+                    *debugColisionShader);
+        }
+
+        if(isDebug) {
+            debugColisionShader->bind();
+            debugColisionShader->setUniformMat4f("projection", projection);
+            debugColisionShader->setUniformMat4f("view", playerview);
+            glm::mat4 debugTransform = glm::mat4(1);
+            debugColisionShader->setUniformMat4f("model", glm::translate(debugTransform,
+                                                                         Engine::entitySystemManager.getComponent<BoxCollider>(
+                                                                                 entities[2003]).center) *
+                                                          glm::scale(debugTransform,
+                                                                     Engine::entitySystemManager.getComponent<BoxCollider>(
+                                                                             entities[2003]).extents));
+            debugColisionShader->setUniformVec4f("u_Color", glm::vec4(0.886f, 0.156f, 0.156f, 1.0f));
+            Renderer::getInstance()->drawDebug(
+                    *Engine::entitySystemManager.getComponent<BoxCollider>(entities[2003]).debugCube,
+                    *debugColisionShader);
+        }
+
+        //BOMBS
+
+        Engine::entitySystemManager.getComponent<BoxCollider>(entities[2004]).center = glm::translate(  Engine::entitySystemManager.getComponent<TransformComponent>(entities[2004]).transform,glm::vec3(-1.5f,-1.0f,0.0f))[3];
+        Engine::entitySystemManager.getComponent<BoxCollider>(entities[2005]).center = glm::translate(  Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform,glm::vec3(1.5f,-1.0f,0.0f))[3];
+        if(isDebug) {
+            debugColisionShader->bind();
+            debugColisionShader->setUniformMat4f("projection", projection);
+            debugColisionShader->setUniformMat4f("view", playerview);
+            glm::mat4 debugTransform = glm::mat4(1);
+            debugColisionShader->setUniformMat4f("model", glm::translate(debugTransform,
+                                                                         Engine::entitySystemManager.getComponent<BoxCollider>(
+                                                                                 entities[2004]).center) *
+                                                          glm::scale(debugTransform,
+                                                                     Engine::entitySystemManager.getComponent<BoxCollider>(
+                                                                             entities[2004]).extents));
+            debugColisionShader->setUniformVec4f("u_Color", glm::vec4(0.886f, 0.156f, 0.156f, 1.0f));
+            Renderer::getInstance()->drawDebug(
+                    *Engine::entitySystemManager.getComponent<BoxCollider>(entities[2004]).debugCube,
+                    *debugColisionShader);
+        }
+
+        if(isDebug) {
+            debugColisionShader->bind();
+            debugColisionShader->setUniformMat4f("projection", projection);
+            debugColisionShader->setUniformMat4f("view", playerview);
+            glm::mat4 debugTransform = glm::mat4(1);
+            debugColisionShader->setUniformMat4f("model", glm::translate(debugTransform,
+                                                                         Engine::entitySystemManager.getComponent<BoxCollider>(
+                                                                                 entities[2005]).center) *
+                                                          glm::scale(debugTransform,
+                                                                     Engine::entitySystemManager.getComponent<BoxCollider>(
+                                                                             entities[2005]).extents) );
+            debugColisionShader->setUniformVec4f("u_Color", glm::vec4(0.886f, 0.156f, 0.156f, 1.0f));
+            Renderer::getInstance()->drawDebug(
+                    *Engine::entitySystemManager.getComponent<BoxCollider>(entities[2005]).debugCube,
+                    *debugColisionShader);
+        }
+        //BOMBS
+
 
         playerShader->bind();
         playerShader->setUniformMat4f("projection", projection);
@@ -231,18 +405,6 @@ namespace DEngine{
         //playerShader->setUniformMat4f("model", glm::translate(glm::translate(glm::mat4(1), glm::vec3(0.0f,-1.0f,-7.0f)), camera.position));
         playerShader->setUniformMat4f("model",glm::translate(  Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform,camera.position));
         Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[0]), *playerShader);
-
-
-
-
-        playerShader->bind();
-        playerShader->setUniformMat4f("projection", projection);
-        playerShader->setUniformMat4f("view", playerview);
-        Engine::entitySystemManager.getComponent<TransformComponent>(entities[1]).transform =Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform;
-        Engine::entitySystemManager.getComponent<TransformComponent>(entities[1]).transform = glm::scale(Engine::entitySystemManager.getComponent<TransformComponent>(entities[1]).transform,glm::vec3(0.20f,0.20f,0.25f));
-        playerShader->setUniformMat4f("model", glm::translate(  Engine::entitySystemManager.getComponent<TransformComponent>(entities[1]).transform,glm::vec3(1.5f,-1.0f,0.0f)));
-        Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[1]), *playerShader);
-
 
         playerShader->bind();
         playerShader->setUniformMat4f("projection", projection);
@@ -275,6 +437,10 @@ namespace DEngine{
         playerShader->setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[2003]).transform);
         Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[2003]), *playerShader);
         Renderer::getInstance()->endDraw();
+
+
+
+
         //POP SCENE IN PROPER WAY DONT REMOVE!
         //if(timeCounter>5){
         //    Renderer::getInstance()->clear();

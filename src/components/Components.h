@@ -48,6 +48,17 @@ namespace  DEngine {
         glm::vec3 acceleration;
     };
 
+    struct BoxCollider{
+        std::shared_ptr<Mesh> debugCube;
+        glm::vec3 center;
+        glm::vec3 extents;
+        BoxCollider()=default;
+        BoxCollider(const BoxCollider&) =default;
+        BoxCollider(const glm::vec3& _center, const glm::vec3& _extents ):center(_center), extents(_extents){
+        }
+
+        ~BoxCollider()=default;
+    };
     struct MeshComponent {
         std::vector<Mesh> mesh;
         std::vector<Mesh> meshes;

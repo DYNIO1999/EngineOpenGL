@@ -32,7 +32,7 @@ namespace DEngine {
 
 
     private:
-
+        bool isDebug{true};
 
         float planeSpeed{10.0f};
 
@@ -51,8 +51,8 @@ namespace DEngine {
         std::shared_ptr<Shader> playerShader;
 
 
-        std::shared_ptr<Shader> groundShader;
-
+        std::shared_ptr<Shader> debugColisionShader;
+        std::shared_ptr<Mesh> debugCube;
         std::shared_ptr<Model> rockModel;
         std::shared_ptr<Model> treeModel;
         std::shared_ptr<Model> planeModel;

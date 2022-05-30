@@ -92,6 +92,18 @@ namespace DEngine{
             glDrawArrays(GL_TRIANGLES,0,mesh.getVertexArrayObj()->getVertexCount());
         }
     }
+    void Renderer::drawDebug(Mesh &mesh, Shader &shader){
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        shader.bind();
+        mesh.getVertexArrayObj()->bind();
+        if(mesh.getIndexBufferObj()!= nullptr) {
+            mesh.getIndexBufferObj()->bind();
+            glDrawElements(GL_TRIANGLES,  mesh.getIndexBufferObj()->getCount(), GL_UNSIGNED_INT, nullptr);
+        }else{
+            glDrawArrays(GL_TRIANGLES,0,mesh.getVertexArrayObj()->getVertexCount());
+        }
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
     void Renderer::draw(MeshComponent& _meshComponent, Shader& _shader){
         _shader.bind();
         for (auto & item: _meshComponent.textures) {

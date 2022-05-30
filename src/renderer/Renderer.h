@@ -63,6 +63,7 @@ namespace  DEngine {
         void draw(VertexArray &va, Shader &shader, unsigned int type=  GL_TRIANGLES);
 
         void draw(Mesh &mesh, Shader &shader);
+        void drawDebug(Mesh &mesh, Shader &shader);
         void draw(MeshComponent& _meshComponent, Shader& _shader);
         void endDraw();
         void shutdown();
