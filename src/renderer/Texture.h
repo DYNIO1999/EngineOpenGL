@@ -8,7 +8,7 @@ namespace DEngine {
     public:
         Texture() = default;
         Texture(const Texture&) = default;
-        Texture(const std::string& path);
+        Texture(const std::string& path, bool _filp = false);
         ~Texture();
 
         void bind(unsigned int slot =0);

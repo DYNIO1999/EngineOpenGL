@@ -10,6 +10,7 @@ namespace DEngine{
         }
 
         static void init(){
+            srand(time(nullptr));
             generator.seed(std::random_device()());
         }
         template<typename T>

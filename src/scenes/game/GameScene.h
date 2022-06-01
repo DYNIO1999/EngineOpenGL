@@ -32,6 +32,11 @@ namespace DEngine {
 
 
     private:
+        bool wonScene{false};
+        bool lostScene{false};
+        double time{0.0f};
+        bool wonGame{false};
+        bool lostGame{false};
         bool isDebug{true};
         bool bombLeftUsed{false};
         bool bombRightUsed{false};
@@ -39,7 +44,8 @@ namespace DEngine {
         bool rightOnce{false};
         float planeSpeed{10.0f};
 
-        glm::vec3 bombSpeed{0.0f,-10.0f,-10.0f};
+        int usedBombs{0};
+        glm::vec3 bombSpeed{0.0f,-30.0f,-15.0f};
         glm::vec3 cameraTarget;
         glm::vec3 cameraPos;
 
@@ -52,8 +58,14 @@ namespace DEngine {
         glm::mat4 model, view, projection;
         glm::mat4 playerview;
         std::vector<Entity> entities;
+
+
+        std::shared_ptr<Mesh> quadMesh;
+
         std::shared_ptr<Shader> playerShader;
 
+        std::shared_ptr<Texture> wonTexture;
+        std::shared_ptr<Texture> lostTexture;
 
         std::shared_ptr<Shader> debugColisionShader;
         std::shared_ptr<Mesh> debugCube;
