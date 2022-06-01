@@ -33,9 +33,13 @@ namespace DEngine {
 
     private:
         bool isDebug{true};
-
+        bool bombLeftUsed{false};
+        bool bombRightUsed{false};
+        bool leftOnce{false};
+        bool rightOnce{false};
         float planeSpeed{10.0f};
 
+        glm::vec3 bombSpeed{0.0f,-10.0f,-10.0f};
         glm::vec3 cameraTarget;
         glm::vec3 cameraPos;
 

@@ -283,27 +283,80 @@ namespace DEngine{
         testSettings.enableBlendingFlag=true;
         testSettings.enableDepthTestFlag=true;
 
-
         Renderer::getInstance()->clear(glm::vec4(0.1f, 0.1f, 0.1f, 1.0));
         Renderer::getInstance()->beginDraw(glm::mat4(1), testSettings);
+        //BOMBS
+        if(!bombLeftUsed) {
+            playerShader->bind();
+            playerShader->setUniformMat4f("projection", projection);
+            playerShader->setUniformMat4f("view", playerview);
+            Engine::entitySystemManager.getComponent<TransformComponent>(
+                    entities[2004]).transform = Engine::entitySystemManager.getComponent<TransformComponent>(
+                    entities[0]).transform;
+            Engine::entitySystemManager.getComponent<TransformComponent>(entities[2004]).transform = glm::scale(
+                    Engine::entitySystemManager.getComponent<TransformComponent>(entities[2004]).transform,
+                    glm::vec3(0.20f, 0.20f, 0.25f));
+            playerShader->setUniformMat4f("model", glm::translate(
+                    Engine::entitySystemManager.getComponent<TransformComponent>(entities[2004]).transform,
+                    glm::vec3(-1.5f, -1.0f, 0.0f)));
+            Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[2004]),
+                                          *playerShader);
+        }else{
+            playerShader->bind();
+            playerShader->setUniformMat4f("projection", projection);
+            playerShader->setUniformMat4f("view", playerview);
+            if(!leftOnce) {
+                Engine::entitySystemManager.getComponent<TransformComponent>(
+                        entities[2004]).transform = Engine::entitySystemManager.getComponent<TransformComponent>(
+                        entities[0]).transform;
+                Engine::entitySystemManager.getComponent<TransformComponent>(
+                        entities[2004]).transform = Engine::entitySystemManager.getComponent<TransformComponent>(
+                        entities[0]).transform;
+                Engine::entitySystemManager.getComponent<TransformComponent>(entities[2004]).transform = glm::scale(
+                        Engine::entitySystemManager.getComponent<TransformComponent>(entities[2004]).transform,
+                        glm::vec3(0.20f, 0.20f, 0.25f));
+                leftOnce = true;
+            }
 
-        playerShader->bind();
-        playerShader->setUniformMat4f("projection", projection);
-        playerShader->setUniformMat4f("view", playerview);
-        Engine::entitySystemManager.getComponent<TransformComponent>(entities[2004]).transform =Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform;
-        Engine::entitySystemManager.getComponent<TransformComponent>(entities[2004]).transform = glm::scale(Engine::entitySystemManager.getComponent<TransformComponent>(entities[2004]).transform,glm::vec3(0.20f,0.20f,0.25f));
-        playerShader->setUniformMat4f("model", glm::translate(  Engine::entitySystemManager.getComponent<TransformComponent>(entities[2004]).transform,glm::vec3(-1.5f,-1.0f,0.0f)));
-        Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[2004]), *playerShader);
+            Engine::entitySystemManager.getComponent<TransformComponent>(entities[2004]).transform = glm::translate(  Engine::entitySystemManager.getComponent<TransformComponent>(entities[2004]).transform,bombSpeed*dt);
+            playerShader->setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[2004]).transform);
+            Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[2004]),
+                                          *playerShader);
+
+        }
+
+        if(!bombRightUsed){
+            playerShader->bind();
+            playerShader->setUniformMat4f("projection", projection);
+            playerShader->setUniformMat4f("view", playerview);
+            Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform =Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform;
+            Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform = glm::scale(Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform,glm::vec3(0.20f,0.20f,0.25f));
+            playerShader->setUniformMat4f("model", glm::translate(  Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform,glm::vec3(1.5f,-1.0f,0.0f)));
+            Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[2005]), *playerShader);
+        }else{
+            playerShader->bind();
+            playerShader->setUniformMat4f("projection", projection);
+            playerShader->setUniformMat4f("view", playerview);
+            if(!rightOnce) {
+                Engine::entitySystemManager.getComponent<TransformComponent>(
+                        entities[2005]).transform = Engine::entitySystemManager.getComponent<TransformComponent>(
+                        entities[0]).transform;
+                Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform = glm::scale(
+                        Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform,
+                        glm::vec3(0.20f, 0.20f, 0.25f));
+                Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform = glm::translate(
+                        Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform,
+                        glm::vec3(1.5f, -1.0f, 0.0f));
+                rightOnce = true;
+            }
+
+            Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform = glm::translate(  Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform,bombSpeed*dt);
+            playerShader->setUniformMat4f("model", Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform);
+            Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[2005]), *playerShader);
+
+        }
 
 
-
-        playerShader->bind();
-        playerShader->setUniformMat4f("projection", projection);
-        playerShader->setUniformMat4f("view", playerview);
-        Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform =Engine::entitySystemManager.getComponent<TransformComponent>(entities[0]).transform;
-        Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform = glm::scale(Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform,glm::vec3(0.20f,0.20f,0.25f));
-        playerShader->setUniformMat4f("model", glm::translate(  Engine::entitySystemManager.getComponent<TransformComponent>(entities[2005]).transform,glm::vec3(1.5f,-1.0f,0.0f)));
-        Renderer::getInstance()->draw(Engine::entitySystemManager.getComponent<MeshComponent>(entities[2005]), *playerShader);
 
 
 
@@ -465,11 +518,14 @@ namespace DEngine{
         return true;
     }
     bool GameScene::onMousePressed(MouseButtonPressed& e){
-        if(e.getMouseCode() ==ButtonRight){
-            if(isButtonPressed){
-                isButtonPressed =false;
-            }else{
-                isButtonPressed =true;
+        if(e.getMouseCode() ==ButtonLeft){
+            if(!bombLeftUsed){
+                bombLeftUsed= true;
+            }
+        }
+        if(e.getMouseCode() == ButtonRight){
+            if(!bombRightUsed){
+                bombRightUsed =true;
             }
         }
         return true;
