@@ -37,7 +37,7 @@ namespace DEngine {
         double time{0.0f};
         bool wonGame{false};
         bool lostGame{false};
-        bool isDebug{true};
+        bool isDebug{false};
         bool bombLeftUsed{false};
         bool bombRightUsed{false};
         bool leftOnce{false};
