@@ -71,6 +71,7 @@ add_executable (${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_HEADERS}
 target_link_libraries (${PROJECT_NAME}
                        glfw
                         assimp
+                       ${CMAKE_DL_LIBS}
                        ${GLFW_LIBRARIES}
                        ${GLAD_LIBRARIES})
 
